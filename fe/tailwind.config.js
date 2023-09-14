@@ -6,10 +6,13 @@ export default {
       fontFamily: {
         roboto: ['"Roboto"', "sans-serif"],
       },
-      colors:{
+      colors: {
         textPrimary: "#121212",
-        bgPrimary: "#e5e8eb"
-      }
+        bgPrimary: "#e5e8eb",
+      },
+      boxShadow: {
+        "focus-visible": "none",
+      },
     },
   },
   plugins: [],
