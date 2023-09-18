@@ -7,10 +7,10 @@ export interface IDefaultLayout {
 
 const DefaultLayout: React.FC<IDefaultLayout> = ({ children }) => {
   return (
-    <div className="px-[50px]">
-      <Header />
-      <div>{children}</div>
-    </div>
+    <>
+      <div className="fixed w-[100%] left-0 z-1 bg-white"><Header /></div>
+      <div className="pt-[70px] px-[50px]">{children}</div>
+    </>
   );
 };
 
