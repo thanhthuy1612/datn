@@ -1,5 +1,4 @@
 import { Document } from 'mongoose';
-import { ICart } from './ICart';
 
 export class IAccount extends Document {
   username: string;
@@ -9,5 +8,4 @@ export class IAccount extends Document {
   banner: string;
   wallet: string;
   timeJoin: Date;
-  carts: ICart[];
 }

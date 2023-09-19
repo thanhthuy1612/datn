@@ -9,13 +9,13 @@ export default {
       colors: {
         textPrimary: "#121212",
         bgPrimary: "#e5e8eb",
-        hoverGray: "#F5F5F5",
-        hover: "#FFF0F5",
+        hover: "#F5F5F5",
+        //hover: "#FFF0F5",
         texterror: "#F08080",
         texttrue: "#98FB98",
         border: "#e2e2e2",
-        settingChoose: "#FFB6C1",
-        settingHover: "#FFF0F5",
+        settingChoose: "#4096ff",
+        settingHover: "#F5F5F5",
         textSetting: "#778899",
       },
       boxShadow: {

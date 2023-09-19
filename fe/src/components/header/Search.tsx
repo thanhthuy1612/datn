@@ -36,7 +36,7 @@ const Search: React.FC = () => {
   return (
     <Tippy
       interactive
-      delay={[0, 500]}
+      delay={[0, 5000]}
       className="h-[100%]"
       render={(attrs) => (
         <div tabIndex={-1} {...attrs}>

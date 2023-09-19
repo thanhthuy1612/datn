@@ -50,16 +50,14 @@ const MenuSetting: React.FC = () => {
   };
   return (
     <div className="flex w-[300px] flex-col">
-      <p className="text text-[30px] pt-[20px] pb-[10px] pl-[25px]">
-        Cài đặt
-      </p>
+      <p className="text text-[30px] pt-[20px] pb-[10px] pl-[25px]">Cài đặt</p>
       {menu.map((item) => (
         <button
           key={item.id}
           className={
             state.to === item.to
-              ? "flex items-center py-[15px] pl-[20px] rounded-l-[15px] cursor-pointer bg-settingChoose"
-              : "flex items-center py-[15px] pl-[20px] rounded-l-[15px] hover:bg-settingHover cursor-pointer"
+              ? "flex items-center py-[15px] my-[5px] pl-[20px] rounded-l-[20px] cursor-pointer border-border border-[2px] border-r-[1px] shadow-xl"
+              : "flex items-center py-[15px] my-[2px] pl-[20px] rounded-l-[15px] hover:bg-settingHover cursor-pointer"
           }
           onClick={handleClick(item.to)}>
           <div className="pr-[10px]">{item.icon}</div>

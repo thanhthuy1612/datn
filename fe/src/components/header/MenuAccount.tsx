@@ -60,7 +60,7 @@ const MenuAccount: React.FC = () => {
       delay={[0, 500]}
       render={(attrs) => (
         <div
-          className="flex border-border border-[1px] shadow-md flex-col py-[15px] bg-white rounded-[15px] w-[200px]"
+          className="flex border-border border-[1px] shadow-md flex-col py-[15px] bg-white rounded-[15px] w-[200px] z-10"
           tabIndex={-1}
           {...attrs}>
           {menu.map((item) => (

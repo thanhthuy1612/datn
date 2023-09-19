@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { Cart } from './CartSchema';
+import { Document } from 'mongoose';
 
 @Schema({
   timestamps: true,
@@ -26,9 +25,6 @@ export class Account extends Document {
 
   @Prop()
   timeJoin: Date;
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Cart' }] })
-  carts: Cart[];
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
