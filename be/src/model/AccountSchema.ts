@@ -23,7 +23,7 @@ export class Account extends Document {
   @Prop({ required: true })
   wallet: string;
 
-  @Prop()
+  @Prop({ type: Date })
   timeJoin: Date;
 }
 

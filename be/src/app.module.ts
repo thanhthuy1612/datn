@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { CartModule } from './modules/cart/cart.module';
+import { LoginModule } from './modules/login/login.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -14,7 +16,13 @@ import { CartModule } from './modules/cart/cart.module';
     }),
     AccountsModule,
     CartModule,
+    LoginModule,
     MongooseModule.forRoot(process.env.DB_URL),
+    JwtModule.register({
+      global: true,
+      secret: process.env.ACCESS_TOKEN_SECRET,
+      signOptions: { expiresIn: '60s' },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

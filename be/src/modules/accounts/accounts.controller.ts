@@ -20,6 +20,7 @@ export class AccountsController {
   async getAccounts(): Promise<ResponseData<Account>> {
     return this.accountsService.findAll();
   }
+
   @Post()
   async createAccount(
     @Body()
@@ -27,6 +28,7 @@ export class AccountsController {
   ): Promise<ResponseData<Account>> {
     return this.accountsService.create(account);
   }
+
   @Get(':id')
   async getAccount(
     @Param('id')
@@ -34,6 +36,15 @@ export class AccountsController {
   ): Promise<ResponseData<Account>> {
     return this.accountsService.findById(id);
   }
+
+  @Get('findByWallet/:wallet')
+  async getAccountByWallet(
+    @Param('wallet') wallet: string,
+  ): Promise<ResponseData<Account>> {
+    console.log(wallet);
+    return this.accountsService.findByWallet(wallet);
+  }
+
   @Put(':id')
   async updateAccounts(
     @Param('id')

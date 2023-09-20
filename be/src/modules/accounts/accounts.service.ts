@@ -58,6 +58,23 @@ export class AccountsService {
       );
     }
   }
+  async findByWallet(wallet: string): Promise<ResponseData<Account>> {
+    try {
+      const accounts = await this.accountsModel.find({ wallet });
+      return new ResponseData<Account>(
+        accounts[0],
+        HttpStatus.SUCCESS,
+        HttpMessage.SUCCESS,
+      );
+    } catch (error) {
+      console.log(error);
+      return new ResponseData<Account>(
+        null,
+        HttpStatus.SUCCESS,
+        HttpMessage.SUCCESS,
+      );
+    }
+  }
   async update(id: string, account: Account): Promise<ResponseData<Account>> {
     try {
       const accounts = await this.accountsModel.findByIdAndUpdate(id, account);
