@@ -30,7 +30,7 @@ const carousel: ICarousel[] = [
 ];
 
 const CarouselHome: React.FC = () => (
-  <div className="z-0 w-[100%] rounded-[20px] shadow-md overflow-hidden">
+  <div className="z-0 w-[100%] rounded-[20px] shadow-2xl overflow-hidden">
     <Carousel autoplay>
       {carousel.map((item: ICarousel) => (
         <div className="w-[100%] rounded-[20px]" key={item.id}>

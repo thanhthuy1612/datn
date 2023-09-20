@@ -17,6 +17,7 @@ export default {
         settingChoose: "#4096ff",
         settingHover: "#F5F5F5",
         textSetting: "#778899",
+        textButton: "#696969",
       },
       boxShadow: {
         "focus-visible": "none",

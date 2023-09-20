@@ -14,7 +14,7 @@ const SettingLayout: React.FC<ISettingLayout> = ({ children }) => {
       </div>
       <div className="pt-[70px] px-[50px] flex w-[100%] flex-1">
         <MenuSetting />
-        <div className="pl-[40px] w-[100%] border-border border-l-[1px]">
+        <div className="pl-[40px] w-[100%]">
           {children}
         </div>
       </div>
