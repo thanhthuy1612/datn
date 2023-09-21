@@ -5,7 +5,7 @@ import { IStateRedux, fetchConnect, store } from "../../redux";
 import { useSelector } from "react-redux";
 
 const Connect: React.FC = () => {
-  const { wallet } = useSelector((state: { item: IStateRedux }) => state.item);
+  const { account } = useSelector((state: { item: IStateRedux }) => state.item);
   const handleClick = async () => {
     await store.dispatch(fetchConnect(false));
   };
@@ -19,8 +19,11 @@ const Connect: React.FC = () => {
             <CiWallet />
           </p>
           <p className="px-[5px] w-[170px]">
-            {wallet
-              ? `${wallet?.substring(0, 10)}...${wallet?.substring(38)}`
+            {account
+              ? `${account.wallet?.substring(
+                  0,
+                  10
+                )}...${account.wallet?.substring(38)}`
               : `Kết nối ví Metamask`}
           </p>
         </button>

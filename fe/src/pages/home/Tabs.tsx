@@ -31,14 +31,25 @@ const TabsHome: React.FC = () => {
               choose === item.id
                 ? "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]"
                 : "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[calc(100%-15px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
-            }
-          >
+            }>
             {item.title}
           </button>
         ))}
         <div className="border-b-[1px] border-border w-[calc(100%-400px)]"></div>
       </div>
       <div className="mt-[20px] flex flex-wrap w-[100%]">
+        <div className="basis-[25%]">
+          <ButtonItem />
+        </div>
+        <div className="basis-[25%]">
+          <ButtonItem />
+        </div>
+        <div className="basis-[25%]">
+          <ButtonItem />
+        </div>
+        <div className="basis-[25%]">
+          <ButtonItem />
+        </div>
         <div className="basis-[25%]">
           <ButtonItem />
         </div>

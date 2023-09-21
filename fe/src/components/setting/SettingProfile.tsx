@@ -6,6 +6,7 @@ import { IAccount } from "../../interfaces/IRouter";
 import { RcFile } from "antd/es/upload";
 import { useSelector } from "react-redux";
 import { IStateRedux } from "../../redux";
+import { create } from "ipfs-http-client";
 
 interface IState {
   account?: IAccount;
@@ -13,13 +14,17 @@ interface IState {
   banner: UploadFile[];
 }
 
+const client = create({
+  url: "https://ipfs-ivirse.pokeheo.xyz/api/v0"
+});
+
 const SettingProfile: React.FC = () => {
   const [state, _setState] = React.useState<IState>({ ava: [], banner: [] });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
-  const { wallet } = useSelector((state: { item: IStateRedux }) => state.item);
+  const { account } = useSelector((state: { item: IStateRedux }) => state.item);
 
   const onChangeAva: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setState({ ava: newFileList });
@@ -46,7 +51,28 @@ const SettingProfile: React.FC = () => {
   };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(wallet as string);
+    await navigator.clipboard.writeText(
+      account ? (account?.wallet as string) : ""
+    );
+  };
+
+  const actionAva = async (options: any) => {
+    const { onSuccess, onError, file } = options;
+    console.log("File", file);
+    try {
+      const added = await client.add(
+        file,
+        {
+          progress: (prog: any) => console.log(`received: ${prog}`),
+        }
+      );
+      console.log(client, added);
+      onSuccess(`https://ipfs.io/ipfs/${added.path}`);
+      console.log(`https://ipfs.io/ipfs/${added.path}`);
+    } catch (error) {
+      onError({ event: error });
+      console.log("Error uploading file: ", error);
+    }
   };
 
   return (
@@ -86,7 +112,7 @@ const SettingProfile: React.FC = () => {
                 onClick={handleCopy}
                 className="flex items-center cursor-pointer">
                 <CiWallet />
-                <p className="pl-[10px]">{wallet}</p>
+                <p className="pl-[10px]">{account?.wallet}</p>
               </button>
             </Tippy>
           </Form.Item>
@@ -94,7 +120,9 @@ const SettingProfile: React.FC = () => {
         <div className="flex flex-col pr-[250px]">
           <Form.Item label="Ảnh đại diện: ">
             <Upload
-              action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+              accept="image/*"
+              action=""
+              customRequest={actionAva}
               listType="picture-card"
               fileList={state.ava}
               onChange={onChangeAva}
@@ -106,7 +134,7 @@ const SettingProfile: React.FC = () => {
             <Upload
               action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
               listType="picture-card"
-              fileList={state.ava}
+              fileList={state.banner}
               onChange={onChangeBanner}
               onPreview={onPreview}>
               {state.banner.length === 0 && "+ Upload"}

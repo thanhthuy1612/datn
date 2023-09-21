@@ -5,6 +5,7 @@ import Profile from "../pages/setting/Profile";
 import Collection from "../pages/setting/Collection";
 import Notification from "../pages/setting/Notification";
 import Client from "../pages/setting/Client";
+import Pesonal from "../pages/profile";
 
 const publicRoutes: IRouter[] = [
   { id: 1, path: "/", component: Home },
@@ -17,6 +18,7 @@ const publicRoutes: IRouter[] = [
     layout: SettingLayout,
   },
   { id: 5, path: "/client", component: Client, layout: SettingLayout },
+  { id: 6, path: "/personal", component: Pesonal },
 ];
 
 const privateRoutes: IRouter[] = [];

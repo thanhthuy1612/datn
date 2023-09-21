@@ -12,8 +12,8 @@ export interface IAccount {
   username?: string;
   bio?: string;
   email?: string;
-  ava?: string;
-  banner?: string;
+  ava?: string | undefined;
+  banner?: string | undefined;
   wallet?: string;
   timeJoin?: Date;
   carts?: unknown;

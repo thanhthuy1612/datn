@@ -24,7 +24,7 @@ const MenuAccount: React.FC = () => {
       id: 1,
       icon: <CiRead />,
       title: "Trang cá nhân",
-      to: `/`,
+      to: `/personal`,
     },
     {
       id: 2,

@@ -44,26 +44,30 @@ const MenuSetting: React.FC = () => {
       to: `/client`,
     },
   ];
+  React.useEffect(() => {
+    if (location.pathname !== state.to) {
+      setState({ to: location.pathname });
+    }
+  }, [location.pathname]);
   const handleClick = (to: string) => () => {
     navigate(to);
     setState({ to: to });
   };
   return (
     <div className="flex w-[300px] flex-col">
-      <p className="text text-[30px] pt-[20px] pb-[10px] pl-[25px] border-border border-r-[1px]">
+      <p className="text text-[30px] pt-[25px] pb-[20px] pl-[25px] border-border border-r-[1px]">
         Cài đặt
       </p>
-      <div className="pt-[5px] w-[100%]">
+      <div className="w-[100%]">
         {menu.map((item) => (
           <button
             key={item.id}
             className={
               state.to === item.to
-                ? "flex w-[100%] items-center py-[18px] pl-[20px] rounded-l-[20px] cursor-pointer border-border border-[2px] border-r-[0px] shadow-xl"
+                ? "flex w-[100%] items-center py-[20px] pl-[20px] rounded-l-[20px] cursor-pointer border-border border-[1px] border-r-[0px] shadow-xl"
                 : "flex w-[100%] items-center py-[15px] pl-[20px] rounded-l-[15px] hover:bg-settingHover cursor-pointer border-border border-r-[1px]"
             }
-            onClick={handleClick(item.to)}
-          >
+            onClick={handleClick(item.to)}>
             <div className="pr-[10px]">{item.icon}</div>
             <p>{item.title}</p>
           </button>

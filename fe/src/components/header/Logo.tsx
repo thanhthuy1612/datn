@@ -9,10 +9,12 @@ const Logo: React.FC = () => {
   };
   return (
     <button onClick={handleClick} className="flex items-center">
-      <div className="flex justify-center items-center w-[50px] h-[50px] mr-[10px] rounded-[50%] bg-bgPrimary">
-        <img src={logo} alt="Đồ án tốt nghiệp" className="w-[20px]" />
-      </div>
-      <p className="red text-[20px] font-[500]">ĐỒ ÁN TỐT NGHIỆP</p>
+      <img
+        src={logo}
+        alt="Đồ án tốt nghiệp"
+        className="w-[45px] h-[45px] rounded-[50%]"
+      />
+      <p className="red text-[20px] font-[500] ml-[15px]">ĐỒ ÁN TỐT NGHIỆP</p>
     </button>
   );
 };

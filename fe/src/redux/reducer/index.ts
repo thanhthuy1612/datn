@@ -1,13 +1,16 @@
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
+import { checkAccount } from "../../api/account";
+import { IAccount } from "../../interfaces/IRouter";
+import { login } from "../../api/login";
 
 const initialState = {
-  wallet: undefined,
+  account: undefined,
 };
 
 export interface IStateRedux {
-  wallet: string | undefined;
+  account: IAccount | undefined;
 }
 
 declare global {
@@ -24,22 +27,18 @@ export const fetchConnect = createAsyncThunk(
       const signer = web3Provider.getSigner();
       if (reload) {
         const address = await signer.getAddress();
-        console.log(address);
-        // const result = await checkAccount(address);
-        // thunkAPI.dispatch(setAccount(result[0]));
+        const result: IAccount = await checkAccount(address);
+        thunkAPI.dispatch(setAccount(result));
       } else {
         const state: any = thunkAPI.getState();
-        console.log(state, state.wallet);
         if (state.item.wallet !== undefined) {
           const address = await signer.getAddress();
-          // const result = await checkAccount(address);
-          thunkAPI.dispatch(setWallet(address));
+          const result = await checkAccount(address);
+          thunkAPI.dispatch(setAccount(result));
         } else {
-          const address = await signer.getAddress();
-          thunkAPI.dispatch(setWallet(address));
-          // const sign = await signer.signMessage("Login");
-          // const result = await getToken(sign);
-          // thunkAPI.dispatch(setAccount(result));
+          const sign = await signer.signMessage("Login");
+          const result = await login(sign);
+          thunkAPI.dispatch(setAccount(result));
         }
       }
     };
@@ -67,10 +66,8 @@ export const item = createSlice({
   name: "item",
   initialState,
   reducers: {
-    setWallet: (state, action) => {
-      const provider = window;
-      console.log(provider);
-      state.wallet = action.payload;
+    setAccount: (state, action) => {
+      state.account = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -79,5 +76,5 @@ export const item = createSlice({
 });
 const reducer = item.reducer;
 
-export const { setWallet } = item.actions;
+export const { setAccount } = item.actions;
 export default reducer;
