@@ -1,8 +1,11 @@
 import axios from "axios";
-import { baseURL } from "./url";
+import { baseURL, baseURLUpload } from "./url";
 
 // const requestAccessToken = axios.create({ baseURL: baseURL });
 const request = axios.create({ baseURL: baseURL });
+const requestPicture = axios.create({
+  baseURL: baseURLUpload
+});
 
 // requestAccessToken.interceptors.request.use(
 //     function (config) {
@@ -39,6 +42,18 @@ export const post = async (path: string, options = {}) => {
 
 export const postLogin = async (path: string, options = {}) => {
   const response = await request.post(path, options);
+  return response;
+};
+
+const config = {
+  params: {
+    "stream-channels": true,
+    progress: false,
+  },
+};
+
+export const postPicture = async (options = {}) => {
+  const response = await requestPicture.post("", options, config);
   return response;
 };
 

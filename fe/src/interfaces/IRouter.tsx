@@ -12,9 +12,20 @@ export interface IAccount {
   username?: string;
   bio?: string;
   email?: string;
-  ava?: string | undefined;
-  banner?: string | undefined;
+  ava: string | undefined;
+  banner: string | undefined;
   wallet?: string;
   timeJoin?: Date;
   carts?: unknown;
+}
+
+export interface IUploadPicture {
+  Name: string;
+  Hash: string;
+  Size: string;
+}
+
+export enum DateFormatType {
+  Date = 0,
+  FullDate = 1,
 }

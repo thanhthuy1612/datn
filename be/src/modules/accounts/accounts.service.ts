@@ -67,7 +67,6 @@ export class AccountsService {
         HttpMessage.SUCCESS,
       );
     } catch (error) {
-      console.log(error);
       return new ResponseData<Account>(
         null,
         HttpStatus.SUCCESS,
@@ -86,6 +85,26 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
+        HttpStatus.SUCCESS,
+        HttpMessage.SUCCESS,
+      );
+    }
+  }
+  async updateByWallet(
+    wallet: string,
+    account: Account,
+  ): Promise<ResponseData<string>> {
+    try {
+      const find = await this.accountsModel.find({ wallet });
+      await this.accountsModel.findOneAndUpdate(await find[0]._id, account);
+      return new ResponseData<string>(
+        'success',
+        HttpStatus.SUCCESS,
+        HttpMessage.SUCCESS,
+      );
+    } catch (error) {
+      return new ResponseData<string>(
+        'error',
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );

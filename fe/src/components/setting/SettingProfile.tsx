@@ -6,17 +6,15 @@ import { IAccount } from "../../interfaces/IRouter";
 import { RcFile } from "antd/es/upload";
 import { useSelector } from "react-redux";
 import { IStateRedux } from "../../redux";
-import { create } from "ipfs-http-client";
+import { postPicture } from "../../api";
+import { uploadPicture } from "../../api/account";
+import { removeUnnecessaryWhiteSpace } from "../../ultis";
 
 interface IState {
   account?: IAccount;
   ava: UploadFile[];
   banner: UploadFile[];
 }
-
-const client = create({
-  url: "https://ipfs-ivirse.pokeheo.xyz/api/v0"
-});
 
 const SettingProfile: React.FC = () => {
   const [state, _setState] = React.useState<IState>({ ava: [], banner: [] });
@@ -26,12 +24,28 @@ const SettingProfile: React.FC = () => {
 
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
 
+  const setUpdate = (name: string, value: string | undefined) => {
+    const newAccount = structuredClone(state.account);
+    setState({
+      account: {
+        ...newAccount,
+        [name]: value,
+      },
+    });
+  };
+
   const onChangeAva: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    if (newFileList.length === 0) {
+      setUpdate("ava", undefined);
+    }
     setState({ ava: newFileList });
   };
   const onChangeBanner: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
+    if (newFileList.length === 0) {
+      setUpdate("banner", undefined);
+    }
     setState({ banner: newFileList });
   };
 
@@ -51,28 +65,46 @@ const SettingProfile: React.FC = () => {
   };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(
-      account ? (account?.wallet as string) : ""
-    );
+    await navigator.clipboard.writeText(account?.wallet as string);
+  };
+  const upload = async (name: string, file: File) => {
+    const input = new FormData();
+    input.append("file", file);
+    const result: any = await postPicture(input);
+    setUpdate(name, `https://ipfs.io/ipfs/${result.data.Hash}`);
+    return result;
   };
 
   const actionAva = async (options: any) => {
     const { onSuccess, onError, file } = options;
-    console.log("File", file);
     try {
-      const added = await client.add(
-        file,
-        {
-          progress: (prog: any) => console.log(`received: ${prog}`),
-        }
-      );
-      console.log(client, added);
-      onSuccess(`https://ipfs.io/ipfs/${added.path}`);
-      console.log(`https://ipfs.io/ipfs/${added.path}`);
+      const result = await upload("ava", file);
+      onSuccess(result);
     } catch (error) {
       onError({ event: error });
       console.log("Error uploading file: ", error);
     }
+  };
+
+  const actionBanner = async (options: any) => {
+    const { onSuccess, onError, file } = options;
+    try {
+      const result = await upload("banner", file);
+      onSuccess(result);
+    } catch (error) {
+      onError({ event: error });
+      console.log("Error uploading file: ", error);
+    }
+  };
+
+  const onFinish = async (values: any) => {
+    await uploadPicture(account?.wallet as string, {
+      username: removeUnnecessaryWhiteSpace(values.username),
+      bio: removeUnnecessaryWhiteSpace(values.bio),
+      email: removeUnnecessaryWhiteSpace(values.email),
+      ava: state.account?.ava,
+      banner: state.account?.banner,
+    });
   };
 
   return (
@@ -81,6 +113,7 @@ const SettingProfile: React.FC = () => {
       layout="vertical"
       wrapperCol={{ flex: 1 }}
       colon={false}
+      onFinish={onFinish}
       className="flex flex-col w-[100%]">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[550px]">
@@ -100,10 +133,9 @@ const SettingProfile: React.FC = () => {
             <Tippy
               interactive
               delay={[0, 10]}
-              className="h-[100%]"
               render={(attrs) => (
                 <div tabIndex={-1} {...attrs}>
-                  <p className="border-border border-[1px] px-[10px] py-[5px] rounded-[10px] shadow-md">
+                  <p className="border-border border-[1px] px-[10px] py-[5px] rounded-[10px] shadow-md bg-white">
                     Copy
                   </p>
                 </div>
@@ -118,21 +150,21 @@ const SettingProfile: React.FC = () => {
           </Form.Item>
         </div>
         <div className="flex flex-col pr-[250px]">
-          <Form.Item label="Ảnh đại diện: ">
+          <Form.Item label="Ảnh đại diện:">
             <Upload
               accept="image/*"
-              action=""
               customRequest={actionAva}
-              listType="picture-card"
+              listType="picture-circle"
               fileList={state.ava}
               onChange={onChangeAva}
               onPreview={onPreview}>
               {state.ava.length === 0 && "+ Upload"}
             </Upload>
           </Form.Item>
-          <Form.Item label="Ảnh bìa: ">
+          <Form.Item label="Ảnh bìa:">
             <Upload
-              action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+              accept="image/*"
+              customRequest={actionBanner}
               listType="picture-card"
               fileList={state.banner}
               onChange={onChangeBanner}

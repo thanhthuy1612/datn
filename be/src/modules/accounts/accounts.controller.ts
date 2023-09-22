@@ -41,7 +41,6 @@ export class AccountsController {
   async getAccountByWallet(
     @Param('wallet') wallet: string,
   ): Promise<ResponseData<Account>> {
-    console.log(wallet);
     return this.accountsService.findByWallet(wallet);
   }
 
@@ -54,6 +53,17 @@ export class AccountsController {
   ): Promise<ResponseData<Account>> {
     return this.accountsService.update(id, account);
   }
+
+  @Put('updateByAccount/:wallet')
+  async updateByAccount(
+    @Param('wallet')
+    wallet: string,
+    @Body()
+    account: IAccount,
+  ): Promise<ResponseData<string>> {
+    return this.accountsService.updateByWallet(wallet, account);
+  }
+
   @Delete(':id')
   async deleteAccounts(
     @Param('id')

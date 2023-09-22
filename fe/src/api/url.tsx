@@ -1,8 +1,9 @@
-export const baseURL = 'http://localhost:3000/';
-export const baseURLTransfer = 'https://api-testnet.bscscan.com/api';
+export const baseURL = "http://localhost:8080/";
+export const baseURLTransfer = "https://api-testnet.bscscan.com/api";
+export const baseURLUpload = "https://ipfs-ivirse.pokeheo.xyz/api/v0/add";
 
 export const url = {
-    account: 'account',
-    cart: 'cart',
-    login: 'login',
+  account: "accounts",
+  cart: "cart",
+  login: "login",
 };
