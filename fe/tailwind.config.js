@@ -10,7 +10,7 @@ export default {
         textPrimary: "#121212",
         bgPrimary: "#e5e8eb",
         hover: "#F5F5F5",
-        //hover: "#FFF0F5",
+        //hover: "#FFFFCF",
         texterror: "#F08080",
         texttrue: "#98FB98",
         border: "#e2e2e2",
