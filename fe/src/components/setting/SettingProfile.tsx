@@ -1,23 +1,40 @@
 import React from "react";
-import { Button, Form, Input, Upload, UploadFile, UploadProps } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Upload,
+  UploadFile,
+  UploadProps,
+} from "antd";
 import { CiWallet } from "react-icons/ci";
 import Tippy from "@tippyjs/react/headless";
-import { IAccount } from "../../interfaces/IRouter";
+import { DateFormatType, IAccount } from "../../interfaces/IRouter";
 import { RcFile } from "antd/es/upload";
 import { useSelector } from "react-redux";
 import { IStateRedux } from "../../redux";
 import { postPicture } from "../../api";
 import { uploadPicture } from "../../api/account";
-import { removeUnnecessaryWhiteSpace } from "../../ultis";
+import { dateFormat, removeUnnecessaryWhiteSpace } from "../../ultis";
 
 interface IState {
   account?: IAccount;
   ava: UploadFile[];
   banner: UploadFile[];
+  previewOpen: boolean;
+  previewImage: string;
+  previewTitle: string;
 }
 
 const SettingProfile: React.FC = () => {
-  const [state, _setState] = React.useState<IState>({ ava: [], banner: [] });
+  const [state, _setState] = React.useState<IState>({
+    ava: [],
+    banner: [],
+    previewOpen: false,
+    previewImage: "",
+    previewTitle: "",
+  });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
@@ -49,19 +66,25 @@ const SettingProfile: React.FC = () => {
     setState({ banner: newFileList });
   };
 
+  const getBase64 = (file: RcFile): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
   const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
     }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
+
+    setState({
+      previewImage: file.url || (file.preview as string),
+      previewOpen: true,
+      previewTitle:
+        file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1),
+    });
   };
 
   const handleCopy = async () => {
@@ -107,6 +130,8 @@ const SettingProfile: React.FC = () => {
     });
   };
 
+  const handleCancel = () => setState({ previewOpen: false });
+
   return (
     <Form
       name="account"
@@ -129,6 +154,15 @@ const SettingProfile: React.FC = () => {
             <Input.TextArea placeholder="Nhập mô tả bản thân..." />
           </Form.Item>
 
+          <Form.Item label="Ngày gia nhập:">
+            <div>
+              {dateFormat(
+                account?.timeJoin ?? new Date(),
+                DateFormatType.FullDate
+              )}
+            </div>
+          </Form.Item>
+
           <Form.Item label="Địa chỉ ví MetaMask: ">
             <Tippy
               interactive
@@ -149,7 +183,7 @@ const SettingProfile: React.FC = () => {
             </Tippy>
           </Form.Item>
         </div>
-        <div className="flex flex-col pr-[250px]">
+        <div className="flex flex-col pr-[50px]">
           <Form.Item label="Ảnh đại diện:">
             <Upload
               accept="image/*"
@@ -158,7 +192,7 @@ const SettingProfile: React.FC = () => {
               fileList={state.ava}
               onChange={onChangeAva}
               onPreview={onPreview}>
-              {state.ava.length === 0 && "+ Upload"}
+              {state.ava.length === 0 && "+ Thêm ảnh"}
             </Upload>
           </Form.Item>
           <Form.Item label="Ảnh bìa:">
@@ -169,7 +203,7 @@ const SettingProfile: React.FC = () => {
               fileList={state.banner}
               onChange={onChangeBanner}
               onPreview={onPreview}>
-              {state.banner.length === 0 && "+ Upload"}
+              {state.banner.length === 0 && "+ Thêm ảnh"}
             </Upload>
           </Form.Item>
         </div>
@@ -177,8 +211,15 @@ const SettingProfile: React.FC = () => {
       <Form.Item label=" ">
         <Button htmlType="submit">Lưu lại chỉnh sửa</Button>
       </Form.Item>
+      <Modal
+        open={state.previewOpen}
+        title={state.previewTitle}
+        footer={null}
+        onCancel={handleCancel}>
+        <img alt="example" style={{ width: "100%" }} src={state.previewImage} />
+      </Modal>
     </Form>
   );
 };
 
-export default SettingProfile;
+export default React.memo(SettingProfile);

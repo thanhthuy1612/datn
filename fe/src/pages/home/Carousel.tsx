@@ -35,8 +35,7 @@ const CarouselHome: React.FC = () => (
       {carousel.map((item: ICarousel) => (
         <div
           className="w-[100%] h-[400px] rounded-[20px] shadow-2xl border-border border-[1px]"
-          key={item.id}
-        >
+          key={item.id}>
           <img
             src={item.banner}
             className="w-full h-full rounded-[20px] shadow-2xl"
@@ -48,4 +47,4 @@ const CarouselHome: React.FC = () => (
   </div>
 );
 
-export default CarouselHome;
+export default React.memo(CarouselHome);

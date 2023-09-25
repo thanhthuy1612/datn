@@ -1,0 +1,16 @@
+:where(.css-dev-only-do-not-override-i0102m).ant-btn-primary {
+  border: 1px solid #e2e2e2;
+  color: #121212;
+}
+
+:where(
+    .css-dev-only-do-not-override-i0102m
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload.ant-upload-select,
+:where(
+    .css-dev-only-do-not-override-i0102m
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload.ant-upload-select {
+  width: 200px;
+  height: 200px;
+}

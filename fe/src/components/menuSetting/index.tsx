@@ -78,4 +78,4 @@ const MenuSetting: React.FC = () => {
   );
 };
 
-export default MenuSetting;
+export default React.memo(MenuSetting);

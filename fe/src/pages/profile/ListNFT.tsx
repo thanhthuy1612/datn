@@ -15,7 +15,7 @@ const menu: IMenu[] = [
     title: "Kho NFT",
   },
 ];
-const TabsHome: React.FC = () => {
+const ListNFT: React.FC = () => {
   const [choose, setChoose] = React.useState(1);
   const handleClick = (id: number) => () => {
     id !== choose && setChoose(id);
@@ -73,4 +73,4 @@ const TabsHome: React.FC = () => {
   );
 };
 
-export default React.memo(TabsHome);
+export default React.memo(ListNFT);
