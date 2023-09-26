@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Button,
   Form,
   Input,
@@ -13,7 +14,7 @@ import Tippy from "@tippyjs/react/headless";
 import { DateFormatType, IAccount } from "../../interfaces/IRouter";
 import { RcFile } from "antd/es/upload";
 import { useSelector } from "react-redux";
-import { IStateRedux } from "../../redux";
+import { IStateRedux, setAccount, store } from "../../redux";
 import { postPicture } from "../../api";
 import { uploadPicture } from "../../api/account";
 import { dateFormat, removeUnnecessaryWhiteSpace } from "../../ultis";
@@ -25,6 +26,8 @@ interface IState {
   previewOpen: boolean;
   previewImage: string;
   previewTitle: string;
+  visible: boolean;
+  alert: boolean;
 }
 
 const SettingProfile: React.FC = () => {
@@ -34,12 +37,21 @@ const SettingProfile: React.FC = () => {
     previewOpen: false,
     previewImage: "",
     previewTitle: "",
+    visible: false,
+    alert: true,
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
+
+  React.useEffect(() => {
+    state.visible &&
+      setTimeout(() => {
+        setState({ visible: false });
+      }, 5000);
+  }, [state.visible]);
 
   const setUpdate = (name: string, value: string | undefined) => {
     const newAccount = structuredClone(state.account);
@@ -121,13 +133,16 @@ const SettingProfile: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    await uploadPicture(account?.wallet as string, {
+    setState({ visible: false });
+    const result = await uploadPicture(account?.wallet as string, {
       username: removeUnnecessaryWhiteSpace(values.username),
       bio: removeUnnecessaryWhiteSpace(values.bio),
       email: removeUnnecessaryWhiteSpace(values.email),
       ava: state.account?.ava,
       banner: state.account?.banner,
     });
+    await store.dispatch(setAccount(result.data[0]));
+    setState({ alert: result.data !== null, visible: true });
   };
 
   const handleCancel = () => setState({ previewOpen: false });
@@ -139,7 +154,7 @@ const SettingProfile: React.FC = () => {
       wrapperCol={{ flex: 1 }}
       colon={false}
       onFinish={onFinish}
-      className="flex flex-col w-[100%]">
+      className="flex flex-col w-[100%] relative">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[550px]">
           <Form.Item label="Tên người dùng:" name="username">
@@ -218,6 +233,20 @@ const SettingProfile: React.FC = () => {
         onCancel={handleCancel}>
         <img alt="example" style={{ width: "100%" }} src={state.previewImage} />
       </Modal>
+      {state.visible && (
+        <div className="absolute top-[-100px] right-[-150px]">
+          <Alert
+            message={
+              state.alert
+                ? "Chỉnh sửa trang cá nhân thành công"
+                : "Chỉnh sửa trang cá nhân thất bại"
+            }
+            type={state.alert ? "success" : "error"}
+            showIcon
+            closable
+          />
+        </div>
+      )}
     </Form>
   );
 };

@@ -93,18 +93,19 @@ export class AccountsService {
   async updateByWallet(
     wallet: string,
     account: Account,
-  ): Promise<ResponseData<string>> {
+  ): Promise<ResponseData<Account>> {
     try {
       const find = await this.accountsModel.find({ wallet });
       await this.accountsModel.findOneAndUpdate(await find[0]._id, account);
-      return new ResponseData<string>(
-        'success',
+      const accountNew = await this.accountsModel.find({ wallet });
+      return new ResponseData<Account>(
+        accountNew,
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );
     } catch (error) {
-      return new ResponseData<string>(
-        'error',
+      return new ResponseData<Account>(
+        null,
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
       );

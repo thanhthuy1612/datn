@@ -127,4 +127,4 @@ const HeaderProfile: React.FC<{ account: IAccount | undefined }> = ({
   );
 };
 
-export default React.memo(HeaderProfile);
+export default HeaderProfile;

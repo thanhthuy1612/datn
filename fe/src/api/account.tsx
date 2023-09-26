@@ -18,7 +18,7 @@ export const uploadPicture = async (wallet: string, account: IAccount) => {
     const res = await update(`${path}/updateByAccount/${wallet}`, {
       ...account,
     });
-    return res;
+    return res.data;
   } catch (err) {
     console.log(err);
   }

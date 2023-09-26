@@ -9,4 +9,4 @@ const Item: React.FC<{ account: IAccount }> = ({ account }) => {
   );
 };
 
-export default React.memo(Item);
+export default Item;

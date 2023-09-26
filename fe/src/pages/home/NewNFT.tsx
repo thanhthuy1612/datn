@@ -1,23 +1,8 @@
-import React from "react";
-import ButtonItem from "../../components/button";
-import test from "../../assets/logo.png";
 import { Pagination } from "antd";
+import React from "react";
+import test from "../../assets/logo.png";
+import ButtonItem from "../../components/button";
 import { useNavigate } from "react-router-dom";
-
-interface IMenu {
-  id: number;
-  title: string;
-}
-const menu: IMenu[] = [
-  {
-    id: 1,
-    title: "NFT đã mua",
-  },
-  {
-    id: 2,
-    title: "NFT đang bán",
-  },
-];
 
 const items = [
   { id: 1, title: "12345", date: "16/12/2001", price: "0.01", img: test },
@@ -32,55 +17,45 @@ const items = [
   { id: 10, title: "12345", date: "16/12/2001", price: "0.01", img: test },
   { id: 11, title: "12345", date: "16/12/2001", price: "0.01", img: test },
 ];
+
 interface IState {
   page: number;
   pageSize: number;
-  choose: number;
 }
-const ListNFT: React.FC = () => {
+const NewNFT: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
-    choose: 1,
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
+  const ref = React.useRef<null | HTMLDivElement>(null);
+
   const navigate = useNavigate();
-  const handleClickItem = (id: string | number) => () => {
+  const handleClick = (id: string | number) => () => {
     navigate(`nft/${id as string}`);
   };
-  const handleClick = (id: number) => () => {
-    id !== state.choose && setState({ choose: id });
-  };
-  const ref = React.useRef<null | HTMLDivElement>(null);
+
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });
-    ref.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
   return (
-    <div className="w-[100%] z-0" ref={ref}>
-      <div className="flex h-[70px] items-end w-[100%] mt-[50px]">
-        {menu.map((item) => (
-          <button
-            onClick={handleClick(item.id)}
-            key={item.id}
-            className={
-              state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[calc(100%-15px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
-            }>
-            {item.title}
-          </button>
-        ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-418px)]"></div>
+    <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
+      <div className="flex h-[70px] items-end w-[100%]">
+        <div className="p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
+          NFT mới nhất
+        </div>
+        <div className="border-b-[1px] border-border w-[calc(100%-218px)] rounded-[20px]"></div>
       </div>
-      <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
+      <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {items
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item) => (
             <button
-              onClick={handleClickItem(item.id)}
+              onClick={handleClick(item.id)}
               className="basis-[25%]"
               key={item.id}>
               <ButtonItem
@@ -107,4 +82,4 @@ const ListNFT: React.FC = () => {
   );
 };
 
-export default ListNFT;
+export default React.memo(NewNFT);

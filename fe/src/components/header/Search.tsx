@@ -13,13 +13,15 @@ const account: IAccount[] = [
     id: "65042935a7e33c4822f6549d",
     username: "abc",
     wallet: "abc",
-    carts: [],
+    ava: "123",
+    banner: "123",
   },
   {
     id: "6507c188c64e88f5761bdea7",
     username: "abcd",
     wallet: "abcd",
-    carts: [],
+    ava: "123",
+    banner: "123",
   },
 ];
 

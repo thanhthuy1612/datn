@@ -60,7 +60,7 @@ export class AccountsController {
     wallet: string,
     @Body()
     account: IAccount,
-  ): Promise<ResponseData<string>> {
+  ): Promise<ResponseData<Account>> {
     return this.accountsService.updateByWallet(wallet, account);
   }
 

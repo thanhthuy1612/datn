@@ -23,4 +23,4 @@ const ListItem: React.FC<{ accounts: IAccount[] }> = ({ accounts }) => {
   );
 };
 
-export default React.memo(ListItem);
+export default ListItem;

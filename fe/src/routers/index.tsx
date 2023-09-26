@@ -6,6 +6,10 @@ import Collection from "../pages/setting/Collection";
 import Notification from "../pages/setting/Notification";
 import Client from "../pages/setting/Client";
 import Pesonal from "../pages/profile";
+import History from "../pages/history";
+import MyNFT from "../pages/listNFT";
+import CreateNFT from "../pages/CreateNFT";
+import BuyNFT from "../components/NFT/Buy";
 
 const publicRoutes: IRouter[] = [
   { id: 1, path: "/", component: Home },
@@ -19,6 +23,11 @@ const publicRoutes: IRouter[] = [
   },
   { id: 5, path: "/client", component: Client, layout: SettingLayout },
   { id: 6, path: "/personal", component: Pesonal },
+  { id: 7, path: "/history", component: History },
+  { id: 8, path: "/myNFT", component: MyNFT },
+  { id: 9, path: "/createNFT", component: CreateNFT },
+  { id: 10, path: "/nft/:id", component: BuyNFT },
+  { id: 11, path: "/personal/nft/:id", component: BuyNFT },
 ];
 
 const privateRoutes: IRouter[] = [];

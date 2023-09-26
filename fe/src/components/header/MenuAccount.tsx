@@ -30,19 +30,19 @@ const MenuAccount: React.FC = () => {
       id: 2,
       icon: <CiBookmark />,
       title: "Lịch sử giao dịch",
-      to: `/`,
+      to: `/history`,
     },
     {
       id: 3,
       icon: <CiBoxList />,
       title: "Bộ sưu tập",
-      to: `/`,
+      to: `/myNFT`,
     },
     {
       id: 4,
       icon: <CiPen />,
       title: "Tạo NFT mới",
-      to: `/`,
+      to: `/createNFT`,
     },
     {
       id: 5,
@@ -81,4 +81,4 @@ const MenuAccount: React.FC = () => {
   );
 };
 
-export default MenuAccount;
+export default React.memo(MenuAccount);
