@@ -14,3 +14,27 @@
   width: 200px;
   height: 200px;
 }
+
+:where(
+    .css-dev-only-do-not-override-i0102m
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item-container,
+:where(
+    .css-dev-only-do-not-override-i0102m
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item-container,
+:where(
+    .css-dev-only-do-not-override-i0102m
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-container,
+:where(
+    .css-dev-only-do-not-override-i0102m
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-container {
+  width: 200px;
+  height: 200px;
+}

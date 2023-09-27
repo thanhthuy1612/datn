@@ -12,8 +12,9 @@ import {
 import React from "react";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
-import { removeUnnecessaryWhiteSpace } from "../../ultis";
+import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import "./create.css";
+import { createToken, store } from "../../redux";
 
 interface IState {
   img: UploadFile[];
@@ -82,11 +83,14 @@ const Create: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    console.log({
-      title: removeUnnecessaryWhiteSpace(values.title),
-      price: removeUnnecessaryWhiteSpace(values.price),
-      date: values.date,
-    });
+    store.dispatch(
+      createToken({
+        name: removeUnnecessaryWhiteSpace(values.title),
+        price: removeUnnecessaryWhiteSpace(values.price),
+        file: state.file,
+        date: getDate(new Date(values.date), new Date(values.time)),
+      })
+    );
   };
 
   const handleCancel = () => setState({ previewOpenNFT: false });
@@ -100,19 +104,6 @@ const Create: React.FC = () => {
       onFinish={onFinish}
       className="flex flex-col w-[100%] items-center">
       <div className="flex w-[100%] justify-between">
-        <div className="flex flex-col pr-[50px]">
-          <Form.Item label="NFT mới:">
-            <Upload
-              accept="image/*"
-              customRequest={action}
-              listType="picture-card"
-              fileList={state.img}
-              onChange={onChange}
-              onPreview={onPreview}>
-              {state.img.length === 0 && "+ Thêm file"}
-            </Upload>
-          </Form.Item>
-        </div>
         <div className="flex flex-col w-[550px]">
           <Form.Item label="Tên NFT:" name="title">
             <Input placeholder="Nhập tên NFT..." />
@@ -131,6 +122,19 @@ const Create: React.FC = () => {
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit">Thêm NFT</Button>
+          </Form.Item>
+        </div>
+        <div className="flex justify-center w-[300px] h-[300px]">
+          <Form.Item label="NFT mới:">
+            <Upload
+              accept="image/*"
+              customRequest={action}
+              listType="picture-card"
+              fileList={state.img}
+              onChange={onChange}
+              onPreview={onPreview}>
+              {state.img.length === 0 && "+ Thêm file"}
+            </Upload>
           </Form.Item>
         </div>
       </div>

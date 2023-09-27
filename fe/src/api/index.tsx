@@ -4,7 +4,7 @@ import { baseURL, baseURLUpload } from "./url";
 // const requestAccessToken = axios.create({ baseURL: baseURL });
 const request = axios.create({ baseURL: baseURL });
 const requestPicture = axios.create({
-  baseURL: baseURLUpload
+  baseURL: baseURLUpload,
 });
 
 // requestAccessToken.interceptors.request.use(
@@ -54,6 +54,11 @@ const config = {
 
 export const postPicture = async (options = {}) => {
   const response = await requestPicture.post("", options, config);
+  return response;
+};
+
+export const postItem = async (options = {}) => {
+  const response = await requestPicture.post("", options);
   return response;
 };
 

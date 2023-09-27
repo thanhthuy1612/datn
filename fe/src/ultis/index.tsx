@@ -7,6 +7,11 @@ export const removeUnnecessaryWhiteSpace = (string: string | undefined) => {
   return result;
 };
 
+export const getDate = (day: Date, time: Date) => {
+  day.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
+  return day.getTime();
+};
+
 export const dateFormat = (date: Date, format: DateFormatType) => {
   const time: Date = new Date(date);
   const formattedDate = time.toLocaleString(
