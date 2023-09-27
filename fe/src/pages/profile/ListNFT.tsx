@@ -17,6 +17,10 @@ const menu: IMenu[] = [
     id: 2,
     title: "NFT đang bán",
   },
+  {
+    id: 3,
+    title: "NFT hết hạn",
+  },
 ];
 
 const items = [
@@ -68,7 +72,7 @@ const ListNFT: React.FC = () => {
             className={
               state.choose === item.id
                 ? "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[calc(100%-15px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
