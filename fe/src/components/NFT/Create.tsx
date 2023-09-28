@@ -42,7 +42,7 @@ const Create: React.FC = () => {
     const input = new FormData();
     input.append("file", file);
     const result: any = await postPicture(input);
-    setState({ file: `https://ipfs.io/ipfs/${result.data.Hash}` });
+    setState({ file: result.data.Hash });
     return result;
   };
   const getBase64 = (file: RcFile): Promise<string> =>
@@ -87,6 +87,7 @@ const Create: React.FC = () => {
       createToken({
         name: removeUnnecessaryWhiteSpace(values.title),
         price: removeUnnecessaryWhiteSpace(values.price),
+        number: values.number ?? 3,
         file: state.file,
         date: getDate(new Date(values.date), new Date(values.time)),
       })

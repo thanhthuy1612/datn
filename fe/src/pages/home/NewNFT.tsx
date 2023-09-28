@@ -1,27 +1,20 @@
-import { Pagination } from "antd";
+import { Empty, Pagination } from "antd";
 import React from "react";
-import test from "../../assets/logo.png";
 import ButtonItem from "../../components/button";
 import { useNavigate } from "react-router-dom";
-
-const items = [
-  { id: 1, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 2, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 3, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 4, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 5, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 6, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 7, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 8, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 9, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 10, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 11, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-];
+import {
+  IStateRedux,
+  fetchMarketItemsUpComing,
+  setItem,
+  store,
+} from "../../redux";
+import { useSelector } from "react-redux";
 
 interface IState {
   page: number;
   pageSize: number;
 }
+
 const NewNFT: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
@@ -31,10 +24,18 @@ const NewNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
+  const { upComing } = useSelector(
+    (state: { item: IStateRedux }) => state.item
+  );
 
   const navigate = useNavigate();
-  const handleClick = (id: string | number) => () => {
-    navigate(`nft/${id as string}`);
+
+  React.useEffect(() => {
+    store.dispatch(fetchMarketItemsUpComing());
+  }, []);
+  const handleClick = (item: any) => () => {
+    store.dispatch(setItem(item));
+    navigate(`nft/buy`);
   };
 
   const onChange = (page: number, pageSize: number) => {
@@ -45,38 +46,53 @@ const NewNFT: React.FC = () => {
   return (
     <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%]">
-        <div className="p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
+        <p className="p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
           NFT mới nhất
-        </div>
+        </p>
         <div className="border-b-[1px] border-border w-[calc(100%-218px)] rounded-[20px]"></div>
       </div>
-      <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {items
-          .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
-          .map((item) => (
-            <button
-              onClick={handleClick(item.id)}
-              className="basis-[25%]"
-              key={item.id}>
-              <ButtonItem
-                title={item.title}
-                date={item.date}
-                price={item.price}
-                img={item.img}
-              />
-            </button>
-          ))}
-        <div className="w-[100%] flex justify-center mt-[50px]">
-          <Pagination
-            total={items.length}
-            showSizeChanger
-            showQuickJumper
-            pageSizeOptions={[8, 12, 16, 20]}
-            defaultPageSize={8}
-            showTotal={(total) => `Tổng ${total} phần tử`}
-            onChange={onChange}
-          />
-        </div>
+      <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] min-h-[680px] rounded-b-[20px] shadow-xl">
+        {upComing && upComing.length > 0 ? (
+          upComing
+            .slice(
+              (state.page - 1) * state.pageSize,
+              state.page * state.pageSize
+            )
+            .map((item: any) => (
+              <button
+                onClick={handleClick(item)}
+                className="basis-[25%] min-h-[510px]"
+                key={item.tokenId}>
+                <ButtonItem
+                  title={item.title}
+                  date={item.date}
+                  price={item.price}
+                  img={item.img}
+                />
+              </button>
+            ))
+        ) : (
+          <div className="w-[100%] flex justify-center items-center">
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{ height: 200, width: 200 }}
+              description={"Không có dữ liệu"}
+            />
+          </div>
+        )}
+        {upComing && upComing.length > 0 && (
+          <div className="w-[100%] flex items-end justify-center mt-[50px]">
+            <Pagination
+              total={upComing ? upComing.length : 0}
+              showSizeChanger
+              showQuickJumper
+              pageSizeOptions={[8, 12, 16, 20]}
+              defaultPageSize={8}
+              showTotal={(total) => `Tổng ${total} phần tử`}
+              onChange={onChange}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

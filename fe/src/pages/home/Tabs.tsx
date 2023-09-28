@@ -1,7 +1,7 @@
 import React from "react";
-import ButtonItem from "../../components/button";
-import test from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import test from "../../assets/logo.png";
+import ButtonItem from "../../components/button";
 
 interface IMenu {
   id: number;
@@ -35,8 +35,8 @@ const TabsHome: React.FC = () => {
   const [choose, setChoose] = React.useState(1);
 
   const navigate = useNavigate();
-  const handleClickButton = (id: string | number) => () => {
-    navigate(`nft/${id as string}`);
+  const handleClickButton = () => {
+    navigate(`nft/buy`);
   };
 
   const handleClick = (id: number) => () => {
@@ -62,8 +62,8 @@ const TabsHome: React.FC = () => {
       <div className="mt-[20px] flex flex-wrap w-[100%]">
         {items.map((item) => (
           <button
-            onClick={handleClickButton(item.id)}
-            className="basis-[25%]"
+            onClick={handleClickButton}
+            className="basis-[25%] h-[510px]"
             key={item.id}>
             <ButtonItem
               title={item.title}

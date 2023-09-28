@@ -1,8 +1,16 @@
 import React from "react";
 import ButtonItem from "../../components/button";
-import test from "../../assets/logo.png";
-import { Pagination } from "antd";
+import { Empty, Pagination, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
+import {
+  IStateRedux,
+  fetchItemsListed,
+  fetchItemsListedDate,
+  fetchMyNFTs,
+  store,
+} from "../../redux";
+import { useSelector } from "react-redux";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface IMenu {
   id: number;
@@ -23,37 +31,54 @@ const menu: IMenu[] = [
   },
 ];
 
-const items = [
-  { id: 1, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 2, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 3, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 4, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 5, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 6, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 7, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 8, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 9, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 10, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-  { id: 11, title: "12345", date: "16/12/2001", price: "0.01", img: test },
-];
 interface IState {
   page: number;
   pageSize: number;
   choose: number;
+  items: any[];
 }
+
 const ListNFT: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
     choose: 1,
+    items: [],
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
-  const handleClickItem = (id: string | number) => () => {
-    navigate(`nft/${id as string}`);
+  const { myNFT, mySeller, myDate, loading } = useSelector(
+    (state: { item: IStateRedux }) => state.item
+  );
+  const handleClickItem = () => {
+    navigate(`nft/buy`);
   };
+  React.useEffect(() => {
+    const renderRedux = async () => {
+      await store.dispatch(fetchMyNFTs());
+      await store.dispatch(fetchItemsListed());
+      await store.dispatch(fetchItemsListedDate());
+    };
+    renderRedux();
+  }, []);
+  React.useEffect(() => {
+    const getItems = async () => {
+      switch (state.choose) {
+        case 1:
+          setState({ items: myNFT });
+          break;
+        case 2:
+          setState({ items: mySeller });
+          break;
+        case 3:
+          setState({ items: myDate });
+          break;
+      }
+    };
+    getItems();
+  }, [myNFT, mySeller, myDate, state.choose]);
   const handleClick = (id: number) => () => {
     id !== state.choose && setState({ choose: id });
   };
@@ -62,6 +87,54 @@ const ListNFT: React.FC = () => {
     setState({ page: page, pageSize: pageSize });
     ref.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   };
+  const renderList = () => (
+    <>
+      {state.items.length > 0 ? (
+        state.items
+          .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
+          .map((item: any) => (
+            <button
+              onClick={handleClickItem}
+              className="basis-[25%] h-[510px]"
+              key={item.id}>
+              <ButtonItem
+                title={item.title}
+                date={item.date}
+                price={item.price}
+                img={item.img}
+              />
+            </button>
+          ))
+      ) : (
+        <div className="w-[100%] flex justify-center items-center">
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            imageStyle={{ height: 200, width: 200 }}
+            description={"Không có dữ liệu"}
+          />
+        </div>
+      )}
+      {state.items.length > 0 && (
+        <div className="w-[100%] flex justify-center mt-[50px]">
+          <Pagination
+            total={state.items.length}
+            showSizeChanger
+            showQuickJumper
+            pageSizeOptions={[8, 12, 16, 20]}
+            defaultPageSize={8}
+            showTotal={(total) => `Tổng ${total} phần tử`}
+            onChange={onChange}
+          />
+        </div>
+      )}
+    </>
+  );
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+  const renderloading = () => (
+    <div className="w-[100%] flex justify-center items-center">
+      <Spin indicator={antIcon} />
+    </div>
+  );
   return (
     <div className="w-[100%] z-0" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%] mt-[50px]">
@@ -77,35 +150,10 @@ const ListNFT: React.FC = () => {
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-418px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-618px)]"></div>
       </div>
-      <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {items
-          .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
-          .map((item) => (
-            <button
-              onClick={handleClickItem(item.id)}
-              className="basis-[25%]"
-              key={item.id}>
-              <ButtonItem
-                title={item.title}
-                date={item.date}
-                price={item.price}
-                img={item.img}
-              />
-            </button>
-          ))}
-        <div className="w-[100%] flex justify-center mt-[50px]">
-          <Pagination
-            total={items.length}
-            showSizeChanger
-            showQuickJumper
-            pageSizeOptions={[8, 12, 16, 20]}
-            defaultPageSize={8}
-            showTotal={(total) => `Tổng ${total} phần tử`}
-            onChange={onChange}
-          />
-        </div>
+      <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
+        {!loading ? renderList() : renderloading()}
       </div>
     </div>
   );

@@ -26,8 +26,8 @@ const publicRoutes: IRouter[] = [
   { id: 7, path: "/history", component: History },
   { id: 8, path: "/myNFT", component: MyNFT },
   { id: 9, path: "/createNFT", component: CreateNFT },
-  { id: 10, path: "/nft/:id", component: BuyNFT },
-  { id: 11, path: "/personal/nft/:id", component: BuyNFT },
+  { id: 10, path: "/nft/buy", component: BuyNFT },
+  { id: 11, path: "/personal/nft/buy", component: BuyNFT },
 ];
 
 const privateRoutes: IRouter[] = [];

@@ -38,3 +38,8 @@
   width: 200px;
   height: 200px;
 }
+
+:where(.css-dev-only-do-not-override-i0102m).ant-empty .ant-empty-image svg {
+  width: 100%;
+  height: 100%;
+}
