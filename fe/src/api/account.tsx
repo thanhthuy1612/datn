@@ -13,6 +13,16 @@ export const checkAccount = async (wallet: string) => {
   }
 };
 
+export const search = async (item: string) => {
+  try {
+    console.log(item);
+    const res = await get(`${path}/search/${item}`, { params: {} });
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const uploadPicture = async (wallet: string, account: IAccount) => {
   try {
     const res = await update(`${path}/updateByAccount/${wallet}`, {

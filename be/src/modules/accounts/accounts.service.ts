@@ -37,8 +37,8 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
       );
     }
   }
@@ -53,8 +53,8 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
       );
     }
   }
@@ -69,8 +69,31 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
+      );
+    }
+  }
+  async search(item: string): Promise<ResponseData<Account>> {
+    try {
+      const account = await this.accountsModel.find();
+      const find = account.filter((account) => {
+        return (
+          (account?.username &&
+            account?.username.toLowerCase().includes(item.toLowerCase())) ||
+          account?.wallet.toLowerCase().includes(item.toLowerCase())
+        );
+      });
+      return new ResponseData<Account>(
+        find,
         HttpStatus.SUCCESS,
         HttpMessage.SUCCESS,
+      );
+    } catch (error) {
+      return new ResponseData<Account>(
+        null,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
       );
     }
   }
@@ -85,8 +108,8 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
       );
     }
   }
@@ -95,8 +118,7 @@ export class AccountsService {
     account: Account,
   ): Promise<ResponseData<Account>> {
     try {
-      const find = await this.accountsModel.find({ wallet });
-      await this.accountsModel.findOneAndUpdate(await find[0]._id, account);
+      await this.accountsModel.findOneAndUpdate({ wallet }, account);
       const accountNew = await this.accountsModel.find({ wallet });
       return new ResponseData<Account>(
         accountNew,
@@ -106,8 +128,8 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
       );
     }
   }
@@ -122,8 +144,8 @@ export class AccountsService {
     } catch (error) {
       return new ResponseData<Account>(
         null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
+        HttpStatus.ERROR,
+        HttpMessage.ERROR,
       );
     }
   }

@@ -31,11 +31,7 @@ export class CartService {
         HttpMessage.SUCCESS,
       );
     } catch (error) {
-      return new ResponseData<Cart>(
-        null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
     }
   }
   async findById(id: string): Promise<ResponseData<Cart>> {
@@ -47,11 +43,7 @@ export class CartService {
         HttpMessage.SUCCESS,
       );
     } catch (error) {
-      return new ResponseData<Cart>(
-        null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
     }
   }
   async update(id: string, cart: Cart): Promise<ResponseData<Cart>> {
@@ -63,11 +55,7 @@ export class CartService {
         HttpMessage.SUCCESS,
       );
     } catch (error) {
-      return new ResponseData<Cart>(
-        null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
     }
   }
   async delete(id: string): Promise<ResponseData<Cart>> {
@@ -79,11 +67,7 @@ export class CartService {
         HttpMessage.SUCCESS,
       );
     } catch (error) {
-      return new ResponseData<Cart>(
-        null,
-        HttpStatus.SUCCESS,
-        HttpMessage.SUCCESS,
-      );
+      return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
     }
   }
 }

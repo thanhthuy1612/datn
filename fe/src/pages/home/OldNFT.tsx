@@ -1,6 +1,5 @@
 import React from "react";
 import ButtonItem from "../../components/button";
-import test from "../../assets/logo.png";
 import { Empty, Pagination } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";

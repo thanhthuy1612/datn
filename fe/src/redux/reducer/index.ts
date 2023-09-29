@@ -148,6 +148,18 @@ export const fetchMarketItemsPast = createAsyncThunk(
   }
 );
 
+export const fetch = createAsyncThunk("fetch", async (_item, thunkAPI) => {
+  thunkAPI.dispatch(setLoading(true));
+  const { contract, erc721 } = await getERC();
+  const dataMyNFT = await erc721.fetchMyNFTs();
+  const itemsMyNFT = await getItems(dataMyNFT, contract);
+  const dataList = await erc721.fetchItemsListed();
+  const itemsList = await getItems(dataList, contract);
+  const dataDate = await erc721.fetchItemsListedDate();
+  const itemsDate = await getItems(dataDate, contract);
+  return { itemsMyNFT, itemsList, itemsDate };
+});
+
 export const fetchMyNFTs = createAsyncThunk(
   "fetchMyNFTs",
   async (_item, thunkAPI) => {
@@ -251,6 +263,12 @@ export const item = createSlice({
       state.loading = false;
       state.past = actions.payload;
     });
+    builder.addCase(fetch.fulfilled, (state, actions) => {
+      state.loading = false;
+      state.myDate = actions.payload.itemsDate;
+      state.mySeller = actions.payload.itemsList;
+      state.myNFT = actions.payload.itemsMyNFT;
+    });
     builder.addCase(fetchMyNFTs.fulfilled, (state, actions) => {
       state.loading = false;
       state.myNFT = actions.payload;
@@ -263,12 +281,12 @@ export const item = createSlice({
       state.loading = false;
       state.myDate = actions.payload;
     });
-    builder.addCase(
-      createMarketSale.fulfilled || createToken.fulfilled,
-      (state, _actions) => {
-        state.loading = false;
-      }
-    );
+    builder.addCase(createMarketSale.fulfilled, (state, _actions) => {
+      state.loading = false;
+    });
+    builder.addCase(createToken.fulfilled, (state, _actions) => {
+      state.loading = false;
+    });
   },
 });
 const reducer = item.reducer;

@@ -18,6 +18,7 @@ import { IStateRedux, setAccount, store } from "../../redux";
 import { postPicture } from "../../api";
 import { uploadPicture } from "../../api/account";
 import { dateFormat, removeUnnecessaryWhiteSpace } from "../../ultis";
+import { followCursor } from "tippy.js";
 
 interface IState {
   account?: IAccount;
@@ -92,7 +93,7 @@ const SettingProfile: React.FC = () => {
     }
 
     setState({
-      previewImage: file.url || (file.preview as string),
+      previewImage: file.url ?? (file.preview as string),
       previewOpen: true,
       previewTitle:
         file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1),
@@ -182,6 +183,8 @@ const SettingProfile: React.FC = () => {
             <Tippy
               interactive
               delay={[0, 10]}
+              followCursor={true}
+              plugins={[followCursor]}
               render={(attrs) => (
                 <div tabIndex={-1} {...attrs}>
                   <p className="border-border border-[1px] px-[10px] py-[5px] rounded-[10px] shadow-md bg-white">

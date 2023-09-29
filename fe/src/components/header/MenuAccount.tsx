@@ -8,7 +8,9 @@ import {
   CiBookmark,
   CiUser,
 } from "react-icons/ci";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { IStateRedux } from "../../redux";
 
 interface IMenu {
   id: number;
@@ -16,47 +18,48 @@ interface IMenu {
   title: string;
   to: string;
 }
-
+const menu: IMenu[] = [
+  {
+    id: 1,
+    icon: <CiRead />,
+    title: "Trang cá nhân",
+    to: `/personal`,
+  },
+  {
+    id: 2,
+    icon: <CiBookmark />,
+    title: "Lịch sử giao dịch",
+    to: `/history`,
+  },
+  {
+    id: 3,
+    icon: <CiBoxList />,
+    title: "Bộ sưu tập",
+    to: `/myNFT`,
+  },
+  {
+    id: 4,
+    icon: <CiPen />,
+    title: "Tạo NFT mới",
+    to: `/createNFT`,
+  },
+  {
+    id: 5,
+    icon: <CiSettings />,
+    title: "Cài đặt",
+    to: `/setting`,
+  },
+];
 const MenuAccount: React.FC = () => {
   const navigate = useNavigate();
-  const menu: IMenu[] = [
-    {
-      id: 1,
-      icon: <CiRead />,
-      title: "Trang cá nhân",
-      to: `/personal`,
-    },
-    {
-      id: 2,
-      icon: <CiBookmark />,
-      title: "Lịch sử giao dịch",
-      to: `/history`,
-    },
-    {
-      id: 3,
-      icon: <CiBoxList />,
-      title: "Bộ sưu tập",
-      to: `/myNFT`,
-    },
-    {
-      id: 4,
-      icon: <CiPen />,
-      title: "Tạo NFT mới",
-      to: `/createNFT`,
-    },
-    {
-      id: 5,
-      icon: <CiSettings />,
-      title: "Cài đặt",
-      to: `/setting`,
-    },
-  ];
+  const { account } = useSelector((state: { item: IStateRedux }) => state.item);
   const handleClick = (to: string) => () => {
     navigate(to);
   };
   return (
     <Tippy
       interactive
+      disabled={!account}
       delay={[0, 500]}
       render={(attrs) => (
         <div

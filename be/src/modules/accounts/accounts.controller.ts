@@ -44,6 +44,11 @@ export class AccountsController {
     return this.accountsService.findByWallet(wallet);
   }
 
+  @Get('search/:item')
+  async getSearch(@Param('item') item: string): Promise<ResponseData<Account>> {
+    return this.accountsService.search(item);
+  }
+
   @Put(':id')
   async updateAccounts(
     @Param('id')

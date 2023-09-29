@@ -2,13 +2,7 @@ import React from "react";
 import ButtonItem from "../../components/button";
 import { Empty, Pagination, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-import {
-  IStateRedux,
-  fetchItemsListed,
-  fetchItemsListedDate,
-  fetchMyNFTs,
-  store,
-} from "../../redux";
+import { IStateRedux, fetch, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -57,9 +51,7 @@ const ListNFT: React.FC = () => {
   };
   React.useEffect(() => {
     const renderRedux = async () => {
-      await store.dispatch(fetchMyNFTs());
-      await store.dispatch(fetchItemsListed());
-      await store.dispatch(fetchItemsListedDate());
+      await store.dispatch(fetch());
     };
     renderRedux();
   }, []);
