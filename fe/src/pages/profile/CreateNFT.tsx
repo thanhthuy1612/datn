@@ -3,6 +3,8 @@ import React from "react";
 import { CiCirclePlus, CiPen } from "react-icons/ci";
 import Create from "../../components/NFT/Create";
 import SettingProfile from "../../components/setting/SettingProfile";
+import { useSelector } from "react-redux";
+import { IStateRedux } from "../../redux";
 
 interface IState {
   open: boolean;
@@ -19,6 +21,10 @@ const CreateNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
+  const { loadingCreate } = useSelector(
+    (state: { item: IStateRedux }) => state.item
+  );
+
   const handleOpenCreate = () => {
     setState({ open: true, isCreateNFT: true, title: "Tạo NFT" });
   };
@@ -30,7 +36,9 @@ const CreateNFT: React.FC = () => {
     });
   };
 
-  const handleClose = () => setState({ open: false });
+  const handleClose = () => {
+    !loadingCreate && setState({ open: false });
+  };
 
   return (
     <div className="w-[100%] flex">

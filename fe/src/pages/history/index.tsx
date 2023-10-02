@@ -1,5 +1,5 @@
 import React from "react";
-import TableList from "./TableList";
+import HistoryTag from "./HistoryTag";
 
 const History: React.FC = () => {
   React.useEffect(() => {
@@ -9,12 +9,14 @@ const History: React.FC = () => {
     });
   }, []);
   return (
-    <div className="mt-[20px] w-[100%] border-border border-[1px] shadow-md rounded-[20px] overflow-hidden">
-      <p className="w-[100%] text-[25px] flex justify-center items-center border-border border-b-[1px] p-[20px]">
-        Lịch sử giao dịch
-      </p>
-      <div className="p-[50px]">
-        <TableList />
+    <div className="pt-[20px] w-[100%] overflow-hidden">
+      <div className="w-[100%] text-[25px] flex justify-center">
+        <p className="w-[400px] text-[25px] flex justify-center border-border border-[2px] rounded-[20px] p-[20px]">
+          Lịch sử giao dịch
+        </p>
+      </div>
+      <div className="pb-[30px]">
+        <HistoryTag />
       </div>
     </div>
   );

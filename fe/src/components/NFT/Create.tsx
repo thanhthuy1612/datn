@@ -5,6 +5,7 @@ import {
   Input,
   InputNumber,
   Modal,
+  Spin,
   TimePicker,
   Upload,
   UploadFile,
@@ -14,7 +15,10 @@ import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import "./create.css";
-import { createToken, store } from "../../redux";
+import { IStateRedux, createToken, store } from "../../redux";
+import { useSelector } from "react-redux";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 interface IState {
   img: UploadFile[];
@@ -34,9 +38,21 @@ const Create: React.FC = () => {
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
+  const navigate = useNavigate();
+
+  const { loadingCreate } = useSelector(
+    (state: { item: IStateRedux }) => state.item
+  );
 
   const dateFormat = "YYYY/MM/DD";
   const timeFormate = "hh:mm:ss";
+
+  const normFile = (e: any) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
 
   const upload = async (file: File) => {
     const input = new FormData();
@@ -83,7 +99,7 @@ const Create: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    store.dispatch(
+    await store.dispatch(
       createToken({
         name: removeUnnecessaryWhiteSpace(values.title),
         price: removeUnnecessaryWhiteSpace(values.price),
@@ -92,9 +108,16 @@ const Create: React.FC = () => {
         date: getDate(new Date(values.date), new Date(values.time)),
       })
     );
+    navigate("/");
   };
 
   const handleCancel = () => setState({ previewOpenNFT: false });
+  const antIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
+  const renderloading = () => (
+    <div className="w-[55px] flex justify-center items-center">
+      <Spin indicator={antIcon} />
+    </div>
+  );
 
   return (
     <Form
@@ -106,27 +129,50 @@ const Create: React.FC = () => {
       className="flex flex-col w-[100%] items-center">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[550px]">
-          <Form.Item label="Tên NFT:" name="title">
+          <Form.Item
+            label="Tên NFT:"
+            name="title"
+            rules={[{ required: true, message: "Vui lòng nhập tên NFT" }]}>
             <Input placeholder="Nhập tên NFT..." />
           </Form.Item>
-          <Form.Item label="Giá bán NFT:" name="price">
+          <Form.Item
+            label="Giá bán NFT:"
+            name="price"
+            rules={[{ required: true, message: "Vui lòng nhập giá bán NFT" }]}>
             <Input placeholder="Nhập giá bán NFT..." />
           </Form.Item>
-          <Form.Item label="Ngày hết hạn bán NFT:" name="date">
+          <Form.Item
+            label="Ngày hết hạn bán NFT:"
+            name="date"
+            rules={[
+              { required: true, message: "Vui lòng nhập ngày hết hạn bán NFT" },
+            ]}>
             <DatePicker format={dateFormat} placeholder="Chọn ngày" />
           </Form.Item>
-          <Form.Item label="Giờ hết hạn bán NFT:" name="time">
+          <Form.Item
+            label="Giờ hết hạn bán NFT:"
+            name="time"
+            rules={[
+              { required: true, message: "Vui lòng nhập giờ hết hạn bán NFT" },
+            ]}>
             <TimePicker format={timeFormate} placeholder="Chọn giờ" />
           </Form.Item>
           <Form.Item label="Số lần mua bán:" name="number">
             <InputNumber min={1} max={10} defaultValue={3} />
           </Form.Item>
           <Form.Item label=" ">
-            <Button htmlType="submit">Thêm NFT</Button>
+            <Button htmlType="submit" disabled={loadingCreate}>
+              {loadingCreate ? renderloading() : "Thêm NFT"}
+            </Button>
           </Form.Item>
         </div>
         <div className="flex justify-center w-[300px] h-[300px]">
-          <Form.Item label="NFT mới:">
+          <Form.Item
+            label="NFT mới:"
+            name="img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Vui lòng thêm NFT" }]}>
             <Upload
               accept="image/*"
               customRequest={action}

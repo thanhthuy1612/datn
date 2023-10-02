@@ -9,11 +9,13 @@ const CreateNFT: React.FC = () => {
     });
   }, []);
   return (
-    <div className="mt-[20px] w-[100%] border-border border-[1px] shadow-md rounded-[20px] overflow-hidden">
-      <p className="w-[100%] text-[25px] flex justify-center items-center border-border border-b-[1px] p-[20px]">
-        Tạo NFT mới
-      </p>
-      <div className="px-[200px] py-[30px]">
+    <div className="pt-[20px] w-[100%] overflow-hidden">
+      <div className="w-[100%] text-[25px] flex justify-center">
+        <p className="w-[400px] text-[25px] flex justify-center border-border border-[2px] rounded-[20px] p-[20px]">
+          Tạo NFT mới
+        </p>
+      </div>
+      <div className="mt-[30px] border-border border-[1px] shadow-md rounded-[20px] px-[150px] pt-[20px]">
         <Create />
       </div>
     </div>

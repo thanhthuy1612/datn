@@ -10,10 +10,9 @@ const BuyNFT: React.FC = () => {
   const navigate = useNavigate();
   React.useEffect(() => {
     if (!item) {
-      navigate("/123");
+      navigate("/");
     }
   }, []);
-  console.log(item);
   const handleBuy = async () => {
     await store.dispatch(createMarketSale(item));
   };

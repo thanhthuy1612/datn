@@ -10,6 +10,7 @@ import History from "../pages/history";
 import MyNFT from "../pages/listNFT";
 import CreateNFT from "../pages/CreateNFT";
 import BuyNFT from "../components/NFT/Buy";
+import ResellNFT from "../components/NFT/Resell";
 
 const publicRoutes: IRouter[] = [
   { id: 1, path: "/", component: Home },
@@ -28,6 +29,8 @@ const publicRoutes: IRouter[] = [
   { id: 9, path: "/createNFT", component: CreateNFT },
   { id: 10, path: "/nft/buy", component: BuyNFT },
   { id: 11, path: "/personal/nft/buy", component: BuyNFT },
+  { id: 12, path: "/nft/resell", component: ResellNFT },
+  { id: 13, path: "/personal/nft/resell", component: ResellNFT },
 ];
 
 const privateRoutes: IRouter[] = [];

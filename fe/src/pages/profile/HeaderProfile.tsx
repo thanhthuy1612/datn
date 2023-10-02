@@ -48,14 +48,14 @@ const HeaderProfile: React.FC<{ account: IAccount | undefined }> = ({
   return (
     <div className="w-[100%] pt-[20px]">
       <div className="relative w-[100%]">
-        <div className="w-[100%] h-[350px] rounded-[20px] shadow-md overflow-hidden">
-          <Image width={"100%"} height={350} src={account?.banner ?? banner} />
+        <div className="w-[100%] h-[380px] rounded-[20px] shadow-md overflow-hidden">
+          <Image width={"100%"} height={400} src={account?.banner ?? banner} />
         </div>
-        <div className="border-white border-[5px] shadow-2xl rounded-[50%] w-[280px] h-[280px] absolute top-[150px] left-[50px] overflow-hidden">
+        <div className="border-white border-[5px] shadow-2xl rounded-[50%] w-[290px] h-[290px] absolute top-[185px] left-[50px] overflow-hidden">
           <Image width={280} height={280} src={account?.ava ?? ava} />
         </div>
       </div>
-      <div className="mt-[100px] ml-[55px] mr-[20px] py-[5px] flex justify-between">
+      <div className="mt-[120px] ml-[55px] mr-[20px] py-[5px] flex justify-between">
         <div>
           <div className="flex">
             <p className="text-[35px] font-[600]">

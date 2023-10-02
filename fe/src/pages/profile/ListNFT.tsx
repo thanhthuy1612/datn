@@ -2,7 +2,7 @@ import React from "react";
 import ButtonItem from "../../components/button";
 import { Empty, Pagination, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-import { IStateRedux, fetch, store } from "../../redux";
+import { IStateRedux, fetch, setItem, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -43,18 +43,19 @@ const ListNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
-  const { myNFT, mySeller, myDate, loading } = useSelector(
+  const { myNFT, mySeller, myDate, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
-  const handleClickItem = () => {
-    navigate(`nft/buy`);
+  const handleClickItem = (item: any) => () => {
+    store.dispatch(setItem(item));
+    navigate(state.choose === 1 ? `nft/resell` : `nft/buy`);
   };
   React.useEffect(() => {
     const renderRedux = async () => {
       await store.dispatch(fetch());
     };
     renderRedux();
-  }, []);
+  }, [account]);
   React.useEffect(() => {
     const getItems = async () => {
       switch (state.choose) {
@@ -86,7 +87,7 @@ const ListNFT: React.FC = () => {
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item: any) => (
             <button
-              onClick={handleClickItem}
+              onClick={handleClickItem(item)}
               className="basis-[25%] h-[510px]"
               key={item.id}>
               <ButtonItem

@@ -6,6 +6,10 @@ const Logo: React.FC = () => {
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("/");
+    window.scrollTo({
+      top: 0,
+      behavior: `smooth`,
+    });
   };
   return (
     <button onClick={handleClick} className="flex items-center">

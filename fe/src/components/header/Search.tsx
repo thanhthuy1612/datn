@@ -27,7 +27,7 @@ const Search: React.FC = () => {
       setItem(result);
     }
   };
-  useDebounce(fetch, [input], 800);
+  useDebounce(fetch, [input], 500);
   const handleEnter = async (event: any) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -43,7 +43,7 @@ const Search: React.FC = () => {
       className="h-[100%]"
       render={(attrs) => (
         <div tabIndex={-1} {...attrs}>
-          <ListItem accounts={item ?? []} />
+          <ListItem accounts={item ?? []} title={input} />
         </div>
       )}>
       <div className="w-[600px] flex items-center relative">

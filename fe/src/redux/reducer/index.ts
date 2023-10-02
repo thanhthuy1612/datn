@@ -17,6 +17,9 @@ const initialState: IStateRedux = {
   mySeller: [],
   myDate: [],
   item: undefined,
+  loadingUpComing: false,
+  loadingPast: false,
+  loadingCreate: false,
 };
 
 export interface IStateRedux {
@@ -28,6 +31,9 @@ export interface IStateRedux {
   mySeller: any[];
   myDate: any[];
   item: any;
+  loadingUpComing?: boolean;
+  loadingPast?: boolean;
+  loadingCreate?: boolean;
 }
 
 declare global {
@@ -52,7 +58,7 @@ export const createToken = createAsyncThunk(
   "createToken",
   async (option: any, thunkAPI) => {
     try {
-      thunkAPI.dispatch(setLoading(true));
+      thunkAPI.dispatch(setLoadingCreate(true));
       const { contract, erc721 } = await getERC();
       const price = ethers.utils.parseUnits(option.price, "ether");
       let listingPrice = await contract.getListingPrice();
@@ -71,6 +77,26 @@ export const createToken = createAsyncThunk(
     } catch (err) {
       console.log(err);
     }
+  }
+);
+export const resellToken = createAsyncThunk(
+  "resellToken",
+  async (item: any, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { contract, erc721 } = await getERC();
+    const price = ethers.utils.parseUnits(item.price, "ether");
+    let listingPrice = await contract.getListingPrice();
+    listingPrice = listingPrice.toString();
+    const result = await erc721.resellToken(
+      item.tokenId,
+      item.name,
+      price,
+      item.date,
+      {
+        value: listingPrice,
+      }
+    );
+    await result.wait();
   }
 );
 
@@ -129,7 +155,7 @@ export const createMarketSale = createAsyncThunk(
 export const fetchMarketItemsUpComing = createAsyncThunk(
   "fetchMarketItemsUpComing",
   async (_item, thunkAPI) => {
-    thunkAPI.dispatch(setLoading(true));
+    thunkAPI.dispatch(setLoadingUpcoming(true));
     const { contract, erc721 } = await getERC();
     const data = await erc721.fetchMarketItemsUpComing();
     const items = await getItems(data, contract);
@@ -140,9 +166,9 @@ export const fetchMarketItemsUpComing = createAsyncThunk(
 export const fetchMarketItemsPast = createAsyncThunk(
   "fetchMarketItemsPast",
   async (_item, thunkAPI) => {
-    thunkAPI.dispatch(setLoading(true));
+    thunkAPI.dispatch(setLoadingPast(true));
     const { contract, erc721 } = await getERC();
-    const data = await erc721.fetchMarketItemsPast();
+    const data = await erc721.fetchMarketItemsAll();
     const items = await getItems(data, contract);
     return items;
   }
@@ -246,6 +272,15 @@ export const item = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setLoadingUpcoming: (state, action) => {
+      state.loadingUpComing = action.payload;
+    },
+    setLoadingPast: (state, action) => {
+      state.loadingPast = action.payload;
+    },
+    setLoadingCreate: (state, action) => {
+      state.loadingCreate = action.payload;
+    },
     setItem: (state, action) => {
       state.item = action.payload;
     },
@@ -256,11 +291,11 @@ export const item = createSlice({
       (_state, _actions) => {}
     );
     builder.addCase(fetchMarketItemsUpComing.fulfilled, (state, actions) => {
-      state.loading = false;
+      state.loadingUpComing = false;
       state.upComing = actions.payload;
     });
     builder.addCase(fetchMarketItemsPast.fulfilled, (state, actions) => {
-      state.loading = false;
+      state.loadingPast = false;
       state.past = actions.payload;
     });
     builder.addCase(fetch.fulfilled, (state, actions) => {
@@ -285,11 +320,21 @@ export const item = createSlice({
       state.loading = false;
     });
     builder.addCase(createToken.fulfilled, (state, _actions) => {
+      state.loadingCreate = false;
+    });
+    builder.addCase(resellToken.fulfilled, (state, _actions) => {
       state.loading = false;
     });
   },
 });
 const reducer = item.reducer;
 
-export const { setAccount, setLoading, setItem } = item.actions;
+export const {
+  setAccount,
+  setLoading,
+  setItem,
+  setLoadingCreate,
+  setLoadingPast,
+  setLoadingUpcoming,
+} = item.actions;
 export default reducer;
