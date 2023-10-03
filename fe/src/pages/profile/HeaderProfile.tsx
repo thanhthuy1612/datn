@@ -25,9 +25,10 @@ const Item: React.FC<{ title: string; item: string | undefined }> = ({
   );
 };
 
-const HeaderProfile: React.FC<{ account: IAccount | undefined }> = ({
-  account,
-}) => {
+const HeaderProfile: React.FC<{
+  account: IAccount | undefined;
+  personal: boolean;
+}> = ({ account, personal }) => {
   const [state, _setState] = React.useState<IState>({
     previewOpen: false,
     previewTitle: "",
@@ -61,9 +62,13 @@ const HeaderProfile: React.FC<{ account: IAccount | undefined }> = ({
             <p className="text-[35px] font-[600]">
               {account?.username ?? "Tên người dùng"}
             </p>
-            <button onClick={handleOpenEdit} className="mx-[15px] text-[30px]">
-              <CiEdit />
-            </button>
+            {personal && (
+              <button
+                onClick={handleOpenEdit}
+                className="mx-[15px] text-[30px]">
+                <CiEdit />
+              </button>
+            )}
           </div>
           <Item title="Địa chỉ ví:" item={account?.wallet} />
           <Item
@@ -79,22 +84,24 @@ const HeaderProfile: React.FC<{ account: IAccount | undefined }> = ({
           {account?.bio && <Item title="Tiểu sử:" item={account?.bio} />}
         </div>
         <div className="flex h-[fit-content]">
-          <Tippy
-            interactive
-            delay={[0, 10]}
-            render={(attrs) => (
-              <div tabIndex={-1} {...attrs}>
-                <p className="border-border border-[1px] px-[10px] py-[5px] rounded-[10px] shadow-md bg-white">
-                  Chỉnh sửa
-                </p>
-              </div>
-            )}>
-            <button
-              onClick={handleSetting}
-              className="rounded-[50px] p-[10px] border-border border-[1px] shadow-md mx-[15px]">
-              <CiSettings />
-            </button>
-          </Tippy>
+          {personal && (
+            <Tippy
+              interactive
+              delay={[0, 10]}
+              render={(attrs) => (
+                <div tabIndex={-1} {...attrs}>
+                  <p className="border-border border-[1px] px-[10px] py-[5px] rounded-[10px] shadow-md bg-white">
+                    Chỉnh sửa
+                  </p>
+                </div>
+              )}>
+              <button
+                onClick={handleSetting}
+                className="rounded-[50px] p-[10px] border-border border-[1px] shadow-md mx-[15px]">
+                <CiSettings />
+              </button>
+            </Tippy>
+          )}
           <Tippy
             interactive
             delay={[0, 10]}

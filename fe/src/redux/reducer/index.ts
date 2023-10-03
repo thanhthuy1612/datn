@@ -13,27 +13,35 @@ const initialState: IStateRedux = {
   loading: false,
   upComing: [],
   past: [],
+  hot: [],
   myNFT: [],
   mySeller: [],
   myDate: [],
+  itemsSeller: [],
   item: undefined,
   loadingUpComing: false,
   loadingPast: false,
+  loadingHot: false,
   loadingCreate: false,
+  accountSearch: undefined,
 };
 
 export interface IStateRedux {
+  accountSearch?: IAccount;
   account?: IAccount;
   loading?: boolean;
   upComing?: any[];
   past?: any[];
   myNFT: any[];
+  hot: any[];
   mySeller: any[];
   myDate: any[];
+  itemsSeller: any[];
   item: any;
   loadingUpComing?: boolean;
   loadingPast?: boolean;
   loadingCreate?: boolean;
+  loadingHot?: boolean;
 }
 
 declare global {
@@ -67,7 +75,6 @@ export const createToken = createAsyncThunk(
         option.file as string,
         option.name as string,
         price,
-        option.number,
         option.date,
         {
           value: listingPrice,
@@ -139,6 +146,19 @@ export const fetchMarketItem = createAsyncThunk(
   }
 );
 
+export const fetchItemsSeller = createAsyncThunk(
+  "fetchItemsSeller",
+  async (address: string, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { contract, erc721 } = await getERC();
+    const data = await erc721.fetchItemsSeller(address);
+    const items = await getItems(data, contract);
+    thunkAPI.dispatch(setLoading(false));
+    console.log(items);
+    return items;
+  }
+);
+
 export const createMarketSale = createAsyncThunk(
   "createMarketSale",
   async (item: any, thunkAPI) => {
@@ -169,6 +189,17 @@ export const fetchMarketItemsPast = createAsyncThunk(
     thunkAPI.dispatch(setLoadingPast(true));
     const { contract, erc721 } = await getERC();
     const data = await erc721.fetchMarketItemsAll();
+    const items = await getItems(data, contract);
+    return items;
+  }
+);
+
+export const fetchMarketItemsHot = createAsyncThunk(
+  "fetchMarketItemsHot",
+  async (_item, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingHot(true));
+    const { contract, erc721 } = await getERC();
+    const data = await erc721.fetchMarketItemsHot();
     const items = await getItems(data, contract);
     return items;
   }
@@ -278,6 +309,12 @@ export const item = createSlice({
     setLoadingPast: (state, action) => {
       state.loadingPast = action.payload;
     },
+    setLoadingHot: (state, action) => {
+      state.loadingHot = action.payload;
+    },
+    setAccountSearch: (state, action) => {
+      state.accountSearch = action.payload;
+    },
     setLoadingCreate: (state, action) => {
       state.loadingCreate = action.payload;
     },
@@ -297,6 +334,10 @@ export const item = createSlice({
     builder.addCase(fetchMarketItemsPast.fulfilled, (state, actions) => {
       state.loadingPast = false;
       state.past = actions.payload;
+    });
+    builder.addCase(fetchMarketItemsHot.fulfilled, (state, actions) => {
+      state.loadingHot = false;
+      state.hot = actions.payload;
     });
     builder.addCase(fetch.fulfilled, (state, actions) => {
       state.loading = false;
@@ -325,6 +366,10 @@ export const item = createSlice({
     builder.addCase(resellToken.fulfilled, (state, _actions) => {
       state.loading = false;
     });
+    builder.addCase(fetchItemsSeller.fulfilled, (state, actions) => {
+      state.itemsSeller = actions.payload;
+      state.loading = false;
+    });
   },
 });
 const reducer = item.reducer;
@@ -336,5 +381,7 @@ export const {
   setLoadingCreate,
   setLoadingPast,
   setLoadingUpcoming,
+  setLoadingHot,
+  setAccountSearch,
 } = item.actions;
 export default reducer;

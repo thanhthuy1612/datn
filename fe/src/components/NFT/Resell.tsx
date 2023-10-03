@@ -18,7 +18,6 @@ const ResellNFT: React.FC = () => {
       navigate("/");
     }
   }, []);
-  console.log(item);
   const onFinish = async (values: any) => {
     await store.dispatch(
       resellToken({
@@ -45,7 +44,7 @@ const ResellNFT: React.FC = () => {
         Ngày mua: {item.date}
       </div>
       <div className="py-[5px]">Giá mua: {item.price} ETH</div>
-      <p className="py-[5px]">Số lần mua còn lại: {item.number}</p>
+      <p className="py-[5px]">Số lần đã bán: {item.number}</p>
     </div>
   );
   const renderResell = () => (

@@ -15,7 +15,7 @@ const Pesonal: React.FC = () => {
   }, []);
   return (
     <div className="w-[100%]">
-      <HeaderProfile account={account} />
+      <HeaderProfile account={account} personal={true} />
       <CreateNFT />
       <ListNFT />
     </div>

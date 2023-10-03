@@ -1,12 +1,15 @@
 import React from "react";
-import { Image } from "antd";
+import { Image, Spin } from "antd";
 import { CiClock1 } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { IStateRedux, createMarketSale, store } from "../../redux";
 import { useNavigate } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const BuyNFT: React.FC = () => {
-  const { item } = useSelector((state: { item: IStateRedux }) => state.item);
+  const { item, loading } = useSelector(
+    (state: { item: IStateRedux }) => state.item
+  );
   const navigate = useNavigate();
   React.useEffect(() => {
     if (!item) {
@@ -15,7 +18,14 @@ const BuyNFT: React.FC = () => {
   }, []);
   const handleBuy = async () => {
     await store.dispatch(createMarketSale(item));
+    navigate("/");
   };
+  const antIcon = <LoadingOutlined style={{ fontSize: 21 }} spin />;
+  const renderloading = () => (
+    <div className="w-[500px] flex justify-center items-center">
+      <Spin indicator={antIcon} />
+    </div>
+  );
   return (
     <div className="mt-[20px] w-[100%] border-border border-[1px] shadow-md rounded-[20px] overflow-hidden">
       <p className="w-[100%] text-[25px] flex justify-center items-center border-border border-b-[1px] p-[20px]">
@@ -37,7 +47,7 @@ const BuyNFT: React.FC = () => {
             <div className="flex items-center pt-[15px]">
               Ngày bắt đầu bán: {item.date}
             </div>
-            <p className="py-[5px]">Số lần mua còn lại: {item.number}</p>
+            <p className="py-[5px]">Số lần đã bán: {item.number}</p>
           </div>
           <div className="border-border border-[1px] py-[30px] rounded-[20px] w-[100%] shadow-md">
             <p className="flex items-center border-border px-[30px] pb-[30px] border-b-[1px] w-[100%]">
@@ -53,10 +63,20 @@ const BuyNFT: React.FC = () => {
               <div className="flex w-[100%] justify-around">
                 <button
                   onClick={handleBuy}
-                  className="border-border border-[1px] py-[20px] w-[300px] rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover">
-                  Mua ngay
+                  disabled={loading}
+                  className={
+                    loading
+                      ? "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
+                      : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
+                  }>
+                  {loading ? renderloading() : "Mua ngay"}
                 </button>
-                <button className="border-border border-[1px] py-[20px] w-[300px] rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover">
+                <button
+                  className={
+                    loading
+                      ? "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
+                      : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
+                  }>
                   Thêm vào giỏ hàng
                 </button>
               </div>

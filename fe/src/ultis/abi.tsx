@@ -123,11 +123,6 @@ export const abi = [
       },
       {
         internalType: "uint256",
-        name: "number",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
         name: "date",
         type: "uint256",
       },
@@ -642,7 +637,7 @@ export const abi = [
   },
   {
     inputs: [],
-    name: "fetchMarketItemsPast",
+    name: "fetchMarketItemsHot",
     outputs: [
       {
         components: [

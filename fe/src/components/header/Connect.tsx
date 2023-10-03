@@ -5,14 +5,20 @@ import { IStateRedux, fetchConnect, store } from "../../redux";
 import { useSelector } from "react-redux";
 import Tippy from "@tippyjs/react/headless";
 import { followCursor } from "tippy.js";
+import { Badge } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const Connect: React.FC = () => {
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
+  const navigate = useNavigate();
   const handleClick = async () => {
     await store.dispatch(fetchConnect(false));
   };
   const handleCopy = async () => {
     await navigator.clipboard.writeText(account?.wallet as string);
+  };
+  const handleClickCart = () => {
+    navigate("/cart");
   };
   const renderTitle = () => (
     <Tippy
@@ -50,12 +56,16 @@ const Connect: React.FC = () => {
         </button>
         <MenuAccount />
       </div>
-      <div className="flex border-[1px] rounded-[15px] border-border items-center px-[10px] cursor-pointer ml-[10px] hover:bg-hover hover:rounded-[15px] shadow-md">
-        <div className="px-[5px]">
-          <CiShoppingCart />
-        </div>
-        <p className="px-[5px]">Giỏ hàng</p>
-      </div>
+      <button
+        onClick={handleClickCart}
+        className="flex border-[1px] rounded-[15px] border-border items-center px-[10px] cursor-pointer ml-[10px] hover:bg-hover hover:rounded-[15px] shadow-md">
+        <Badge count={0} className="flex items-center justify-center">
+          <div className="px-[5px]">
+            <CiShoppingCart />
+          </div>
+          <p className="px-[5px]">Giỏ hàng</p>
+        </Badge>
+      </button>
     </div>
   );
 };

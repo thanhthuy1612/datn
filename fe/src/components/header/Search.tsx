@@ -39,11 +39,11 @@ const Search: React.FC = () => {
     <Tippy
       interactive
       visible={Boolean(input.length > 0) && blur}
-      delay={[0, 5000]}
+      delay={[0, 500]}
       className="h-[100%]"
       render={(attrs) => (
         <div tabIndex={-1} {...attrs}>
-          <ListItem accounts={item ?? []} title={input} />
+          <ListItem accounts={item ?? []} title={input} setBlur={setBlur} />
         </div>
       )}>
       <div className="w-[600px] flex items-center relative">
@@ -55,9 +55,6 @@ const Search: React.FC = () => {
           }}
           className="w-[100%] border-[1px] rounded-[15px] border-border p-[10px] bg-[transparent] px-[30px] h-[46px] shadow-md focus:outline-none focus:border-border focus:shadow-xl"
           onChange={handleChange}
-          onBlur={() => {
-            setBlur(false);
-          }}
           onKeyDown={handleEnter}
           placeholder="Tìm kiếm tài khoản trên ứng dụng"
           spellCheck={false}

@@ -15,7 +15,7 @@ const CreateNFT: React.FC = () => {
           Tạo NFT mới
         </p>
       </div>
-      <div className="mt-[30px] border-border border-[1px] shadow-md rounded-[20px] px-[150px] pt-[20px]">
+      <div className="mt-[30px] border-border border-[1px] shadow-md rounded-[20px] px-[150px] py-[50px]">
         <Create />
       </div>
     </div>

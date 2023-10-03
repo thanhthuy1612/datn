@@ -3,7 +3,6 @@ import {
   DatePicker,
   Form,
   Input,
-  InputNumber,
   Modal,
   Spin,
   TimePicker,
@@ -103,7 +102,6 @@ const Create: React.FC = () => {
       createToken({
         name: removeUnnecessaryWhiteSpace(values.title),
         price: removeUnnecessaryWhiteSpace(values.price),
-        number: values.number ?? 3,
         file: state.file,
         date: getDate(new Date(values.date), new Date(values.time)),
       })
@@ -156,9 +154,6 @@ const Create: React.FC = () => {
               { required: true, message: "Vui lòng nhập giờ hết hạn bán NFT" },
             ]}>
             <TimePicker format={timeFormate} placeholder="Chọn giờ" />
-          </Form.Item>
-          <Form.Item label="Số lần mua bán:" name="number">
-            <InputNumber min={1} max={10} defaultValue={3} />
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loadingCreate}>

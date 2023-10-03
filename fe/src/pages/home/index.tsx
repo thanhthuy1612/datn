@@ -4,9 +4,11 @@ import NewNFT from "./NewNFT";
 import OldNFT from "./OldNFT";
 import {
   CiCloud,
+  CiCloudDrizzle,
   CiCloudMoon,
   CiCloudRainbow,
   CiCloudSun,
+  CiMenuBurger,
   CiStar,
 } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +18,10 @@ import ListNFT from "../profile/ListNFT";
 import login from "../../assets/dangnhap.png";
 import create from "../../assets/taoNFT.png";
 import buy from "../../assets/buy.png";
+import resellNFT from "../../assets/banlai.png";
+import HotNFT from "./HotNFT";
+import Tippy from "@tippyjs/react/headless";
+import { followCursor } from "tippy.js";
 
 interface IText {
   id: number;
@@ -26,6 +32,13 @@ interface ITextInstruct {
   text: string;
   img: string;
   description?: string;
+}
+
+interface IMenu {
+  id: number;
+  handle: () => void;
+  title: string;
+  icon: any;
 }
 const textIntroduce: IText[] = [
   {
@@ -60,6 +73,12 @@ const textCharacteristic: IText[] = [
     text: "Giao dịch tự do, không ràng buộc và mức phí hợp lý.",
   },
 ];
+const textSetting: IText[] = [
+  {
+    id: 1,
+    text: "Phần lớn thị trường NFT đều nằm trong Blockchain Ethereum. Do đó, điều kiện đầu tiên và quan trọng để có thể thực hiện giao dịch trên sàn là bạn phải sở hữu một chiếc ví điện tử để tương tác với Ethereum, thanh toán phí cũng như nhận các khoản mua bán khác. Ở đây chúng tôi sử dụng Metamask do Metamask được xem là ví thông dụng nhất.",
+  },
+];
 
 const textInstruct: ITextInstruct[] = [
   {
@@ -83,6 +102,13 @@ const textInstruct: ITextInstruct[] = [
     description:
       "Người dùng chọn NFT sau đó chọn -Mua ngay- thanh toán và NFT sẽ tự động vào kho của bạn",
   },
+  {
+    id: 4,
+    text: "Bán lại NFT",
+    img: resellNFT,
+    description:
+      "Người dùng chọn NFT trong kho của mình sau đó nhập đầy đủ thông tin chọn -Bán lại NFT-",
+  },
 ];
 
 const Home: React.FC = () => {
@@ -92,12 +118,10 @@ const Home: React.FC = () => {
   const refNew = React.useRef<null | HTMLDivElement>(null);
   const refOld = React.useRef<null | HTMLDivElement>(null);
   const refMyNFT = React.useRef<null | HTMLDivElement>(null);
+  const refHot = React.useRef<null | HTMLDivElement>(null);
 
   React.useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: `smooth`,
-    });
+    handleTop();
   }, []);
 
   const handleClickPerson = () => {
@@ -110,12 +134,57 @@ const Home: React.FC = () => {
   const handleOld = () => {
     refOld.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  const handleHot = () => {
+    refHot.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   const handleMyNFT = () => {
     refMyNFT.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const handleTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: `smooth`,
+    });
   };
   const handleClickLogin = async () => {
     await store.dispatch(fetchConnect(false));
   };
+
+  const menu: IMenu[] = [
+    {
+      id: 1,
+      handle: handleNew,
+      title: "NFT mới nhất",
+      icon: <CiCloudSun />,
+    },
+    {
+      id: 2,
+      handle: handleOld,
+      title: "Kho NFT",
+      icon: <CiCloudMoon />,
+    },
+    {
+      id: 3,
+      handle: handleHot,
+      title: "NFT bán chạy",
+      icon: <CiCloudRainbow />,
+    },
+    {
+      id: 4,
+      handle: handleMyNFT,
+      title: "NFT của bạn",
+      icon: <CiCloudDrizzle />,
+    },
+  ];
+
+  const renderButton = (item: IMenu) => (
+    <button
+      onClick={item.handle}
+      className="flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl">
+      {item.title}
+      <div className="px-[10px]">{item.icon}</div>
+    </button>
+  );
   const renderLogin = () => (
     <>
       <div className="mt-[60px] w-[100%] rounded-[20px] py-[30px]">
@@ -124,39 +193,18 @@ const Home: React.FC = () => {
             Bạn muốn xem thông tin gì?
           </p>
           <div className="flex justify-around py-[60px]">
-            <button
-              onClick={handleNew}
-              className="flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl">
-              NFT mới nhất{" "}
-              <div className="px-[10px]">
-                <CiCloudSun />
-              </div>
-            </button>
-            <button
-              onClick={handleOld}
-              className="flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl">
-              Kho lưu trữ NFT
-              <div className="px-[10px]">
-                <CiCloudMoon />
-              </div>
-            </button>
-            <button
-              onClick={handleMyNFT}
-              className="flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl">
-              NFT của bạn
-              <div className="px-[10px]">
-                <CiCloudRainbow />
-              </div>
-            </button>
+            {menu.map((item) => (
+              <>{renderButton(item)}</>
+            ))}
             <button
               onClick={handleClickPerson}
               disabled={account === undefined}
               className={
                 account === undefined
-                  ? "flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] cursor-not-allowed"
-                  : "flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
+                  ? "flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] cursor-not-allowed"
+                  : "flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
               }>
-              Trang cá nhân của bạn
+              Trang cá nhân
               <div className="px-[10px]">
                 <CiCloud />
               </div>
@@ -169,6 +217,9 @@ const Home: React.FC = () => {
       </div>
       <div ref={refOld}>
         <OldNFT />
+      </div>
+      <div ref={refHot}>
+        <HotNFT />
       </div>
       <div ref={refMyNFT}>
         <ListNFT />
@@ -203,6 +254,25 @@ const Home: React.FC = () => {
       </div>
     </p>
   );
+  const renderTagHome = ({
+    title,
+    items,
+  }: {
+    title: string;
+    items: IText[];
+  }) => (
+    <>
+      <div className="flex h-[70px] items-end w-[100%] mt-[30px] w-[100%] z-0">
+        <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
+          {title}
+        </p>
+        <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
+      </div>
+      <div className="py-[30px] px-[50px] w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
+        {items.map((item) => renderItem({ title: item.text }))}
+      </div>
+    </>
+  );
   const renderButtonLogin = () => (
     <>
       <div className="mt-[30px] w-[100%] rounded-[20px] py-[25px] flex justify-center flex-col items-center">
@@ -213,27 +283,12 @@ const Home: React.FC = () => {
           Kết nối ví
         </button>
       </div>
-
-      <div className="flex h-[70px] items-end w-[100%] mt-[30px] w-[100%] z-0">
-        <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          Giới thiệu về sản phẩm
-        </p>
-        <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
-      </div>
-      <div className="py-[30px] px-[50px] w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {textIntroduce.map((item) => renderItem({ title: item.text }))}
-      </div>
-
-      <div className="flex h-[70px] items-end w-[100%] mt-[50px] w-[100%] z-0">
-        <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          Điểm nổi bật của sản phẩm
-        </p>
-        <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
-      </div>
-      <div className="py-[30px] px-[50px] w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {textCharacteristic.map((item) => renderItem({ title: item.text }))}
-      </div>
-
+      {renderTagHome({ title: "Giới thiệu về sản phẩm", items: textIntroduce })}
+      {renderTagHome({
+        title: "Điểm nổi bật của sản phẩm",
+        items: textCharacteristic,
+      })}
+      {renderTagHome({ title: "Cần chuẩn bị gì?", items: textSetting })}
       <div className="flex h-[70px] items-end w-[100%] mt-[50px] w-[100%] z-0">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
           Hướng dẫn sử dụng
@@ -251,11 +306,39 @@ const Home: React.FC = () => {
       </div>
     </>
   );
+  const renderMenu = () => (
+    <Tippy
+      interactive
+      delay={[0, 10]}
+      plugins={[followCursor]}
+      render={(attrs) => (
+        <div
+          tabIndex={-1}
+          {...attrs}
+          className="bg-white py-[20px] border-border border-[1px] rounded-[15px] w-[200px]">
+          {menu.map((item) => (
+            <button
+              onClick={item.handle}
+              className="flex items-center py-[5px] px-[20px] hover:bg-hover w-[100%]">
+              {item.icon}
+              <p className="pl-[5px]">{item.title}</p>
+            </button>
+          ))}
+        </div>
+      )}>
+      <button
+        onClick={handleTop}
+        className="rounded-[50%] flex justify-center items-center bg-white w-[50px] h-[50px] p-[10px] border-border border-[1px] shadow-md mx-[15px] fixed bottom-[25px] right-[40px]">
+        <CiMenuBurger />
+      </button>
+    </Tippy>
+  );
 
   return (
     <div className="pt-[20px]">
       <CarouselHome />
       {account ? renderLogin() : renderButtonLogin()}
+      {renderMenu()}
     </div>
   );
 };

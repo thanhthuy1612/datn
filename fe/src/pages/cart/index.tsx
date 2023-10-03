@@ -1,59 +1,47 @@
-import { Empty, Pagination, Spin } from "antd";
 import React from "react";
 import ButtonItem from "../../components/button";
-import { useNavigate } from "react-router-dom";
-import {
-  IStateRedux,
-  fetchMarketItemsUpComing,
-  setItem,
-  store,
-} from "../../redux";
-import { useSelector } from "react-redux";
+import { setItem, store } from "../../redux";
+import { Empty, Pagination, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-
 interface IState {
   page: number;
   pageSize: number;
+  loading: boolean;
 }
-
-const NewNFT: React.FC = () => {
+const Cart: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
+    loading: false,
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
+  const past: any = [];
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { upComing, loadingUpComing } = useSelector(
-    (state: { item: IStateRedux }) => state.item
-  );
-
-  const navigate = useNavigate();
-
   React.useEffect(() => {
-    store.dispatch(fetchMarketItemsUpComing());
+    window.scrollTo({
+      top: 0,
+      behavior: `smooth`,
+    });
   }, []);
-  const handleClick = (item: any) => () => {
-    store.dispatch(setItem(item));
-    navigate(`nft/buy`);
-  };
-
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
+  const handleClick = (item: any) => () => {
+    store.dispatch(setItem(item));
+  };
   const renderList = () => (
     <>
-      {upComing && upComing.length > 0 ? (
-        upComing
+      {past && past.length > 0 ? (
+        past
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item: any) => (
             <button
-              onClick={handleClick(item)}
-              className="basis-[25%] min-h-[510px]"
-              key={item.tokenId}>
+              onClick={handleClick}
+              className="basis-[25%] h-[510px]"
+              key={item.id}>
               <ButtonItem
                 title={item.title}
                 date={item.date}
@@ -71,10 +59,10 @@ const NewNFT: React.FC = () => {
           />
         </div>
       )}
-      {upComing && upComing.length > 0 && (
+      {past && past.length > 0 && (
         <div className="w-[100%] flex items-end justify-center mt-[50px]">
           <Pagination
-            total={upComing ? upComing.length : 0}
+            total={past.length}
             showSizeChanger
             showQuickJumper
             pageSizeOptions={[8, 12, 16, 20]}
@@ -92,20 +80,18 @@ const NewNFT: React.FC = () => {
       <Spin indicator={antIcon} />
     </div>
   );
-
   return (
-    <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
-      <div className="flex h-[70px] items-end w-[100%]">
-        <p className="p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          NFT mới nhất
+    <div className="pt-[20px] w-[100%] overflow-hidden">
+      <div className="w-[100%] text-[25px] flex justify-center">
+        <p className="w-[400px] text-[25px] flex justify-center border-border border-[2px] rounded-[20px] p-[20px]">
+          Giỏ hàng
         </p>
-        <div className="border-b-[1px] border-border w-[calc(100%-218px)] rounded-[20px]"></div>
       </div>
-      <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] min-h-[680px] rounded-b-[20px] shadow-xl">
-        {!loadingUpComing ? renderList() : renderloading()}
+      <div className="py-[30px] flex flex-wrap w-[100%] border-[1px] rounded-[20px] mt-[20px] min-h-[680px] shadow-xl">
+        {state.loading ? renderloading() : renderList()}
       </div>
     </div>
   );
 };
 
-export default React.memo(NewNFT);
+export default Cart;

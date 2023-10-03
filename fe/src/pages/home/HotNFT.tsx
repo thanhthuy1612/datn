@@ -2,12 +2,7 @@ import { Empty, Pagination, Spin } from "antd";
 import React from "react";
 import ButtonItem from "../../components/button";
 import { useNavigate } from "react-router-dom";
-import {
-  IStateRedux,
-  fetchMarketItemsUpComing,
-  setItem,
-  store,
-} from "../../redux";
+import { IStateRedux, fetchMarketItemsHot, setItem, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -16,7 +11,7 @@ interface IState {
   pageSize: number;
 }
 
-const NewNFT: React.FC = () => {
+const HotNFT: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
@@ -25,14 +20,14 @@ const NewNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { upComing, loadingUpComing } = useSelector(
+  const { hot, loadingHot } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    store.dispatch(fetchMarketItemsUpComing());
+    store.dispatch(fetchMarketItemsHot());
   }, []);
   const handleClick = (item: any) => () => {
     store.dispatch(setItem(item));
@@ -46,8 +41,8 @@ const NewNFT: React.FC = () => {
 
   const renderList = () => (
     <>
-      {upComing && upComing.length > 0 ? (
-        upComing
+      {hot && hot.length > 0 ? (
+        hot
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item: any) => (
             <button
@@ -71,10 +66,10 @@ const NewNFT: React.FC = () => {
           />
         </div>
       )}
-      {upComing && upComing.length > 0 && (
+      {hot && hot.length > 0 && (
         <div className="w-[100%] flex items-end justify-center mt-[50px]">
           <Pagination
-            total={upComing ? upComing.length : 0}
+            total={hot ? hot.length : 0}
             showSizeChanger
             showQuickJumper
             pageSizeOptions={[8, 12, 16, 20]}
@@ -97,15 +92,15 @@ const NewNFT: React.FC = () => {
     <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%]">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          NFT mới nhất
+          NFT bán chạy
         </p>
         <div className="border-b-[1px] border-border w-[calc(100%-218px)] rounded-[20px]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] min-h-[680px] rounded-b-[20px] shadow-xl">
-        {!loadingUpComing ? renderList() : renderloading()}
+        {!loadingHot ? renderList() : renderloading()}
       </div>
     </div>
   );
 };
 
-export default React.memo(NewNFT);
+export default React.memo(HotNFT);
