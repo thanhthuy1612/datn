@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, DatePicker, Form, Image, Input, Spin, TimePicker } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, resellToken, store } from "../../redux";
+import { IStateRedux, resellToken, setLoading, store } from "../../redux";
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
@@ -17,6 +17,7 @@ const ResellNFT: React.FC = () => {
     if (!item) {
       navigate("/");
     }
+    store.dispatch(setLoading(false));
   }, []);
   const onFinish = async (values: any) => {
     await store.dispatch(
@@ -87,7 +88,7 @@ const ResellNFT: React.FC = () => {
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>
-              {loading ? renderloading() : "Bán lại NFT"}
+              {loading ? renderloading() : "Bán NFT"}
             </Button>
           </Form.Item>
         </div>

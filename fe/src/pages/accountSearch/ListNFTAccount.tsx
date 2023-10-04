@@ -92,7 +92,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%]">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          NFT của tài khoản
+          NFT đang bán
         </p>
         <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
       </div>

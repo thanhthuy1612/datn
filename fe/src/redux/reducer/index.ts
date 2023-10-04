@@ -154,7 +154,6 @@ export const fetchItemsSeller = createAsyncThunk(
     const data = await erc721.fetchItemsSeller(address);
     const items = await getItems(data, contract);
     thunkAPI.dispatch(setLoading(false));
-    console.log(items);
     return items;
   }
 );

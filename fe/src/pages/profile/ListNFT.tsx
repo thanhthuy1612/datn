@@ -13,7 +13,7 @@ interface IMenu {
 const menu: IMenu[] = [
   {
     id: 1,
-    title: "NFT đã mua",
+    title: "NFT của bạn",
   },
   {
     id: 2,

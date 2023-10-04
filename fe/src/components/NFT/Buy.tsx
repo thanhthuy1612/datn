@@ -2,7 +2,7 @@ import React from "react";
 import { Image, Spin } from "antd";
 import { CiClock1 } from "react-icons/ci";
 import { useSelector } from "react-redux";
-import { IStateRedux, createMarketSale, store } from "../../redux";
+import { IStateRedux, createMarketSale, setLoading, store } from "../../redux";
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -15,6 +15,7 @@ const BuyNFT: React.FC = () => {
     if (!item) {
       navigate("/");
     }
+    store.dispatch(setLoading(false));
   }, []);
   const handleBuy = async () => {
     await store.dispatch(createMarketSale(item));

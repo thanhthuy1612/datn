@@ -14,10 +14,11 @@ import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import "./create.css";
-import { IStateRedux, createToken, store } from "../../redux";
+import { IStateRedux, createToken, setLoading, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { getItem } from "../../api/uploadPicture";
 
 interface IState {
   img: UploadFile[];
@@ -45,6 +46,10 @@ const Create: React.FC = () => {
 
   const dateFormat = "YYYY/MM/DD";
   const timeFormate = "hh:mm:ss";
+
+  React.useEffect(() => {
+    store.dispatch(setLoading(false));
+  }, []);
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -98,6 +103,7 @@ const Create: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
+    await getItem(state.file);
     await store.dispatch(
       createToken({
         name: removeUnnecessaryWhiteSpace(values.title),

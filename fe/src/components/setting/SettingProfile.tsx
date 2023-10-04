@@ -5,6 +5,7 @@ import {
   Form,
   Input,
   Modal,
+  Spin,
   Upload,
   UploadFile,
   UploadProps,
@@ -19,6 +20,8 @@ import { postPicture } from "../../api";
 import { uploadPicture } from "../../api/account";
 import { dateFormat, removeUnnecessaryWhiteSpace } from "../../ultis";
 import { followCursor } from "tippy.js";
+import { getItem } from "../../api/uploadPicture";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface IState {
   account?: IAccount;
@@ -29,6 +32,7 @@ interface IState {
   previewTitle: string;
   visible: boolean;
   alert: boolean;
+  loading: boolean;
 }
 
 const SettingProfile: React.FC = () => {
@@ -40,6 +44,7 @@ const SettingProfile: React.FC = () => {
     previewTitle: "",
     visible: false,
     alert: true,
+    loading: false,
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
@@ -134,7 +139,7 @@ const SettingProfile: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    setState({ visible: false });
+    setState({ visible: false, loading: true });
     const result = await uploadPicture(account?.wallet as string, {
       username: removeUnnecessaryWhiteSpace(values.username),
       bio: removeUnnecessaryWhiteSpace(values.bio),
@@ -142,12 +147,19 @@ const SettingProfile: React.FC = () => {
       ava: state.account?.ava,
       banner: state.account?.banner,
     });
+    state.account?.ava && await getItem(state.account?.ava);
+    state.account?.banner && await getItem(state.account?.banner);
     await store.dispatch(setAccount(result.data[0]));
-    setState({ alert: result.data !== null, visible: true });
+    setState({ alert: result.data !== null, visible: true, loading: false });
   };
 
   const handleCancel = () => setState({ previewOpen: false });
-
+  const antIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
+  const renderloading = () => (
+    <div className="w-[100%] flex justify-center items-center">
+      <Spin indicator={antIcon} />
+    </div>
+  );
   return (
     <Form
       name="account"
@@ -227,7 +239,12 @@ const SettingProfile: React.FC = () => {
         </div>
       </div>
       <Form.Item label=" ">
-        <Button htmlType="submit">Lưu lại chỉnh sửa</Button>
+        <Button
+          htmlType="submit"
+          disabled={state.loading}
+          className="w-[150px] flex justify-center items-center">
+          {state.loading ? renderloading() : "Lưu lại chỉnh sửa"}
+        </Button>
       </Form.Item>
       <Modal
         open={state.previewOpen}
