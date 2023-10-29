@@ -7,6 +7,7 @@ import { login } from "../../api/login";
 import { addressContract } from "../../ultis/addressContract";
 import { abi } from "../../ultis/abi";
 import { dateFormat } from "../../ultis";
+import { getItem, uploadToIPFS } from "../../api/uploadPicture";
 
 const initialState: IStateRedux = {
   account: undefined,
@@ -59,7 +60,8 @@ const getERC = async () => {
   const signer = web3Provider.getSigner();
   const contract = new ethers.Contract(addressContract, abi, web3Provider);
   const erc721 = contract.connect(signer);
-  return { contract, erc721 };
+  const address = await signer.getAddress();
+  return { contract, erc721, address };
 };
 
 export const createToken = createAsyncThunk(
@@ -67,15 +69,17 @@ export const createToken = createAsyncThunk(
   async (option: any, thunkAPI) => {
     try {
       thunkAPI.dispatch(setLoadingCreate(true));
-      const { contract, erc721 } = await getERC();
-      const price = ethers.utils.parseUnits(option.price, "ether");
+      const { contract, erc721, address } = await getERC();
+      const url = await uploadToIPFS({
+        img: `${option.file}`,
+        date: Date.now(),
+        create: address.toString(),
+      });
       let listingPrice = await contract.getListingPrice();
       listingPrice = listingPrice.toString();
       const transaction = await erc721.createToken(
-        option.file as string,
+        url as string,
         option.name as string,
-        price,
-        option.date,
         {
           value: listingPrice,
         }
@@ -107,10 +111,20 @@ export const resellToken = createAsyncThunk(
   }
 );
 
+const fetchMeta = async (params: string) => {
+  return await Promise.all(
+    params.split(",").map(async (item: string) => {
+      const result = await getItem(item);
+      return result;
+    })
+  );
+};
+
 const getItems = async (data: any, contract: any) => {
   const items = await Promise.all(
     data.map(async (i: any) => {
       const tokenUri = await contract.tokenURI(i.tokenId);
+      const meta = await fetchMeta(tokenUri);
       const price = ethers.utils.formatUnits(i.price.toString(), "ether");
       return {
         tokenId: i.tokenId.toNumber(),
@@ -127,7 +141,8 @@ const getItems = async (data: any, contract: any) => {
           DateFormatType.FullDate
         ),
         title: i.name,
-        img: `https://ipfs.io/ipfs/${tokenUri}`,
+        img: meta[meta.length - 1].img,
+        list: meta,
       };
     })
   );

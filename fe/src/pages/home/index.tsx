@@ -180,7 +180,8 @@ const Home: React.FC = () => {
   const renderButton = (item: IMenu) => (
     <button
       onClick={item.handle}
-      className="flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl">
+      className="flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
+    >
       {item.title}
       <div className="px-[10px]">{item.icon}</div>
     </button>
@@ -194,7 +195,7 @@ const Home: React.FC = () => {
           </p>
           <div className="flex justify-around py-[60px]">
             {menu.map((item) => (
-              <>{renderButton(item)}</>
+              <div key={item.id}>{renderButton(item)}</div>
             ))}
             <button
               onClick={handleClickPerson}
@@ -203,7 +204,8 @@ const Home: React.FC = () => {
                 account === undefined
                   ? "flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] cursor-not-allowed"
                   : "flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
-              }>
+              }
+            >
               Trang cá nhân
               <div className="px-[10px]">
                 <CiCloud />
@@ -269,7 +271,9 @@ const Home: React.FC = () => {
         <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
       </div>
       <div className="py-[30px] px-[50px] w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {items.map((item) => renderItem({ title: item.text }))}
+        {items.map((item) => (
+          <div key={item.id}>{renderItem({ title: item.text })}</div>
+        ))}
       </div>
     </>
   );
@@ -279,7 +283,8 @@ const Home: React.FC = () => {
         <p className="text-[25px]">Vui lòng kết nối ví Metamask</p>
         <button
           onClick={handleClickLogin}
-          className="my-[20px] py-[10px] px-[30px] w-[200px] border-border border-[1px] rounded-[15px] shadow-md hover:shadow-xl hover:bg-hover">
+          className="my-[20px] py-[10px] px-[30px] w-[200px] border-border border-[1px] rounded-[15px] shadow-md hover:shadow-xl hover:bg-hover"
+        >
           Kết nối ví
         </button>
       </div>
@@ -296,13 +301,15 @@ const Home: React.FC = () => {
         <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
       </div>
       <div className="py-[30px] px-[50px] w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {textInstruct.map((item) =>
-          renderItemInstruct({
-            title: item.text,
-            img: item.img,
-            description: item.description ?? "",
-          })
-        )}
+        {textInstruct.map((item) => (
+          <div key={item.id}>
+            {renderItemInstruct({
+              title: item.text,
+              img: item.img,
+              description: item.description ?? "",
+            })}
+          </div>
+        ))}
       </div>
     </>
   );
@@ -315,20 +322,25 @@ const Home: React.FC = () => {
         <div
           tabIndex={-1}
           {...attrs}
-          className="bg-white py-[20px] border-border border-[1px] rounded-[15px] w-[200px]">
+          className="bg-white py-[20px] border-border border-[1px] rounded-[15px] w-[200px]"
+        >
           {menu.map((item) => (
             <button
+              key={item.id}
               onClick={item.handle}
-              className="flex items-center py-[5px] px-[20px] hover:bg-hover w-[100%]">
+              className="flex items-center py-[5px] px-[20px] hover:bg-hover w-[100%]"
+            >
               {item.icon}
               <p className="pl-[5px]">{item.title}</p>
             </button>
           ))}
         </div>
-      )}>
+      )}
+    >
       <button
         onClick={handleTop}
-        className="rounded-[50%] flex justify-center items-center bg-white w-[50px] h-[50px] p-[10px] border-border border-[1px] shadow-md mx-[15px] fixed bottom-[25px] right-[40px]">
+        className="rounded-[50%] flex justify-center items-center bg-white w-[50px] h-[50px] p-[10px] border-border border-[1px] shadow-md mx-[15px] fixed bottom-[25px] right-[40px]"
+      >
         <CiMenuBurger />
       </button>
     </Tippy>

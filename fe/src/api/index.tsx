@@ -1,10 +1,14 @@
 import axios from "axios";
-import { baseURL, baseURLUpload } from "./url";
+import { baseGetPicture, baseURL, baseURLUpload } from "./url";
 
 // const requestAccessToken = axios.create({ baseURL: baseURL });
 const request = axios.create({ baseURL: baseURL });
 const requestPicture = axios.create({
   baseURL: baseURLUpload,
+});
+
+const requestGetPicture = axios.create({
+  baseURL: baseGetPicture,
 });
 
 // requestAccessToken.interceptors.request.use(
@@ -27,6 +31,11 @@ export const get = async (path: string, options = {}) => {
 
 export const getIPFS = async (path: string, options = {}) => {
   const response = await request.get(path, options);
+  return response.data;
+};
+
+export const getPicture = async (path: string) => {
+  const response = await requestGetPicture.post(path);
   return response.data;
 };
 

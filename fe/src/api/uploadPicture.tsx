@@ -1,4 +1,12 @@
-import { getIPFS, postPicture } from ".";
+import { getPicture, postPicture } from ".";
+import { create } from "ipfs-http-client";
+
+const client = create({ url: "https://ipfs-ivirse.pokeheo.xyz/api/v0/add" });
+export interface IUploadIPFS {
+  img: string;
+  date: number;
+  create: string;
+}
 
 export const uploadPicture = async (file: FormData) => {
   try {
@@ -9,18 +17,19 @@ export const uploadPicture = async (file: FormData) => {
   }
 };
 
-export const uploadItem = async (option: any) => {
+export const uploadToIPFS = async (inputs: IUploadIPFS) => {
+  const data = JSON.stringify({ ...inputs });
   try {
-    const res = await postPicture(option);
-    return res;
-  } catch (err) {
-    console.log(err);
+    const added = await client.add(data);
+    return added.path;
+  } catch (error) {
+    console.log("Error uploading file: ", error);
   }
 };
 
-export const getItem = async (url: any) => {
+export const getItem = async (url: string) => {
   try {
-    const res = await getIPFS(url, { params: {} });
+    const res = await getPicture(`cat?arg=${url}`);
     return res;
   } catch (err) {
     console.log(err);

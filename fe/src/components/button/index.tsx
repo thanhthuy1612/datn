@@ -1,4 +1,6 @@
 import React from "react";
+import { getItem } from "../../api/uploadPicture";
+import logo from "../../assets/logo.png";
 
 const ButtonItem: React.FC<{
   title: string;
@@ -6,9 +8,15 @@ const ButtonItem: React.FC<{
   price: string;
   img: string;
 }> = ({ title, date, price, img }) => {
+  const [picture, setPicture] = React.useState();
+  React.useEffect(() => {
+    getItem(img).then((value) => {
+      setPicture(value);
+    });
+  }, [img]);
   return (
     <button className="border-border border-[2px] m-[15px] rounded-[15px] overflow-hidden shadow-xl hover:mt-[-5px] hover:shadow-2xl">
-      <img src={img} className="w-[100%] h-[300px]" />
+      <img src={picture ?? logo} className="w-[100%] h-[300px]" />
       <div className="flex flex-col p-[25px]">
         <p className="mt-[5px] mb-[15px] text-[30px] flex justify-start w-[250px] overflow-hidden whitespace-nowrap overflow-ellipsis">
           {title.toUpperCase()}

@@ -94,17 +94,17 @@ export const abi = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "tokenURI",
-        type: "string",
-      },
-      {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
       },
+      {
+        internalType: "string",
+        name: "token",
+        type: "string",
+      },
     ],
-    name: "changeUrl",
+    name: "changeTokenUri",
     outputs: [],
     stateMutability: "payable",
     type: "function",
@@ -133,16 +133,6 @@ export const abi = [
         internalType: "string",
         name: "name",
         type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "price",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "date",
-        type: "uint256",
       },
     ],
     name: "createToken",
@@ -386,6 +376,32 @@ export const abi = [
     name: "updateListingPrice",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "_itemsSold",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "_value",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "_tokenIds",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "_value",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

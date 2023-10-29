@@ -112,7 +112,7 @@ const SettingProfile: React.FC = () => {
     const input = new FormData();
     input.append("file", file);
     const result: any = await postPicture(input);
-    setUpdate(name, `https://ipfs.io/ipfs/${result.data.Hash}`);
+    setUpdate(name, `${result.data.Hash}`);
     return result;
   };
 
@@ -147,8 +147,8 @@ const SettingProfile: React.FC = () => {
       ava: state.account?.ava,
       banner: state.account?.banner,
     });
-    state.account?.ava && await getItem(state.account?.ava);
-    state.account?.banner && await getItem(state.account?.banner);
+    state.account?.ava && (await getItem(state.account?.ava));
+    state.account?.banner && (await getItem(state.account?.banner));
     await store.dispatch(setAccount(result.data[0]));
     setState({ alert: result.data !== null, visible: true, loading: false });
   };
@@ -167,7 +167,8 @@ const SettingProfile: React.FC = () => {
       wrapperCol={{ flex: 1 }}
       colon={false}
       onFinish={onFinish}
-      className="flex flex-col w-[100%] relative">
+      className="flex flex-col w-[100%] relative"
+    >
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[550px]">
           <Form.Item label="Tên người dùng:" name="username">
@@ -203,10 +204,12 @@ const SettingProfile: React.FC = () => {
                     Copy
                   </p>
                 </div>
-              )}>
+              )}
+            >
               <button
                 onClick={handleCopy}
-                className="flex items-center cursor-pointer">
+                className="flex items-center cursor-pointer"
+              >
                 <CiWallet />
                 <p className="pl-[10px]">{account?.wallet}</p>
               </button>
@@ -221,7 +224,8 @@ const SettingProfile: React.FC = () => {
               listType="picture-circle"
               fileList={state.ava}
               onChange={onChangeAva}
-              onPreview={onPreview}>
+              onPreview={onPreview}
+            >
               {state.ava.length === 0 && "+ Thêm ảnh"}
             </Upload>
           </Form.Item>
@@ -232,7 +236,8 @@ const SettingProfile: React.FC = () => {
               listType="picture-card"
               fileList={state.banner}
               onChange={onChangeBanner}
-              onPreview={onPreview}>
+              onPreview={onPreview}
+            >
               {state.banner.length === 0 && "+ Thêm ảnh"}
             </Upload>
           </Form.Item>
@@ -242,7 +247,8 @@ const SettingProfile: React.FC = () => {
         <Button
           htmlType="submit"
           disabled={state.loading}
-          className="w-[150px] flex justify-center items-center">
+          className="w-[150px] flex justify-center items-center"
+        >
           {state.loading ? renderloading() : "Lưu lại chỉnh sửa"}
         </Button>
       </Form.Item>
@@ -250,7 +256,8 @@ const SettingProfile: React.FC = () => {
         open={state.previewOpen}
         title={state.previewTitle}
         footer={null}
-        onCancel={handleCancel}>
+        onCancel={handleCancel}
+      >
         <img alt="example" style={{ width: "100%" }} src={state.previewImage} />
       </Modal>
       {state.visible && (

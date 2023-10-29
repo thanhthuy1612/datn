@@ -1,25 +1,13 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Spin,
-  TimePicker,
-  Upload,
-  UploadFile,
-} from "antd";
+import { Button, Form, Input, Modal, Spin, Upload, UploadFile } from "antd";
 import React from "react";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
-import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
+import { removeUnnecessaryWhiteSpace } from "../../ultis";
 import "./create.css";
 import { IStateRedux, createToken, setLoading, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { getItem } from "../../api/uploadPicture";
-
 interface IState {
   img: UploadFile[];
   file: string;
@@ -43,9 +31,6 @@ const Create: React.FC = () => {
   const { loadingCreate } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
-
-  const dateFormat = "YYYY/MM/DD";
-  const timeFormate = "hh:mm:ss";
 
   React.useEffect(() => {
     store.dispatch(setLoading(false));
@@ -103,13 +88,10 @@ const Create: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    await getItem(state.file);
     await store.dispatch(
       createToken({
         name: removeUnnecessaryWhiteSpace(values.title),
-        price: removeUnnecessaryWhiteSpace(values.price),
         file: state.file,
-        date: getDate(new Date(values.date), new Date(values.time)),
       })
     );
     navigate("/");
@@ -130,36 +112,36 @@ const Create: React.FC = () => {
       wrapperCol={{ flex: 1 }}
       colon={false}
       onFinish={onFinish}
-      className="flex flex-col w-[100%] items-center">
+      className="flex flex-col w-[100%] items-center"
+    >
       <div className="flex w-[100%] justify-between">
+        <div className="flex justify-center w-[300px] h-[300px]">
+          <Form.Item
+            label="NFT mới:"
+            name="img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Vui lòng thêm NFT" }]}
+          >
+            <Upload
+              accept="image/*"
+              customRequest={action}
+              listType="picture-card"
+              fileList={state.img}
+              onChange={onChange}
+              onPreview={onPreview}
+            >
+              {state.img.length === 0 && "+ Thêm file"}
+            </Upload>
+          </Form.Item>
+        </div>
         <div className="flex flex-col w-[550px]">
           <Form.Item
             label="Tên NFT:"
             name="title"
-            rules={[{ required: true, message: "Vui lòng nhập tên NFT" }]}>
+            rules={[{ required: true, message: "Vui lòng nhập tên NFT" }]}
+          >
             <Input placeholder="Nhập tên NFT..." />
-          </Form.Item>
-          <Form.Item
-            label="Giá bán NFT:"
-            name="price"
-            rules={[{ required: true, message: "Vui lòng nhập giá bán NFT" }]}>
-            <Input placeholder="Nhập giá bán NFT..." />
-          </Form.Item>
-          <Form.Item
-            label="Ngày hết hạn bán NFT:"
-            name="date"
-            rules={[
-              { required: true, message: "Vui lòng nhập ngày hết hạn bán NFT" },
-            ]}>
-            <DatePicker format={dateFormat} placeholder="Chọn ngày" />
-          </Form.Item>
-          <Form.Item
-            label="Giờ hết hạn bán NFT:"
-            name="time"
-            rules={[
-              { required: true, message: "Vui lòng nhập giờ hết hạn bán NFT" },
-            ]}>
-            <TimePicker format={timeFormate} placeholder="Chọn giờ" />
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loadingCreate}>
@@ -167,30 +149,13 @@ const Create: React.FC = () => {
             </Button>
           </Form.Item>
         </div>
-        <div className="flex justify-center w-[300px] h-[300px]">
-          <Form.Item
-            label="NFT mới:"
-            name="img"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-            rules={[{ required: true, message: "Vui lòng thêm NFT" }]}>
-            <Upload
-              accept="image/*"
-              customRequest={action}
-              listType="picture-card"
-              fileList={state.img}
-              onChange={onChange}
-              onPreview={onPreview}>
-              {state.img.length === 0 && "+ Thêm file"}
-            </Upload>
-          </Form.Item>
-        </div>
       </div>
       <Modal
         open={state.previewOpenNFT}
         title={state.previewTitleNFT}
         footer={null}
-        onCancel={handleCancel}>
+        onCancel={handleCancel}
+      >
         <img
           alt="example"
           style={{ width: "100%" }}
