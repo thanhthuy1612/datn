@@ -1,5 +1,6 @@
 import axios from "axios";
 import { baseGetPicture, baseURL, baseURLUpload } from "./url";
+import { resolve } from "path";
 
 // const requestAccessToken = axios.create({ baseURL: baseURL });
 const request = axios.create({ baseURL: baseURL });
