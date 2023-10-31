@@ -5,6 +5,7 @@ import { IStateRedux, resellToken, setLoading, store } from "../../redux";
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
+import More from "./More";
 
 const ResellNFT: React.FC = () => {
   const { item, loading } = useSelector(
@@ -46,6 +47,7 @@ const ResellNFT: React.FC = () => {
       </div>
       <div className="py-[5px]">Giá mua: {item.price} ETH</div>
       <p className="py-[5px]">Số lần đã bán: {item.number}</p>
+      <More />
     </div>
   );
   const renderResell = () => (

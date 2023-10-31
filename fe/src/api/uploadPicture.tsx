@@ -1,4 +1,4 @@
-import { getPicture, postPicture } from ".";
+import { getPicture, getPictureIPFS, postPicture } from ".";
 import { create } from "ipfs-http-client";
 
 const client = create({ url: "https://ipfs-ivirse.pokeheo.xyz/api/v0/add" });
@@ -38,7 +38,7 @@ export const getItem = async (url: string) => {
 
 export const getItemIPFS = async (url: string) => {
   try {
-    const res = await getPicture(`cat?arg=${url}`);
+    const res = await getPictureIPFS(`cat?arg=${url}`);
     return res;
   } catch (err) {
     console.log(err);

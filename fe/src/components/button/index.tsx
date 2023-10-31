@@ -1,7 +1,4 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
 import React from "react";
-import { getItem } from "../../api/uploadPicture";
 
 const ButtonItem: React.FC<{
   title: string;

@@ -7,7 +7,7 @@ import { login } from "../../api/login";
 import { addressContract } from "../../ultis/addressContract";
 import { abi } from "../../ultis/abi";
 import { dateFormat } from "../../ultis";
-import { getItem, uploadToIPFS } from "../../api/uploadPicture";
+import { getItem, getItemIPFS, uploadToIPFS } from "../../api/uploadPicture";
 
 const initialState: IStateRedux = {
   account: undefined,
@@ -115,10 +115,13 @@ const fetchMeta = async (params: string) => {
   return await Promise.all(
     params.split(",").map(async (item: string) => {
       const result = await getItem(item);
-      const picture = await getItem(result.img);
-      const imageBlob = await picture.blob();
-      const imageObjectURL = await URL.createObjectURL(imageBlob);
-      return { ...result, img: imageObjectURL };
+      const picture = await getItemIPFS(result.img);
+      const imageObjectURL = await URL.createObjectURL(picture);
+      return {
+        ...result,
+        img: imageObjectURL,
+        date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+      };
     })
   );
 };

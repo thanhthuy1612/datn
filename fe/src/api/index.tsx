@@ -1,6 +1,5 @@
 import axios from "axios";
 import { baseGetPicture, baseURL, baseURLUpload } from "./url";
-import { resolve } from "path";
 
 // const requestAccessToken = axios.create({ baseURL: baseURL });
 const request = axios.create({ baseURL: baseURL });
@@ -41,7 +40,18 @@ export const getPicture = async (path: string) => {
 };
 
 export const getPictureIPFS = async (path: string) => {
-  const response = await requestGetPicture.post(path);
+  const response = await requestGetPicture.post(
+    path,
+    {},
+    {
+      headers: {
+        "Content-Type": `multipart/form-data`,
+      },
+      responseType:"blob"
+    }
+  );
+  console.log(response);
+  
   return response.data;
 };
 
