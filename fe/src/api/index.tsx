@@ -40,6 +40,11 @@ export const getPicture = async (path: string) => {
   return response.data;
 };
 
+export const getPictureIPFS = async (path: string) => {
+  const response = await requestGetPicture.post(path);
+  return response.data;
+};
+
 export const update = async (path: string, options = {}) => {
   const response = await request.put(path, options);
   return response;

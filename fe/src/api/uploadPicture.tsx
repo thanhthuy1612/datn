@@ -35,3 +35,12 @@ export const getItem = async (url: string) => {
     console.log(err);
   }
 };
+
+export const getItemIPFS = async (url: string) => {
+  try {
+    const res = await getPicture(`cat?arg=${url}`);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+};

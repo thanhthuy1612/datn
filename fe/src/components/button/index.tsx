@@ -9,27 +9,9 @@ const ButtonItem: React.FC<{
   price: string;
   img: string;
 }> = ({ title, date, price, img }) => {
-  const [picture, setPicture] = React.useState<string>('');
-  React.useEffect(() => {
-    const fetchImage = async () => {
-      const res = await getItem(img)
-      const imageBlob = await res.blob();
-      const imageObjectURL = URL.createObjectURL(imageBlob);
-      setPicture(imageObjectURL);
-    }
-    fetchImage()
-  }, [img]);
-
-  console.log(picture, 2)
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-  const renderloading = () => (
-    <div className="w-[100%] h-[300px] flex justify-center items-center">
-      <Spin indicator={antIcon} />
-    </div>
-  );
   return (
     <button className="border-border border-[2px] m-[15px] rounded-[15px] overflow-hidden shadow-xl hover:mt-[-5px] hover:shadow-2xl">
-      {picture ? <img src={picture} className="w-[100%] h-[300px]" /> : renderloading()}
+      <img src={img} className="w-[100%] h-[300px]" />
       <div className="flex flex-col p-[25px]">
         <p className="mt-[5px] mb-[15px] text-[30px] flex justify-start w-[250px] overflow-hidden whitespace-nowrap overflow-ellipsis">
           {title.toUpperCase()}

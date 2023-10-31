@@ -115,7 +115,10 @@ const fetchMeta = async (params: string) => {
   return await Promise.all(
     params.split(",").map(async (item: string) => {
       const result = await getItem(item);
-      return result;
+      const picture = await getItem(result.img);
+      const imageBlob = await picture.blob();
+      const imageObjectURL = await URL.createObjectURL(imageBlob);
+      return { ...result, img: imageObjectURL };
     })
   );
 };
