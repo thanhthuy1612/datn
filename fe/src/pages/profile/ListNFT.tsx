@@ -48,7 +48,7 @@ const ListNFT: React.FC = () => {
   );
   const handleClickItem = (item: any) => () => {
     store.dispatch(setItem(item));
-    navigate(state.choose === 1 ? `nft/resell` : `nft/buy`);
+    navigate(setNavigate());
   };
   React.useEffect(() => {
     const renderRedux = async () => {
@@ -72,6 +72,19 @@ const ListNFT: React.FC = () => {
     };
     getItems();
   }, [myNFT, mySeller, myDate, state.choose]);
+
+  const setNavigate = () => {
+    switch (state.choose) {
+      case 1:
+        return 'nft/resell'
+      case 2:
+        return 'nft/buy'
+      case 3:
+        return 'nft/expired'
+      default:
+        return ''
+    }
+  }
   const handleClick = (id: number) => () => {
     id !== state.choose && setState({ choose: id });
   };

@@ -40,7 +40,6 @@ const Search: React.FC = () => {
       interactive
       visible={Boolean(input.length > 0) && blur}
       delay={[0, 500]}
-      className="h-[100%]"
       render={(attrs) => (
         <div tabIndex={-1} {...attrs}>
           <ListItem accounts={item ?? []} title={input} setBlur={setBlur} />

@@ -166,7 +166,7 @@ const Home: React.FC = () => {
     {
       id: 3,
       handle: handleHot,
-      title: "NFT bán chạy",
+      title: "NFT nhiều lượt bán",
       icon: <CiCloudRainbow />,
     },
     {

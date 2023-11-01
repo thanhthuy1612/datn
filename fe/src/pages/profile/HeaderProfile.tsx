@@ -5,13 +5,19 @@ import ava from "../../assets/ava.png";
 import banner from "../../assets/bannar.png";
 import { DateFormatType, IAccount } from "../../interfaces/IRouter";
 import { dateFormat } from "../../ultis";
-import { Image, Modal } from "antd";
+import { Image, Modal, Spin } from "antd";
 import SettingProfile from "../../components/setting/SettingProfile";
 import { useNavigate } from "react-router-dom";
+import { getItemIPFS } from "../../api/uploadPicture";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface IState {
   previewOpen: boolean;
   previewTitle: string;
+  ava: string;
+  banner: string;
+  loadingAva: boolean;
+  loadingBanner: boolean;
 }
 
 const Item: React.FC<{ title: string; item: string | undefined }> = ({
@@ -32,11 +38,34 @@ const HeaderProfile: React.FC<{
   const [state, _setState] = React.useState<IState>({
     previewOpen: false,
     previewTitle: "",
+    ava: "",
+    banner: "",
+    loadingAva: false,
+    loadingBanner: false
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const fetch = async () => {
+      if (account?.ava) {
+        setState({ loadingAva: true })
+        const ava = await getItemIPFS(account?.ava);
+        const avaObjectURL = await URL.createObjectURL(ava);
+        setState({ ava: avaObjectURL, loadingAva: false })
+      }
+
+      if (account?.banner) {
+        setState({ loadingBanner: true })
+        const banner = await getItemIPFS(account?.banner);
+        const bannerObjectURL = await URL.createObjectURL(banner);
+        setState({ banner: bannerObjectURL, loadingBanner: false })
+      }
+    }
+    fetch()
+  }, [account])
   const handleShare = async () => {
     await navigator.clipboard.writeText(account?.wallet as string);
   };
@@ -46,14 +75,21 @@ const HeaderProfile: React.FC<{
   const handleCancel = () => setState({ previewOpen: false });
   const handleOpenEdit = () =>
     setState({ previewOpen: true, previewTitle: "Chỉnh sửa trang cá nhân" });
+
+  const antIcon = <LoadingOutlined style={{ fontSize: 21 }} spin />;
+  const renderloading = () => (
+    <div className="w-[500px] flex justify-center items-center">
+      <Spin indicator={antIcon} />
+    </div>
+  );
   return (
     <div className="w-[100%] pt-[20px]">
       <div className="relative w-[100%]">
         <div className="w-[100%] h-[380px] rounded-[20px] shadow-md overflow-hidden">
-          <Image width={"100%"} height={400} src={account?.banner ?? banner} />
+          {!state.loadingBanner ? <Image width={"100%"} height={400} src={account?.banner ? state.banner : banner} /> : <div className="w-[100%] h-[100%] flex justify-center items-center bg-hover">{renderloading()}</div>}
         </div>
         <div className="border-white border-[5px] shadow-2xl rounded-[50%] w-[290px] h-[290px] absolute top-[185px] left-[50px] overflow-hidden">
-          <Image width={280} height={280} src={account?.ava ?? ava} />
+          {!state.loadingAva ? <Image width={280} height={280} src={account?.ava ? state.ava : ava} /> : <div className="w-[100%] h-[100%] flex justify-center items-center bg-hover">{renderloading()}</div>}
         </div>
       </div>
       <div className="mt-[120px] ml-[55px] mr-[20px] py-[5px] flex justify-between">

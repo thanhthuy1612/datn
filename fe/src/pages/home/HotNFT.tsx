@@ -91,10 +91,10 @@ const HotNFT: React.FC = () => {
   return (
     <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%]">
-        <p className="p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          NFT bán chạy
+        <p className="p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
+          NFT nhiều lượt bán
         </p>
-        <div className="border-b-[1px] border-border w-[calc(100%-218px)] rounded-[20px]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-318px)] rounded-[20px]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] min-h-[680px] rounded-b-[20px] shadow-xl">
         {!loadingHot ? renderList() : renderloading()}

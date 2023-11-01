@@ -50,8 +50,6 @@ export const getPictureIPFS = async (path: string) => {
       responseType:"blob"
     }
   );
-  console.log(response);
-  
   return response.data;
 };
 

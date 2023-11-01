@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
 
-const BuyNFT: React.FC = () => {
+const Expired: React.FC = () => {
   const { item, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
@@ -39,7 +39,7 @@ const BuyNFT: React.FC = () => {
   return (
     <div className="mt-[20px] w-[100%] border-border border-[1px] shadow-md rounded-[20px] overflow-hidden">
       <p className="w-[100%] text-[25px] flex justify-center items-center border-border border-b-[1px] p-[20px]">
-        Mua NFT
+        NFT hết hạn bán
       </p>
       <div className="py-[40px] flex w-[100%] justify-around">
         <div className="w-[500px] h-[500px] rounded-[20px] shadow-md overflow-hidden">
@@ -77,18 +77,10 @@ const BuyNFT: React.FC = () => {
                   disabled={loading}
                   className={
                     loading
-                      ? "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
-                      : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
+                      ? "border-border border-[1px] mx-[50px] py-[20px] w-[100%] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
+                      : "border-border border-[1px] mx-[50px] py-[20px] w-[100%] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
                   }>
-                  {loading ? renderloading() : "Mua ngay"}
-                </button>
-                <button
-                  className={
-                    loading
-                      ? "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
-                      : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
-                  }>
-                  Thêm vào giỏ hàng
+                  {loading ? renderloading() : "Thu hồi"}
                 </button>
               </div>
             </div>
@@ -99,4 +91,4 @@ const BuyNFT: React.FC = () => {
   );
 };
 
-export default BuyNFT;
+export default Expired;

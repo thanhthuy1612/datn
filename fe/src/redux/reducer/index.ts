@@ -64,6 +64,28 @@ const getERC = async () => {
   return { contract, erc721, address };
 };
 
+export const changeTokenUri = createAsyncThunk(
+  "changeTokenUri",
+  async (option: any, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setLoadingCreate(true));
+      const { erc721, address } = await getERC();
+      const url = await uploadToIPFS({
+        img: `${option.file}`,
+        date: Date.now(),
+        create: address.toString(),
+      });
+      const transaction = await erc721.changeTokenUri(
+        option.tokenId,
+        url as string
+      );
+      await transaction.wait();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
 export const createToken = createAsyncThunk(
   "createToken",
   async (option: any, thunkAPI) => {
@@ -113,7 +135,7 @@ export const resellToken = createAsyncThunk(
 
 const fetchMeta = async (params: string) => {
   return await Promise.all(
-    params.split(",").map(async (item: string) => {
+    params.split(";").map(async (item: string) => {
       const result = await getItem(item);
       const picture = await getItemIPFS(result.img);
       const imageObjectURL = await URL.createObjectURL(picture);
@@ -381,6 +403,9 @@ export const item = createSlice({
       state.loading = false;
     });
     builder.addCase(createToken.fulfilled, (state, _actions) => {
+      state.loadingCreate = false;
+    });
+    builder.addCase(changeTokenUri.fulfilled, (state, _actions) => {
       state.loadingCreate = false;
     });
     builder.addCase(resellToken.fulfilled, (state, _actions) => {
