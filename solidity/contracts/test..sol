@@ -7,8 +7,8 @@ import "hardhat/console.sol";
 
 contract NFTMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
-    Counters.Counter public _tokenIds;
-    Counters.Counter public _itemsSold;
+    Counters.Counter private _tokenIds;
+    Counters.Counter private _itemsSold;
     uint256 listingPrice = 0.00025 ether; // Giá tiền trả cho sàn
     address payable owner; // địa chỉ chủ chợ
     mapping(uint256 => MarketItem) private idToMarketItem;
@@ -56,8 +56,6 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 tokenId,
         string memory token
     ) public payable {
-        console.log(tokenURI(tokenId));
-        console.log(block.timestamp);
         _setTokenURI(tokenId, string.concat(tokenURI(tokenId), ";", token));
     }
 

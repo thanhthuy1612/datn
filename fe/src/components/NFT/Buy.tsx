@@ -69,7 +69,7 @@ const BuyNFT: React.FC = () => {
             </p>
             <div className="w-[100%]">
               <p className="py-[20px] text-[30px] flex justify-center">
-                Giá bán: {item.price} ETH
+                Giá bán: {item.price} BNBT
               </p>
               <div className="flex w-[100%] justify-around">
                 <button

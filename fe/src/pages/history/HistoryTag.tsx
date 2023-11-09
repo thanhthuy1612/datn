@@ -13,18 +13,22 @@ interface IMenu {
 const menu: IMenu[] = [
   {
     id: 1,
-    title: "Bán NFT",
+    title: "Khởi tạo NFT",
   },
   {
     id: 2,
-    title: "Mua NFT",
+    title: 'Cập nhật NFT'
   },
   {
     id: 3,
-    title: "Bán lại NFT",
+    title: "Mua NFT",
   },
   {
     id: 4,
+    title: "Bán NFT",
+  },
+  {
+    id: 5,
     title: "Giao dịch trên ví",
   },
 ];
@@ -55,13 +59,14 @@ const HistoryTag: React.FC = () => {
       const items = result.filter(
         (item: IHistory) =>
           item.functionName ===
-            "createToken(string _name, string _symbol, uint256 _preMineSupply, uint256 _maxSupply)" &&
+          "createToken(string name, string symbol)" &&
           item.to === addressContract.toLowerCase()
       );
       setState({
         data: result,
         loading: false,
         item: items,
+        choose: 1
       });
     };
     fetch();
@@ -73,16 +78,22 @@ const HistoryTag: React.FC = () => {
           return state.data.filter(
             (item) =>
               item.functionName ===
-                "createToken(string _name, string _symbol, uint256 _preMineSupply, uint256 _maxSupply)" &&
+              "createToken(string name, string symbol)" &&
               item.to === addressContract.toLowerCase()
           );
         case 2:
           return state.data.filter(
             (item) =>
-              item.functionName === "createMarketSale(uint256 itemId)" &&
+              item.functionName === "changeTokenUri(uint256 tokenId, string tokenUri)" &&
               item.to === addressContract.toLowerCase()
           );
         case 3:
+          return state.data.filter(
+            (item) =>
+              item.functionName === "createMarketSale(uint256 itemId)" &&
+              item.to === addressContract.toLowerCase()
+          );
+        case 4:
           return state.data.filter(
             (item) =>
               item.functionName === "" &&

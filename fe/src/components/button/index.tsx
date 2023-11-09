@@ -20,7 +20,7 @@ const ButtonItem: React.FC<{
           </div>
           <div className="flex flex-col items-end">
             <p className="text-[15px] pb-[5px] text-textButton">Giá</p>
-            <p className="text-[18px] font-[500]">{price} ETH</p>
+            <p className="text-[18px] font-[500]">{price} BNBT</p>
           </div>
         </div>
       </div>

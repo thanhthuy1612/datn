@@ -3,7 +3,7 @@ import { Button, DatePicker, Form, Image, Input, Modal, Spin, TimePicker, Upload
 import { useSelector } from "react-redux";
 import { IStateRedux, changeTokenUri, resellToken, setLoading, store } from "../../redux";
 import { useNavigate } from "react-router-dom";
-import { LoadingOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
 import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import More from "./More";
 import { postPicture } from "../../api";
@@ -203,8 +203,9 @@ const ResellNFT: React.FC = () => {
             <Input placeholder="Nhập tên NFT..." />
           </Form.Item>
           <Form.Item
-            label="Giá bán mới NFT:"
+            label="Giá bán NFT:"
             name="price"
+            tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
             rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
             <Input placeholder="Nhập giá bán NFT..." />
           </Form.Item>
@@ -242,8 +243,8 @@ const ResellNFT: React.FC = () => {
         <div className="flex items-center pt-[15px] py-[5px]">
           Ngày mua: {item.date}
         </div>
-        <div className="py-[5px]">Giá mua: {item.price} ETH</div>
-        <p className="py-[5px]">Số lần đã bán: {item.number}</p>
+        {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
+        <div className="py-[5px]">Số lần đã bán: {item.number}</div>
         <More />
       </div>
       <div className="flex mt-[50px]">
