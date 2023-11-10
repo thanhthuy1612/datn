@@ -4,7 +4,6 @@ import NewNFT from "./NewNFT";
 import OldNFT from "./OldNFT";
 import {
   CiCloud,
-  CiCloudDrizzle,
   CiCloudMoon,
   CiCloudRainbow,
   CiCloudSun,
@@ -19,7 +18,6 @@ import login from "../../assets/dangnhap.png";
 import create from "../../assets/taoNFT.png";
 import buy from "../../assets/buy.png";
 import resellNFT from "../../assets/banlai.png";
-import HotNFT from "./HotNFT";
 import Tippy from "@tippyjs/react/headless";
 import { followCursor } from "tippy.js";
 
@@ -118,7 +116,6 @@ const Home: React.FC = () => {
   const refNew = React.useRef<null | HTMLDivElement>(null);
   const refOld = React.useRef<null | HTMLDivElement>(null);
   const refMyNFT = React.useRef<null | HTMLDivElement>(null);
-  const refHot = React.useRef<null | HTMLDivElement>(null);
 
   React.useEffect(() => {
     handleTop();
@@ -133,9 +130,6 @@ const Home: React.FC = () => {
   };
   const handleOld = () => {
     refOld.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-  const handleHot = () => {
-    refHot.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const handleMyNFT = () => {
     refMyNFT.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -165,22 +159,16 @@ const Home: React.FC = () => {
     },
     {
       id: 3,
-      handle: handleHot,
-      title: "NFT nhiều lượt bán",
-      icon: <CiCloudRainbow />,
-    },
-    {
-      id: 4,
       handle: handleMyNFT,
       title: "NFT của bạn",
-      icon: <CiCloudDrizzle />,
+      icon: <CiCloudRainbow />,
     },
   ];
 
   const renderButton = (item: IMenu) => (
     <button
       onClick={item.handle}
-      className="flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
+      className="flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
     >
       {item.title}
       <div className="px-[10px]">{item.icon}</div>
@@ -202,8 +190,8 @@ const Home: React.FC = () => {
               disabled={account === undefined}
               className={
                 account === undefined
-                  ? "flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] cursor-not-allowed"
-                  : "flex items-center justify-center w-[250px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
+                  ? "flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] cursor-not-allowed"
+                  : "flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
               }
             >
               Trang cá nhân
@@ -219,9 +207,6 @@ const Home: React.FC = () => {
       </div>
       <div ref={refOld}>
         <OldNFT />
-      </div>
-      <div ref={refHot}>
-        <HotNFT />
       </div>
       <div ref={refMyNFT}>
         <ListNFT />

@@ -14,7 +14,6 @@ const initialState: IStateRedux = {
   loading: false,
   upComing: [],
   past: [],
-  hot: [],
   myNFT: [],
   mySeller: [],
   myDate: [],
@@ -34,7 +33,6 @@ export interface IStateRedux {
   upComing?: any[];
   past?: any[];
   myNFT: any[];
-  hot: any[];
   mySeller: any[];
   myDate: any[];
   itemsSeller: any[];
@@ -236,17 +234,6 @@ export const fetchMarketItemsPast = createAsyncThunk(
   }
 );
 
-export const fetchMarketItemsHot = createAsyncThunk(
-  "fetchMarketItemsHot",
-  async (_item, thunkAPI) => {
-    thunkAPI.dispatch(setLoadingHot(true));
-    const { contract, erc721 } = await getERC();
-    const data = await erc721.fetchMarketItemsHot();
-    const items = await getItems(data, contract);
-    return items;
-  }
-);
-
 export const fetch = createAsyncThunk("fetch", async (_item, thunkAPI) => {
   thunkAPI.dispatch(setLoading(true));
   const { contract, erc721 } = await getERC();
@@ -376,10 +363,6 @@ export const item = createSlice({
     builder.addCase(fetchMarketItemsPast.fulfilled, (state, actions) => {
       state.loadingPast = false;
       state.past = actions.payload;
-    });
-    builder.addCase(fetchMarketItemsHot.fulfilled, (state, actions) => {
-      state.loadingHot = false;
-      state.hot = actions.payload;
     });
     builder.addCase(fetch.fulfilled, (state, actions) => {
       state.loading = false;
