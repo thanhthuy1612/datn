@@ -90,7 +90,7 @@ const HistoryTag: React.FC = () => {
         case 3:
           return state.data.filter(
             (item) =>
-              item.functionName === "createMarketSale(uint256 itemId)" &&
+              item.functionName === "createMarketSale(uint256 itemId, string currency)" &&
               item.to === addressContract.toLowerCase()
           );
         case 4:

@@ -29,25 +29,40 @@ const More: React.FC = () => {
 
   const renderPanel = () => (
     <>
-      {item.list.map((item: any) => (
-        <div key={item.img} className="flex mb-[20px]">
-          <Image
-            width={300}
-            height={300}
-            src={item.img}
-          />
-          <div className="ml-[20px]">
+      {item.list.map((item: any, index: number) =>
+        <>{item?.img !== '' ? (
+          <>
+            <p className="text-[17px] mb-[5px] font-bold">{index === 0 ? 'Khởi tạo:' : 'Cập nhật:'}</p>
+            <div key={item.img} className="flex mb-[20px]">
+              <Image
+                width={300}
+                height={300}
+                src={item.img}
+              />
+              <div className="ml-[20px]">
+                <div className="mb-[10px]">
+                  <p className="text-[17px] mb-[3px]">Người đăng:</p>
+                  <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{item.create}</p>
+                </div>
+                <div>
+                  <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+                  <p>{item.date}</p>
+                </div>
+              </div>
+            </div></>) :
+          (<div className='mb-[20px]'>
+            <p className="text-[17px] mb-[5px] font-bold">{item.status ? 'Bán:' : 'Mua:'}</p>
             <div className="mb-[10px]">
-              <p className="text-[17px] mb-[3px]">Người đăng:</p>
+              <p className="text-[17px] mb-[3px]">{item.status ? 'Người bán:' : 'Người mua:'}</p>
               <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{item.create}</p>
             </div>
             <div>
-              <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+              <p className="text-[17px] mb-[3px]">{item.status ? 'Ngày bán:' : 'Ngày mua:'}</p>
               <p>{item.date}</p>
             </div>
-          </div>
-        </div>
-      ))}
+          </ div>)}
+        </>
+      )}
     </>
   )
 

@@ -57,7 +57,6 @@ contract NFTMarketplace is ERC721URIStorage {
         string memory token
     ) public payable {
         _setTokenURI(tokenId, string.concat(tokenURI(tokenId), ";", token));
-        console.log(tokenURI(tokenId));
     }
 
     function createToken(
@@ -130,7 +129,10 @@ contract NFTMarketplace is ERC721URIStorage {
         _transfer(msg.sender, address(this), tokenId);
     }
 
-    function createMarketSale(uint256 tokenId) public payable {
+    function createMarketSale(
+        uint256 tokenId,
+        string memory tokenURI
+    ) public payable {
         // mua item
         uint price = idToMarketItem[tokenId].price;
         address payable creator = idToMarketItem[tokenId].seller;
@@ -141,6 +143,7 @@ contract NFTMarketplace is ERC721URIStorage {
         if (idToMarketItem[tokenId].seller != payable(msg.sender)) {
             idToMarketItem[tokenId].number = idToMarketItem[tokenId].number + 1;
         }
+        changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].owner = payable(msg.sender);
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].seller = payable(address(0));

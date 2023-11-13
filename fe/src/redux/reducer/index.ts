@@ -15,6 +15,7 @@ const initialState: IStateRedux = {
   upComing: [],
   past: [],
   myNFT: [],
+  myNew: [],
   mySeller: [],
   myDate: [],
   itemsSeller: [],
@@ -33,6 +34,7 @@ export interface IStateRedux {
   upComing?: any[];
   past?: any[];
   myNFT: any[];
+  myNew: any[];
   mySeller: any[];
   myDate: any[];
   itemsSeller: any[];
@@ -72,6 +74,7 @@ export const changeTokenUri = createAsyncThunk(
         img: `${option.file}`,
         date: Date.now(),
         create: address.toString(),
+        status: false,
       });
       const transaction = await erc721.changeTokenUri(
         option.tokenId,
@@ -94,6 +97,7 @@ export const createToken = createAsyncThunk(
         img: `${option.file}`,
         date: Date.now(),
         create: address.toString(),
+        status: false,
       });
       let listingPrice = await contract.getListingPrice();
       listingPrice = listingPrice.toString();
@@ -114,12 +118,19 @@ export const resellToken = createAsyncThunk(
   "resellToken",
   async (item: any, thunkAPI) => {
     thunkAPI.dispatch(setLoading(true));
-    const { contract, erc721 } = await getERC();
+    const { contract, erc721, address } = await getERC();
+    const url = await uploadToIPFS({
+      img: "",
+      date: Date.now(),
+      create: address.toString(),
+      status: true,
+    });
     const price = ethers.utils.parseUnits(item.price, "ether");
     let listingPrice = await contract.getListingPrice();
     listingPrice = listingPrice.toString();
     const result = await erc721.resellToken(
       item.tokenId,
+      url as string,
       item.name,
       price,
       item.date,
@@ -132,25 +143,38 @@ export const resellToken = createAsyncThunk(
 );
 
 const fetchMeta = async (params: string) => {
-  return await Promise.all(
-    params.split(";").map(async (item: string) => {
-      const result = await getItem(item);
-      const picture = await getItemIPFS(result.img);
-      const imageObjectURL = await URL.createObjectURL(picture);
-      return {
-        ...result,
-        img: imageObjectURL,
-        date: dateFormat(new Date(result.date), DateFormatType.FullDate),
-      };
-    })
-  );
+  let img = "";
+  return {
+    meta: await Promise.all(
+      params.split(";").map(async (item: string) => {
+        const result = await getItem(item);
+        if (result.img !== "") {
+          const picture = await getItemIPFS(result.img);
+          const imageObjectURL = await URL.createObjectURL(picture);
+          img = imageObjectURL;
+          return {
+            ...result,
+            img: imageObjectURL,
+            date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+          };
+        } else {
+          return {
+            ...result,
+            img: "",
+            date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+          };
+        }
+      })
+    ),
+    img: img,
+  };
 };
 
 const getItems = async (data: any, contract: any) => {
   const items = await Promise.all(
     data.map(async (i: any) => {
       const tokenUri = await contract.tokenURI(i.tokenId);
-      const meta = await fetchMeta(tokenUri);
+      const { meta, img } = await fetchMeta(tokenUri);
       const price = ethers.utils.formatUnits(i.price.toString(), "ether");
       return {
         tokenId: i.tokenId.toNumber(),
@@ -167,7 +191,7 @@ const getItems = async (data: any, contract: any) => {
           DateFormatType.FullDate
         ),
         title: i.name,
-        img: meta[meta.length - 1].img,
+        img: img,
         list: meta,
       };
     })
@@ -203,9 +227,15 @@ export const createMarketSale = createAsyncThunk(
   "createMarketSale",
   async (item: any, thunkAPI) => {
     thunkAPI.dispatch(setLoading(true));
-    const { erc721 } = await getERC();
+    const { erc721, address } = await getERC();
+    const url = await uploadToIPFS({
+      img: "",
+      date: Date.now(),
+      create: address.toString(),
+      status: false,
+    });
     const price = ethers.utils.parseUnits(item.price, "ether");
-    const result = await erc721.createMarketSale(item.tokenId, {
+    const result = await erc721.createMarketSale(item.tokenId, url as string, {
       value: price,
     });
     await result.wait();
@@ -243,7 +273,9 @@ export const fetch = createAsyncThunk("fetch", async (_item, thunkAPI) => {
   const itemsList = await getItems(dataList, contract);
   const dataDate = await erc721.fetchItemsListedDate();
   const itemsDate = await getItems(dataDate, contract);
-  return { itemsMyNFT, itemsList, itemsDate };
+  const dataNew = await erc721.fetchItemsListedNew();
+  const itemsNew = await getItems(dataNew, contract);
+  return { itemsMyNFT, itemsList, itemsDate, itemsNew };
 });
 
 export const fetchMyNFTs = createAsyncThunk(
@@ -274,6 +306,17 @@ export const fetchItemsListedDate = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
     const { contract, erc721 } = await getERC();
     const data = await erc721.fetchItemsListedDate();
+    const items = await getItems(data, contract);
+    return items;
+  }
+);
+
+export const fetchItemsListedNew = createAsyncThunk(
+  "fetchItemsListedNew",
+  async (_item, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { contract, erc721 } = await getERC();
+    const data = await erc721.fetchItemsListedNew();
     const items = await getItems(data, contract);
     return items;
   }
@@ -369,6 +412,7 @@ export const item = createSlice({
       state.myDate = actions.payload.itemsDate;
       state.mySeller = actions.payload.itemsList;
       state.myNFT = actions.payload.itemsMyNFT;
+      state.myNew = actions.payload.itemsNew;
     });
     builder.addCase(fetchMyNFTs.fulfilled, (state, actions) => {
       state.loading = false;
@@ -381,6 +425,10 @@ export const item = createSlice({
     builder.addCase(fetchItemsListedDate.fulfilled, (state, actions) => {
       state.loading = false;
       state.myDate = actions.payload;
+    });
+    builder.addCase(fetchItemsListedNew.fulfilled, (state, actions) => {
+      state.loading = false;
+      state.myNew = actions.payload;
     });
     builder.addCase(createMarketSale.fulfilled, (state, _actions) => {
       state.loading = false;

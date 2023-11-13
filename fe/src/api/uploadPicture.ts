@@ -6,6 +6,7 @@ export interface IUploadIPFS {
   img: string;
   date: number;
   create: string;
+  status: boolean;
 }
 
 export const uploadPicture = async (file: FormData) => {

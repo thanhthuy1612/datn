@@ -23,6 +23,10 @@ const menu: IMenu[] = [
     id: 3,
     title: "NFT hết hạn",
   },
+  {
+    id: 4,
+    title: "NFT mới tạo"
+  }
 ];
 
 interface IState {
@@ -43,7 +47,7 @@ const ListNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
-  const { myNFT, mySeller, myDate, loading, account } = useSelector(
+  const { myNFT, mySeller, myDate, myNew, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
   const handleClickItem = (item: any) => () => {
@@ -68,10 +72,12 @@ const ListNFT: React.FC = () => {
         case 3:
           setState({ items: myDate });
           break;
+        case 4:
+          setState({ items: myNew });
       }
     };
     getItems();
-  }, [myNFT, mySeller, myDate, state.choose]);
+  }, [myNFT, mySeller, myDate, myNew, state.choose]);
 
   const setNavigate = () => {
     switch (state.choose) {
@@ -81,6 +87,8 @@ const ListNFT: React.FC = () => {
         return 'nft/buy'
       case 3:
         return 'nft/expired'
+      case 4:
+        return 'nft/resell'
       default:
         return ''
     }

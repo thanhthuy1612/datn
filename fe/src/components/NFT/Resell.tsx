@@ -249,7 +249,7 @@ const ResellNFT: React.FC = () => {
       </div>
       <div className="flex mt-[50px]">
         <button className="border-boder border-[1px] rounded-[5px] py-[10px] px-[20px] mr-[10px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>
-        <Modal title="Bán NFT" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
+        <Modal title="Cập nhật NFT" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
           {renderAdd()}
         </Modal>
         <button className="border-boder border-[1px] rounded-[5px] py-[10px] px-[20px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán NFT</button>
