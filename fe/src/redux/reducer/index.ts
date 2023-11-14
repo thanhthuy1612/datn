@@ -75,6 +75,7 @@ export const changeTokenUri = createAsyncThunk(
         date: Date.now(),
         create: address.toString(),
         status: false,
+        price: 0,
       });
       const transaction = await erc721.changeTokenUri(
         option.tokenId,
@@ -98,6 +99,7 @@ export const createToken = createAsyncThunk(
         date: Date.now(),
         create: address.toString(),
         status: false,
+        price: 0,
       });
       let listingPrice = await contract.getListingPrice();
       listingPrice = listingPrice.toString();
@@ -124,6 +126,7 @@ export const resellToken = createAsyncThunk(
       date: Date.now(),
       create: address.toString(),
       status: true,
+      price: item.price,
     });
     const price = ethers.utils.parseUnits(item.price, "ether");
     let listingPrice = await contract.getListingPrice();
@@ -233,6 +236,7 @@ export const createMarketSale = createAsyncThunk(
       date: Date.now(),
       create: address.toString(),
       status: false,
+      price: 0,
     });
     const price = ethers.utils.parseUnits(item.price, "ether");
     const result = await erc721.createMarketSale(item.tokenId, url as string, {
