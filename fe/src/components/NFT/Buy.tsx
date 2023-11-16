@@ -6,18 +6,31 @@ import { IStateRedux, createMarketSale, setAccountSearch, setLoading, store } fr
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
+import { DateFormatType, ICart } from "../../interfaces/IRouter";
+import { dateFormat } from "../../ultis";
+import { addCart, deleteCart, getCartsByTokenUri } from "../../api/cart";
 
 const BuyNFT: React.FC = () => {
+  const [cart, setCart] = React.useState<ICart[]>([]);
+  const [reload, setReload] = React.useState<boolean>(false)
+
   const { item, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
   const navigate = useNavigate();
+  const fetch = async () => {
+    const res = await getCartsByTokenUri({ account: account?.wallet, url: item.tokenId })
+    setCart(res.data)
+  }
   React.useEffect(() => {
     if (!item) {
       navigate("/");
     }
+    store.dispatch(setLoading(true));
+    fetch()
     store.dispatch(setLoading(false));
   }, []);
+
   const handleBuy = async () => {
     await store.dispatch(createMarketSale(item));
     navigate("/");
@@ -30,6 +43,18 @@ const BuyNFT: React.FC = () => {
       navigate("/search");
     }
   };
+  const handleAddCart = async () => {
+    setReload(true)
+    await addCart({ account: account?.wallet, url: item.tokenId })
+    await fetch()
+    setReload(false)
+  }
+  const handleDeleteCart = async () => {
+    setReload(true)
+    await deleteCart(cart[0]?._id ?? '')
+    await fetch()
+    setReload(false)
+  }
   const antIcon = <LoadingOutlined style={{ fontSize: 21 }} spin />;
   const renderloading = () => (
     <div className="w-[500px] flex justify-center items-center">
@@ -51,8 +76,8 @@ const BuyNFT: React.FC = () => {
               {item.title.toUpperCase()}
             </p>
             <p>
-              Chủ sở hữu hiện tại:{" "}
-              <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller}</button>
+              Người bán:{" "}
+              <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{account && account.wallet === item.seller ? `${item.seller} (Bạn)` : item.seller}</button>
             </p>
             <div className="flex items-center pt-[15px]">
               Ngày bắt đầu bán: {item.date}
@@ -65,7 +90,10 @@ const BuyNFT: React.FC = () => {
               <div className="pr-[10px]">
                 <CiClock1 />
               </div>{" "}
-              Thời gian hết hạn bán NFT: {item.expired}
+              Thời gian hết hạn bán NFT: {dateFormat(
+                new Date(item.expired),
+                DateFormatType.FullDate
+              )}
             </p>
             <div className="w-[100%]">
               <p className="py-[20px] text-[30px] flex justify-center">
@@ -77,18 +105,20 @@ const BuyNFT: React.FC = () => {
                   disabled={loading}
                   className={
                     loading
-                      ? "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
+                      ? "border-border bg-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
                       : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
                   }>
                   {loading ? renderloading() : "Mua ngay"}
                 </button>
                 <button
                   className={
-                    loading
-                      ? "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
+                    loading || reload
+                      ? "border-border bg-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
                       : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
-                  }>
-                  Thêm vào giỏ hàng
+                  }
+                  disabled={loading || reload}
+                  onClick={cart?.length === 0 ? handleAddCart : handleDeleteCart}>
+                  {loading || reload ? renderloading() : cart?.length ? 'Đã trong giỏ hàng (Nhấn Xóa)' : 'Thêm vào giỏ hàng'}
                 </button>
               </div>
             </div>

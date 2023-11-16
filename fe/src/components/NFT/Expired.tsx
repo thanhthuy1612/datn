@@ -6,6 +6,8 @@ import { IStateRedux, createMarketSale, setAccountSearch, setLoading, store } fr
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
+import { dateFormat } from "../../ultis";
+import { DateFormatType } from "../../interfaces/IRouter";
 
 const Expired: React.FC = () => {
   const { item, loading, account } = useSelector(
@@ -65,7 +67,10 @@ const Expired: React.FC = () => {
               <div className="pr-[10px]">
                 <CiClock1 />
               </div>{" "}
-              Thời gian hết hạn bán NFT: {item.expired}
+              Thời gian hết hạn bán NFT: {dateFormat(
+                new Date(item.expired),
+                DateFormatType.FullDate
+              )}
             </p>
             <div className="w-[100%]">
               <p className="py-[20px] text-[30px] flex justify-center">

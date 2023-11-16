@@ -7,10 +7,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CartService } from './cart.service';
 import { ResponseData } from 'src/global/globalClass';
-import { Cart } from 'src/model/CartSchema';
 import { ICart } from 'src/interface/ICart';
+import { Cart } from 'src/model/CartSchema';
+import { CartService } from './cart.service';
 
 @Controller('cart')
 export class CartController {
@@ -19,6 +19,22 @@ export class CartController {
   async getCarts(): Promise<ResponseData<Cart>> {
     return this.cartService.findAll();
   }
+
+  @Get('getByAccount/:account')
+  async getCartsByAccount(
+    @Param('account') account: string,
+  ): Promise<ResponseData<Cart>> {
+    return this.cartService.findCartsByAccount(account);
+  }
+
+  @Post('getByUri')
+  async checkByTokenUri(
+    @Body()
+    cart: ICart,
+  ): Promise<ResponseData<Cart>> {
+    return this.cartService.findCartsTokenUri(cart);
+  }
+
   @Post()
   async createCart(
     @Body()
@@ -26,6 +42,7 @@ export class CartController {
   ): Promise<ResponseData<Cart>> {
     return this.cartService.create(cart);
   }
+
   @Get(':id')
   async getCart(
     @Param('id')
@@ -33,6 +50,7 @@ export class CartController {
   ): Promise<ResponseData<Cart>> {
     return this.cartService.findById(id);
   }
+
   @Put(':id')
   async updateCarts(
     @Param('id')
@@ -42,6 +60,7 @@ export class CartController {
   ): Promise<ResponseData<Cart>> {
     return this.cartService.update(id, cart);
   }
+
   @Delete(':id')
   async deleteCarts(
     @Param('id')

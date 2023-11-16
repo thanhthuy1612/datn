@@ -19,6 +19,12 @@ export interface IAccount {
   carts?: unknown;
 }
 
+export interface ICart {
+  _id?: string;
+  url?: string;
+  account?: string;
+}
+
 export interface IUploadPicture {
   Name: string;
   Hash: string;

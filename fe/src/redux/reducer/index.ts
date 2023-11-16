@@ -2,12 +2,13 @@ import { MetaMaskInpageProvider } from "@metamask/providers";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { checkAccount } from "../../api/account";
-import { DateFormatType, IAccount } from "../../interfaces/IRouter";
+import { DateFormatType, IAccount, ICart } from "../../interfaces/IRouter";
 import { login } from "../../api/login";
 import { addressContract } from "../../ultis/addressContract";
 import { abi } from "../../ultis/abi";
 import { dateFormat } from "../../ultis";
 import { getItem, getItemIPFS, uploadToIPFS } from "../../api/uploadPicture";
+import { getCartsByAccount } from "../../api/cart";
 
 const initialState: IStateRedux = {
   account: undefined,
@@ -19,6 +20,7 @@ const initialState: IStateRedux = {
   mySeller: [],
   myDate: [],
   itemsSeller: [],
+  cart: [],
   item: undefined,
   loadingUpComing: false,
   loadingPast: false,
@@ -38,6 +40,7 @@ export interface IStateRedux {
   mySeller: any[];
   myDate: any[];
   itemsSeller: any[];
+  cart: any[];
   item: any;
   loadingUpComing?: boolean;
   loadingPast?: boolean;
@@ -146,49 +149,50 @@ export const resellToken = createAsyncThunk(
 );
 
 const fetchMeta = async (params: string) => {
-  let img = "";
-  return {
-    meta: await Promise.all(
-      params.split(";").map(async (item: string) => {
-        const result = await getItem(item);
-        if (result.img !== "") {
-          const picture = await getItemIPFS(result.img);
-          const imageObjectURL = await URL.createObjectURL(picture);
-          img = imageObjectURL;
-          return {
-            ...result,
-            img: imageObjectURL,
-            date: dateFormat(new Date(result.date), DateFormatType.FullDate),
-          };
-        } else {
-          return {
-            ...result,
-            img: "",
-            date: dateFormat(new Date(result.date), DateFormatType.FullDate),
-          };
-        }
-      })
-    ),
-    img: img,
-  };
+  const meta = await Promise.all(
+    params.split(";").map(async (item: string) => {
+      const result = await getItem(item);
+      if (result.img !== "") {
+        const picture = await getItemIPFS(result.img);
+        const imageObjectURL = URL.createObjectURL(picture);
+        return {
+          ...result,
+          img: imageObjectURL,
+          date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+        };
+      } else {
+        return {
+          ...result,
+          img: "",
+          date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+        };
+      }
+    })
+  );
+  return meta;
 };
 
 const getItems = async (data: any, contract: any) => {
   const items = await Promise.all(
     data.map(async (i: any) => {
       const tokenUri = await contract.tokenURI(i.tokenId);
-      const { meta, img } = await fetchMeta(tokenUri);
+      const meta = await fetchMeta(tokenUri);
       const price = ethers.utils.formatUnits(i.price.toString(), "ether");
+      let img = "";
+      for (let i = meta.length - 1; i >= 0; i--) {
+        if (meta[i].img) {
+          img = meta[i].img;
+          break;
+        }
+      }
       return {
         tokenId: i.tokenId.toNumber(),
         seller: i.seller,
         owner: i.owner,
         number: i.number.toNumber(),
         price,
-        expired: dateFormat(
-          new Date(i.date.toNumber()),
-          DateFormatType.FullDate
-        ),
+        sold: i.sold,
+        expired: i.date,
         date: dateFormat(
           new Date(i.time.toNumber() * 1000),
           DateFormatType.FullDate
@@ -326,6 +330,26 @@ export const fetchItemsListedNew = createAsyncThunk(
   }
 );
 
+export const getCartAccount = createAsyncThunk(
+  "getCartAccount",
+  async (account: string, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { contract, erc721 } = await getERC();
+    const listCarts = await getCartsByAccount(account);
+    if (!listCarts) {
+      return [];
+    }
+    const result: any[] = await Promise.all(
+      listCarts.map(async (item: ICart) => {
+        const data = await erc721.fetchId(parseInt(item.url ?? ""));
+        const res = await getItems(data, contract);
+        return { ...res[0], ...item };
+      })
+    );
+    return result;
+  }
+);
+
 export const fetchConnect = createAsyncThunk(
   "connect",
   async (reload: boolean, thunkAPI) => {
@@ -448,6 +472,10 @@ export const item = createSlice({
     });
     builder.addCase(fetchItemsSeller.fulfilled, (state, actions) => {
       state.itemsSeller = actions.payload;
+      state.loading = false;
+    });
+    builder.addCase(getCartAccount.fulfilled, (state, actions) => {
+      state.cart = actions.payload;
       state.loading = false;
     });
   },

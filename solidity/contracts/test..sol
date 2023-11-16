@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol"; /
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol"; // Để kế thừa _tokenURL
 import "hardhat/console.sol";
 
-contract NFTMarketplace is ERC721URIStorage {
+contract NFTMarketplace1 is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
@@ -56,7 +56,7 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 tokenId,
         string memory token
     ) public payable {
-        _setTokenURI(tokenId, string.concat(tokenURI(tokenId), ";", token));
+        _setTokenURI(tokenId, string(bytes.concat(bytes(tokenURI(tokenId)), ";", bytes(token))));
     }
 
     function createToken(

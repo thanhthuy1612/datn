@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { ResponseData } from 'src/global/globalClass';
 import { HttpMessage, HttpStatus } from 'src/global/globalEnum';
+import { ICart } from 'src/interface/ICart';
 import { Cart } from 'src/model/CartSchema';
 @Injectable()
 export class CartService {
@@ -22,6 +23,36 @@ export class CartService {
       return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
     }
   }
+
+  async findCartsByAccount(account: string): Promise<ResponseData<Cart>> {
+    try {
+      const carts = await this.cartsModel.find({ account });
+      return new ResponseData<Cart>(
+        carts,
+        HttpStatus.SUCCESS,
+        HttpMessage.SUCCESS,
+      );
+    } catch (error) {
+      return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
+    }
+  }
+
+  async findCartsTokenUri(cart: ICart): Promise<ResponseData<Cart>> {
+    try {
+      const carts = await this.cartsModel.find({
+        url: cart.url,
+        account: cart.account,
+      });
+      return new ResponseData<Cart>(
+        carts,
+        HttpStatus.SUCCESS,
+        HttpMessage.SUCCESS,
+      );
+    } catch (error) {
+      return new ResponseData<Cart>(null, HttpStatus.ERROR, HttpMessage.ERROR);
+    }
+  }
+
   async create(cart: Cart): Promise<ResponseData<Cart>> {
     try {
       const carts = await this.cartsModel.create(cart);

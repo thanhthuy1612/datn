@@ -42,7 +42,7 @@ const More: React.FC = () => {
               <div className="ml-[20px]">
                 <div className="mb-[10px]">
                   <p className="text-[17px] mb-[3px]">Người đăng:</p>
-                  <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{account && account.wallet === item.create ? 'Về trang cá nhân' : item.create}</p>
+                  <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
                 </div>
                 <div>
                   <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
@@ -54,7 +54,7 @@ const More: React.FC = () => {
             <p className="text-[17px] mb-[5px] font-bold">{item.status ? 'Bán:' : 'Mua:'}</p>
             <div className="mb-[10px]">
               <p className="text-[17px] mb-[3px]">{item.status ? 'Người bán:' : 'Người mua:'}</p>
-              <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{account && account.wallet === item.create ? 'Về trang cá nhân' : item.create}</p>
+              <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
             </div>
             {
               item.status && <div>

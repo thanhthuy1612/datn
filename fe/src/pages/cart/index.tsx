@@ -1,52 +1,72 @@
 import React from "react";
 import ButtonItem from "../../components/button";
-import { setItem, store } from "../../redux";
+import { IStateRedux, getCartAccount, setItem, store } from "../../redux";
 import { Empty, Pagination, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { deleteCart } from "../../api/cart";
 interface IState {
   page: number;
   pageSize: number;
-  loading: boolean;
+  reLoad: boolean;
 }
 const Cart: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
-    loading: false,
+    reLoad: false
   });
+  const { loading, account, cart } = useSelector(
+    (state: { item: IStateRedux }) => state.item
+  );
+
+  console.log(cart)
+
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
-  const past: any = [];
   const ref = React.useRef<null | HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const fetch = async () => {
+    await store.dispatch(getCartAccount(account?.wallet ?? ''))
+  }
   React.useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: `smooth`,
     });
-  }, []);
+    fetch()
+  }, [account]);
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const handleClick = (item: any) => () => {
     store.dispatch(setItem(item));
+    console.log(1)
+    navigate("/nft/buy");
   };
+  const handleDeleteCart = (id: string) => async () => {
+    await deleteCart(id);
+    await fetch();
+  }
   const renderList = () => (
     <>
-      {past && past.length > 0 ? (
-        past
+      {cart && cart.length > 0 ? (
+        cart
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item: any) => (
             <button
-              onClick={handleClick}
-              className="basis-[25%] h-[510px]"
+              onClick={item.sold || item.expired < new Date() ? handleDeleteCart(item._id) : handleClick(item)}
+              className={"basis-[25%] h-[510px]"}
               key={item.id}>
               <ButtonItem
                 title={item.title}
                 date={item.date}
                 price={item.price}
                 img={item.img}
+                cart={item.sold || item.expired < new Date()}
               />
             </button>
           ))
@@ -59,10 +79,10 @@ const Cart: React.FC = () => {
           />
         </div>
       )}
-      {past && past.length > 0 && (
+      {cart && cart.length > 0 && (
         <div className="w-[100%] flex items-end justify-center mt-[50px]">
           <Pagination
-            total={past.length}
+            total={cart.length}
             showSizeChanger
             showQuickJumper
             pageSizeOptions={[8, 12, 16, 20]}
@@ -88,7 +108,7 @@ const Cart: React.FC = () => {
         </p>
       </div>
       <div className="py-[30px] flex flex-wrap w-[100%] border-[1px] rounded-[20px] mt-[20px] min-h-[680px] shadow-xl">
-        {state.loading ? renderloading() : renderList()}
+        {loading ? renderloading() : renderList()}
       </div>
     </div>
   );
