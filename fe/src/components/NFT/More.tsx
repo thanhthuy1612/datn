@@ -2,12 +2,14 @@ import { Drawer, Image } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { IStateRedux, setAccountSearch, store } from "../../redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const More: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const { item, account } = useSelector((state: { item: IStateRedux }) => state.item);
+  const { account } = useSelector((state: { item: IStateRedux }) => state.item);
+  const localtion = useLocation();
+  const item = localtion.state;
   const navigate = useNavigate()
 
   const showDrawer = () => {

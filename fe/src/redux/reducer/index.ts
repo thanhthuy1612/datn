@@ -21,12 +21,13 @@ const initialState: IStateRedux = {
   myDate: [],
   itemsSeller: [],
   cart: [],
-  item: undefined,
   loadingUpComing: false,
   loadingPast: false,
   loadingHot: false,
   loadingCreate: false,
   accountSearch: undefined,
+  totalCart: null,
+  loadingCart: true,
 };
 
 export interface IStateRedux {
@@ -41,11 +42,12 @@ export interface IStateRedux {
   myDate: any[];
   itemsSeller: any[];
   cart: any[];
-  item: any;
   loadingUpComing?: boolean;
   loadingPast?: boolean;
   loadingCreate?: boolean;
   loadingHot?: boolean;
+  totalCart?: number | null;
+  loadingCart?: boolean;
 }
 
 declare global {
@@ -192,7 +194,7 @@ const getItems = async (data: any, contract: any) => {
         number: i.number.toNumber(),
         price,
         sold: i.sold,
-        expired: i.date,
+        expired: i.date.toNumber(),
         date: dateFormat(
           new Date(i.time.toNumber() * 1000),
           DateFormatType.FullDate
@@ -336,6 +338,7 @@ export const getCartAccount = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
     const { contract, erc721 } = await getERC();
     const listCarts = await getCartsByAccount(account);
+    thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
     if (!listCarts) {
       return [];
     }
@@ -360,16 +363,22 @@ export const fetchConnect = createAsyncThunk(
         const address = await signer.getAddress();
         const result: IAccount = await checkAccount(address);
         thunkAPI.dispatch(setAccount(result));
+        const listCarts = await getCartsByAccount(address);
+        thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
       } else {
         const state: any = thunkAPI.getState();
         if (state.item.wallet !== undefined) {
           const address = await signer.getAddress();
           const result = await checkAccount(address);
           thunkAPI.dispatch(setAccount(result));
+          const listCarts = await getCartsByAccount(address);
+          thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
         } else {
           const sign = await signer.signMessage("Login");
           const result = await login(sign);
           thunkAPI.dispatch(setAccount(result));
+          const listCarts = await getCartsByAccount(result.address);
+          thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
         }
       }
     };
@@ -418,14 +427,19 @@ export const item = createSlice({
     setLoadingCreate: (state, action) => {
       state.loadingCreate = action.payload;
     },
-    setItem: (state, action) => {
-      state.item = action.payload;
+    setTotalCart: (state, action) => {
+      state.totalCart = action.payload;
+    },
+    setLoadingCart: (state, action) => {
+      state.loadingCart = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(
       fetchConnect.fulfilled || fetchMarketItem.fulfilled,
-      (_state, _actions) => {}
+      (state, _actions) => {
+        state.loadingCart = false;
+      }
     );
     builder.addCase(fetchMarketItemsUpComing.fulfilled, (state, actions) => {
       state.loadingUpComing = false;
@@ -485,11 +499,12 @@ const reducer = item.reducer;
 export const {
   setAccount,
   setLoading,
-  setItem,
   setLoadingCreate,
   setLoadingPast,
   setLoadingUpcoming,
   setLoadingHot,
   setAccountSearch,
+  setTotalCart,
+  setLoadingCart,
 } = item.actions;
 export default reducer;

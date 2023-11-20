@@ -9,7 +9,7 @@ import { Badge } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const Connect: React.FC = () => {
-  const { account } = useSelector((state: { item: IStateRedux }) => state.item);
+  const { account, totalCart, loadingCart } = useSelector((state: { item: IStateRedux }) => state.item);
   const navigate = useNavigate();
   const handleClick = async () => {
     await store.dispatch(fetchConnect(false));
@@ -37,8 +37,8 @@ const Connect: React.FC = () => {
       <p className="px-[5px] w-[170px]">
         {account
           ? `${account.wallet?.substring(0, 10)}...${account.wallet?.substring(
-              38
-            )}`
+            38
+          )}`
           : `Kết nối ví Metamask`}
       </p>
     </Tippy>
@@ -56,17 +56,18 @@ const Connect: React.FC = () => {
         </button>
         <MenuAccount />
       </div>
-      <button
-        onClick={handleClickCart}
-        className="flex border-[1px] rounded-[15px] border-border items-center px-[10px] cursor-pointer ml-[10px] hover:bg-hover hover:rounded-[15px] shadow-md">
-        <Badge count={0} className="flex items-center justify-center">
+      {<Badge count={!loadingCart && account ? totalCart : null} dot={loadingCart} status={loadingCart ? 'processing' : undefined} overflowCount={99} className="flex h-[100%] items-center justify-center">
+        <button
+          onClick={handleClickCart}
+          disabled={!account}
+          className="flex border-[1px] rounded-[15px] h-[100%] border-border items-center px-[10px] cursor-pointer ml-[10px] hover:bg-hover hover:rounded-[15px] shadow-md">
           <div className="px-[5px]">
             <CiShoppingCart />
           </div>
           <p className="px-[5px]">Giỏ hàng</p>
-        </Badge>
-      </button>
-    </div>
+        </button>
+      </Badge>}
+    </div >
   );
 };
 

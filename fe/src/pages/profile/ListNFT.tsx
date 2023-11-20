@@ -2,7 +2,7 @@ import React from "react";
 import ButtonItem from "../../components/button";
 import { Empty, Pagination, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-import { IStateRedux, fetch, setItem, store } from "../../redux";
+import { IStateRedux, fetch, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -51,8 +51,7 @@ const ListNFT: React.FC = () => {
     (state: { item: IStateRedux }) => state.item
   );
   const handleClickItem = (item: any) => () => {
-    store.dispatch(setItem(item));
-    navigate(setNavigate());
+    navigate(setNavigate(), { state: item });
   };
   React.useEffect(() => {
     const renderRedux = async () => {
@@ -164,7 +163,7 @@ const ListNFT: React.FC = () => {
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-618px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-818px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loading ? renderList() : renderloading()}

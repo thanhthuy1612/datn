@@ -2,12 +2,13 @@ import React from "react";
 import { Button, DatePicker, Form, Image, Input, Modal, Spin, TimePicker, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
 import { IStateRedux, changeTokenUri, resellToken, setLoading, store } from "../../redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
 import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
+import ShowLayout from "../../layouts/ShowLayout";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -29,18 +30,18 @@ const ResellNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
-  const { item, loading, loadingCreate } = useSelector(
+  const { loading, loadingCreate } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
+
+  const localtion = useLocation();
+  const item = localtion.state;
 
   const navigate = useNavigate();
   const dateFormat = "YYYY/MM/DD";
   const timeFormate = "hh:mm:ss";
 
   React.useEffect(() => {
-    if (!item) {
-      navigate("/");
-    }
     store.dispatch(setLoading(false));
   }, []);
 
@@ -248,31 +249,28 @@ const ResellNFT: React.FC = () => {
         <More />
       </div>
       <div className="flex mt-[50px]">
-        <button className="border-boder border-[1px] rounded-[5px] py-[10px] px-[20px] mr-[10px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>
+        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] mr-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>
         <Modal title="Cập nhật NFT" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
           {renderAdd()}
         </Modal>
-        <button className="border-boder border-[1px] rounded-[5px] py-[10px] px-[20px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán NFT</button>
+        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán NFT</button>
         <Modal title="Bán NFT" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
           {renderResell()}
         </Modal>
       </div>
     </div>
   );
-  return (
-    <div className="mt-[20px] w-[100%] border-border border-[1px] shadow-md rounded-[20px] overflow-hidden ">
-      <p className="w-[100%] text-[25px] flex justify-center items-center border-border border-b-[1px] p-[20px]">
-        Bán NFT
-      </p>
-      <div className="py-[40px] flex w-[100%] justify-around">
-        <div className="w-[500px] h-[500px] rounded-[20px] shadow-md overflow-hidden">
-          <Image width={"100%"} height={500} src={item.img} />
-        </div>
-        <div className="flex w-[700px] justify-between">
-          {renderProfileNFT()}
-        </div>
-      </div>
+  const renderBody = () => (
+  <div className="py-[40px] flex w-[100%] justify-around">
+    <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">
+      <Image width={"100%"} height={500} src={item.img} />
     </div>
+    <div className="flex w-[700px] justify-between">
+      {renderProfileNFT()}
+    </div>
+  </div>)
+  return (
+    <ShowLayout chidren={renderBody()} title="Bán NFT"/>
   );
 };
 

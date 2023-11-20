@@ -1,11 +1,11 @@
 import React from "react";
 import ButtonItem from "../../components/button";
-import { IStateRedux, getCartAccount, setItem, store } from "../../redux";
-import { Empty, Pagination, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { IStateRedux, getCartAccount, store } from "../../redux";
+import { Empty, Pagination } from "antd";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteCart } from "../../api/cart";
+import ShowLayout from "../../layouts/ShowLayout";
 interface IState {
   page: number;
   pageSize: number;
@@ -20,8 +20,6 @@ const Cart: React.FC = () => {
   const { loading, account, cart } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
-
-  console.log(cart)
 
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
@@ -43,9 +41,7 @@ const Cart: React.FC = () => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const handleClick = (item: any) => () => {
-    store.dispatch(setItem(item));
-    console.log(1)
-    navigate("/nft/buy");
+    navigate("/nft/buy", { state: { item } });
   };
   const handleDeleteCart = (id: string) => async () => {
     await deleteCart(id);
@@ -80,7 +76,7 @@ const Cart: React.FC = () => {
         </div>
       )}
       {cart && cart.length > 0 && (
-        <div className="w-[100%] flex items-end justify-center mt-[50px]">
+        <div className="w-[100%] flex items-end justify-center mt-[50px] mb-[20px]">
           <Pagination
             total={cart.length}
             showSizeChanger
@@ -94,23 +90,9 @@ const Cart: React.FC = () => {
       )}
     </>
   );
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-  const renderloading = () => (
-    <div className="w-[100%] flex justify-center items-center">
-      <Spin indicator={antIcon} />
-    </div>
-  );
+
   return (
-    <div className="pt-[20px] w-[100%] overflow-hidden">
-      <div className="w-[100%] text-[25px] flex justify-center">
-        <p className="w-[400px] text-[25px] flex justify-center border-border border-[2px] rounded-[20px] p-[20px]">
-          Giỏ hàng
-        </p>
-      </div>
-      <div className="py-[30px] flex flex-wrap w-[100%] border-[1px] rounded-[20px] mt-[20px] min-h-[680px] shadow-xl">
-        {loading ? renderloading() : renderList()}
-      </div>
-    </div>
+    <ShowLayout title="Giỏ hàng" loading={loading} chidren={renderList()} />
   );
 };
 

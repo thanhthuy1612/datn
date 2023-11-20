@@ -31,8 +31,8 @@ const OldNFT: React.FC = () => {
   React.useEffect(() => {
     store.dispatch(fetchMarketItemsPast());
   }, []);
-  const handleClick = () => {
-    navigate(`nft/buy`);
+  const handleClick = (item: any) => () => {
+    navigate(`nft/buy`, { state: item });
   };
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });
@@ -46,7 +46,7 @@ const OldNFT: React.FC = () => {
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item) => (
             <button
-              onClick={handleClick}
+              onClick={handleClick(item)}
               className="basis-[25%] h-[510px]"
               key={item.id}>
               <ButtonItem

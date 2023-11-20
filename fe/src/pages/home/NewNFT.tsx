@@ -1,15 +1,14 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Empty, Pagination, Spin } from "antd";
 import React from "react";
-import ButtonItem from "../../components/button";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ButtonItem from "../../components/button";
 import {
   IStateRedux,
   fetchMarketItemsUpComing,
-  setItem,
-  store,
+  store
 } from "../../redux";
-import { useSelector } from "react-redux";
-import { LoadingOutlined } from "@ant-design/icons";
 
 interface IState {
   page: number;
@@ -35,8 +34,7 @@ const NewNFT: React.FC = () => {
     store.dispatch(fetchMarketItemsUpComing());
   }, []);
   const handleClick = (item: any) => () => {
-    store.dispatch(setItem(item));
-    navigate(`nft/buy`);
+    navigate(`nft/buy`, { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {

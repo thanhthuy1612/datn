@@ -40,8 +40,8 @@ const HeaderProfile: React.FC<{
     previewTitle: "",
     ava: "",
     banner: "",
-    loadingAva: false,
-    loadingBanner: false
+    loadingAva: true,
+    loadingBanner: true
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
@@ -50,19 +50,19 @@ const HeaderProfile: React.FC<{
 
   React.useEffect(() => {
     const fetch = async () => {
+      setState({ loadingAva: true, loadingBanner: true })
       if (account?.ava) {
-        setState({ loadingAva: true })
         const ava = await getItemIPFS(account?.ava);
         const avaObjectURL = await URL.createObjectURL(ava);
-        setState({ ava: avaObjectURL, loadingAva: false })
+        setState({ ava: avaObjectURL})
       }
-
       if (account?.banner) {
-        setState({ loadingBanner: true })
         const banner = await getItemIPFS(account?.banner);
         const bannerObjectURL = await URL.createObjectURL(banner);
-        setState({ banner: bannerObjectURL, loadingBanner: false })
+        setState({ banner: bannerObjectURL })
       }
+
+      setState({ loadingAva: false, loadingBanner: false })
     }
     fetch()
   }, [account])

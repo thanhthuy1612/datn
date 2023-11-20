@@ -4,7 +4,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ButtonItem from "../../components/button";
-import { IStateRedux, fetchItemsSeller, setItem, store } from "../../redux";
+import { IStateRedux, fetchItemsSeller, store } from "../../redux";
 
 interface IState {
   page: number;
@@ -20,7 +20,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { itemsSeller, loading } = useSelector(
+  const { itemsSeller, loading, totalCart } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
@@ -30,8 +30,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     store.dispatch(fetchItemsSeller(wallet));
   }, []);
   const handleClick = (item: any) => () => {
-    store.dispatch(setItem(item));
-    navigate(`nft/buy`);
+    navigate(`nft/buy`, { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {
