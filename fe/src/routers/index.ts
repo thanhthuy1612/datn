@@ -31,16 +31,10 @@ const publicRoutes: IRouter[] = [
   { id: 8, path: "/myNFT", component: MyNFT },
   { id: 9, path: "/createNFT", component: CreateNFT },
   { id: 10, path: "/nft/buy", component: BuyNFT },
-  { id: 11, path: "/personal/nft/buy", component: BuyNFT },
-  { id: 12, path: "/nft/resell", component: ResellNFT },
-  { id: 13, path: "/personal/nft/resell", component: ResellNFT },
-  { id: 14, path: "/myNFT/nft/resell", component: ResellNFT },
-  { id: 15, path: "/myNFT/nft/buy", component: BuyNFT },
-  { id: 16, path: "/myNFT/nft/expired", component: Expired },
-  { id: 17, path: "/nft/expired", component: Expired },
-  { id: 18, path: "/personal/nft/expired", component: Expired },
-  { id: 19, path: "/cart", component: Cart },
-  { id: 20, path: "/search", component: AccountSearch },
+  { id: 11, path: "/nft/resell", component: ResellNFT },
+  { id: 12, path: "/nft/expired", component: Expired },
+  { id: 13, path: "/cart", component: Cart },
+  { id: 14, path: "/search", component: AccountSearch },
 ];
 
 const privateRoutes: IRouter[] = [];

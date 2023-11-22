@@ -34,7 +34,7 @@ const NewNFT: React.FC = () => {
     store.dispatch(fetchMarketItemsUpComing());
   }, []);
   const handleClick = (item: any) => () => {
-    navigate(`nft/buy`, { state: item });
+    navigate(`/nft/buy`, { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {

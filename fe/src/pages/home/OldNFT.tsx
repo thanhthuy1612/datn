@@ -32,7 +32,7 @@ const OldNFT: React.FC = () => {
     store.dispatch(fetchMarketItemsPast());
   }, []);
   const handleClick = (item: any) => () => {
-    navigate(`nft/buy`, { state: item });
+    navigate(`/nft/buy`, { state: item });
   };
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });

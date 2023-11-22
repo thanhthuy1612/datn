@@ -81,15 +81,15 @@ const ListNFT: React.FC = () => {
   const setNavigate = () => {
     switch (state.choose) {
       case 1:
-        return 'nft/resell'
+        return '/nft/resell'
       case 2:
-        return 'nft/buy'
+        return '/nft/buy'
       case 3:
-        return 'nft/expired'
+        return '/nft/expired'
       case 4:
-        return 'nft/resell'
+        return '/nft/resell'
       default:
-        return ''
+        return '/'
     }
   }
   const handleClick = (id: number) => () => {

@@ -27,7 +27,7 @@ const initialState: IStateRedux = {
   loadingCreate: false,
   accountSearch: undefined,
   totalCart: null,
-  loadingCart: true,
+  loadingCart: false,
 };
 
 export interface IStateRedux {
@@ -356,6 +356,7 @@ export const getCartAccount = createAsyncThunk(
 export const fetchConnect = createAsyncThunk(
   "connect",
   async (reload: boolean, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingCart(true));
     const reconnect = async (provider: any) => {
       const web3Provider = new ethers.providers.Web3Provider(provider);
       const signer = web3Provider.getSigner();
@@ -377,7 +378,8 @@ export const fetchConnect = createAsyncThunk(
           const sign = await signer.signMessage("Login");
           const result = await login(sign);
           thunkAPI.dispatch(setAccount(result));
-          const listCarts = await getCartsByAccount(result.address);
+          console.log(result)
+          const listCarts = await getCartsByAccount(result?.wallet);
           thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
         }
       }

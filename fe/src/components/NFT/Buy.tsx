@@ -2,7 +2,7 @@ import React from "react";
 import { Image, Spin } from "antd";
 import { CiClock1 } from "react-icons/ci";
 import { useSelector } from "react-redux";
-import { IStateRedux, createMarketSale, setAccountSearch, setLoading, setTotalCart, store } from "../../redux";
+import { IStateRedux, createMarketSale, setAccountSearch, setTotalCart, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
