@@ -59,7 +59,7 @@ const HistoryTag: React.FC = () => {
       const items = result.filter(
         (item: IHistory) =>
           item.functionName ===
-          "createToken(string name, string symbol)" &&
+          "createToken(string _name, string _location, string _picture, string _description)" &&
           item.to === addressContract.toLowerCase()
       );
       setState({
@@ -78,13 +78,13 @@ const HistoryTag: React.FC = () => {
           return state.data.filter(
             (item) =>
               item.functionName ===
-              "createToken(string name, string symbol)" &&
+              "createToken(string _name, string _location, string _picture, string _description)" &&
               item.to === addressContract.toLowerCase()
           );
         case 2:
           return state.data.filter(
             (item) =>
-              item.functionName === "changeTokenUri(uint256 tokenId, string tokenUri)" &&
+              item.functionName === "updateToken(uint256 tokenId, string uri, string image, string imageHq)" &&
               item.to === addressContract.toLowerCase()
           );
         case 3:
@@ -125,13 +125,13 @@ const HistoryTag: React.FC = () => {
             key={item.id}
             className={
               state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                ? "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-1019px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-1018px)]"></div>
       </div>
       <div className="p-[50px] border-[1px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl w-[100%]">
         {renderTable()}

@@ -1,16 +1,51 @@
-import { Drawer, Image } from "antd";
+import { Drawer, Image, Spin } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { IStateRedux, setAccountSearch, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getItem, getItemIPFS } from "../../api/uploadPicture";
+import { dateFormat } from "../../ultis";
+import { DateFormatType } from "../../interfaces/IRouter";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const More: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [listItems, setListItems] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
 
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
   const localtion = useLocation();
-  const item = localtion.state;
-  const navigate = useNavigate()
+  const items = localtion.state;
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const fetch = async (params: string) => {
+      const meta = await Promise.all(
+        params.split(";").map(async (item: string) => {
+          const result = await getItem(item);
+          if (result.img !== "") {
+            const picture = await getItemIPFS(result.img);
+            const imageObjectURL = URL.createObjectURL(picture);
+            return {
+              ...result,
+              img: imageObjectURL,
+              date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+            };
+          } else {
+            return {
+              ...result,
+              img: "",
+              date: dateFormat(new Date(result.date), DateFormatType.FullDate),
+            };
+          }
+        })
+      );
+      setListItems(meta);
+      setLoading(false);
+    };
+    open && fetch(items.list);
+  }, [items.list, open])
 
   const showDrawer = () => {
     setOpen(true);
@@ -31,32 +66,37 @@ const More: React.FC = () => {
 
   const renderPanel = () => (
     <>
-      {item.list.map((item: any, index: number) =>
+      {listItems.map((item: any, index: number) =>
         <>{item?.img !== '' ? (
           <>
             <p className="text-[17px] mb-[5px] font-bold">{index === 0 ? 'Khởi tạo:' : 'Cập nhật:'}</p>
-            <div key={item.img} className="flex mb-[20px]">
+            <div key={item?.img} className="flex mb-[20px]">
               <Image
                 width={300}
                 height={300}
-                src={item.img}
+                src={item?.img}
               />
               <div className="ml-[20px]">
                 <div className="mb-[10px]">
                   <p className="text-[17px] mb-[3px]">Người đăng:</p>
-                  <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+                  <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
                 </div>
                 <div>
                   <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
-                  <p>{item.date}</p>
+                  <p>{item?.date}</p>
+                </div>
+                <div>
+                  <p className="text-[17px] mb-[3px]">Mô tả:</p>
+                  <p>{item?.description}</p>
                 </div>
               </div>
-            </div></>) :
+            </div>
+          </>) :
           (<div className='mb-[20px]'>
-            <p className="text-[17px] mb-[5px] font-bold">{item.status ? 'Bán:' : 'Mua:'}</p>
+            <p className="text-[17px] mb-[5px] font-bold">{item?.status ? 'Bán:' : (account && account.wallet === item.create) ? "Thu hồi: " : 'Mua:'}</p>
             <div className="mb-[10px]">
               <p className="text-[17px] mb-[3px]">{item.status ? 'Người bán:' : 'Người mua:'}</p>
-              <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+              <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
             </div>
             {
               item.status && <div>
@@ -65,14 +105,25 @@ const More: React.FC = () => {
               </div>
             }
             <div>
-              <p className="text-[17px] mb-[3px]">{item.status ? 'Ngày bán:' : 'Ngày mua:'}</p>
-              <p>{item.date}</p>
+              <p className="text-[17px] mb-[3px]">{item?.status ? 'Ngày bán:' : 'Ngày mua:'}</p>
+              <p>{item?.date}</p>
             </div>
+            {item?.description && <div>
+              <p className="text-[17px] mb-[3px]">Mô tả:</p>
+              <p>{item?.description}</p>
+            </div>}
           </ div>)}
         </>
       )}
     </>
   )
+
+  const antIcon = <LoadingOutlined style={{ fontSize: 50 }} spin />;
+  const renderloading = () => (
+    <div className="w-[100%] h-[100%] flex justify-center items-center">
+      <Spin indicator={antIcon} />
+    </div>
+  );
 
   return (
     <>
@@ -86,7 +137,7 @@ const More: React.FC = () => {
         open={open}
         size='large'
       >
-        {renderPanel()}
+        {loading ? renderloading() : renderPanel()}
       </Drawer>
     </>
   );

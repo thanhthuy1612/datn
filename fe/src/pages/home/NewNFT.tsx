@@ -24,7 +24,7 @@ const NewNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { upComing, loadingUpComing } = useSelector(
+  const { upComing, loadingUpComing, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
@@ -34,7 +34,7 @@ const NewNFT: React.FC = () => {
     store.dispatch(fetchMarketItemsUpComing());
   }, []);
   const handleClick = (item: any) => () => {
-    navigate(`/nft/buy`, { state: item });
+    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {

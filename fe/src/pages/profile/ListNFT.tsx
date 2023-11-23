@@ -13,7 +13,7 @@ interface IMenu {
 const menu: IMenu[] = [
   {
     id: 1,
-    title: "NFT của bạn",
+    title: "NFT đã tạo"
   },
   {
     id: 2,
@@ -21,12 +21,16 @@ const menu: IMenu[] = [
   },
   {
     id: 3,
-    title: "NFT hết hạn",
+    title: "NFT đã mua",
   },
   {
     id: 4,
-    title: "NFT mới tạo"
-  }
+    title: "NFT hết hạn",
+  },
+  {
+    id: 5,
+    title: "NFT thu hồi"
+  },
 ];
 
 interface IState {
@@ -47,11 +51,11 @@ const ListNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
-  const { myNFT, mySeller, myDate, myNew, loading, account } = useSelector(
+  const { myNFT, mySeller, myDate, myNew, myDelete, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
   const handleClickItem = (item: any) => () => {
-    navigate(setNavigate(), { state: item });
+    navigate(setNavigate(item), { state: item });
   };
   React.useEffect(() => {
     const renderRedux = async () => {
@@ -63,31 +67,37 @@ const ListNFT: React.FC = () => {
     const getItems = async () => {
       switch (state.choose) {
         case 1:
-          setState({ items: myNFT });
+          setState({ items: myNew });
           break;
         case 2:
           setState({ items: mySeller });
           break;
         case 3:
-          setState({ items: myDate });
+          setState({ items: myNFT });
           break;
         case 4:
-          setState({ items: myNew });
+          setState({ items: myDate });
+          break;
+        case 5:
+          setState({ items: myDelete });
+          break;
       }
     };
     getItems();
-  }, [myNFT, mySeller, myDate, myNew, state.choose]);
+  }, [myNFT, mySeller, myDate, myNew, state.choose, myDelete]);
 
-  const setNavigate = () => {
+  const setNavigate = (item: any) => {
     switch (state.choose) {
       case 1:
-        return '/nft/resell'
+        return '/nft/sell'
       case 2:
-        return '/nft/buy'
+        return item.seller === account?.wallet ? 'nft/expired' : '/nft/buy'
       case 3:
-        return '/nft/expired'
+        return '/nft/my'
       case 4:
-        return '/nft/resell'
+        return '/nft/expired'
+      case 5:
+        return '/nft/delete'
       default:
         return '/'
     }
@@ -163,7 +173,7 @@ const ListNFT: React.FC = () => {
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-818px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-1018px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loading ? renderList() : renderloading()}

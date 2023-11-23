@@ -7,7 +7,7 @@ import { login } from "../../api/login";
 import { addressContract } from "../../ultis/addressContract";
 import { abi } from "../../ultis/abi";
 import { dateFormat } from "../../ultis";
-import { getItem, getItemIPFS, uploadToIPFS } from "../../api/uploadPicture";
+import { getItemIPFS, uploadToIPFS } from "../../api/uploadPicture";
 import { getCartsByAccount } from "../../api/cart";
 
 const initialState: IStateRedux = {
@@ -17,6 +17,7 @@ const initialState: IStateRedux = {
   past: [],
   myNFT: [],
   myNew: [],
+  myDelete: [],
   mySeller: [],
   myDate: [],
   itemsSeller: [],
@@ -38,6 +39,7 @@ export interface IStateRedux {
   past?: any[];
   myNFT: any[];
   myNew: any[];
+  myDelete: any[];
   mySeller: any[];
   myDate: any[];
   itemsSeller: any[];
@@ -70,7 +72,7 @@ const getERC = async () => {
 };
 
 export const changeTokenUri = createAsyncThunk(
-  "changeTokenUri",
+  "updateToken",
   async (option: any, thunkAPI) => {
     try {
       thunkAPI.dispatch(setLoadingCreate(true));
@@ -81,10 +83,13 @@ export const changeTokenUri = createAsyncThunk(
         create: address.toString(),
         status: false,
         price: 0,
+        description: option.description,
       });
-      const transaction = await erc721.changeTokenUri(
+      const transaction = await erc721.updateToken(
         option.tokenId,
-        url as string
+        url as string,
+        option.file,
+        option.description
       );
       await transaction.wait();
     } catch (err) {
@@ -105,12 +110,15 @@ export const createToken = createAsyncThunk(
         create: address.toString(),
         status: false,
         price: 0,
+        description: option.description,
       });
       let listingPrice = await contract.getListingPrice();
       listingPrice = listingPrice.toString();
       const transaction = await erc721.createToken(
         url as string,
-        option.name as string,
+        option.name.toString(),
+        option.file.toString(),
+        option.description.toString(),
         {
           value: listingPrice,
         }
@@ -132,6 +140,7 @@ export const resellToken = createAsyncThunk(
       create: address.toString(),
       status: true,
       price: item.price,
+      description: item.description,
     });
     const price = ethers.utils.parseUnits(item.price, "ether");
     let listingPrice = await contract.getListingPrice();
@@ -142,6 +151,7 @@ export const resellToken = createAsyncThunk(
       item.name,
       price,
       item.date,
+      item.description,
       {
         value: listingPrice,
       }
@@ -150,48 +160,19 @@ export const resellToken = createAsyncThunk(
   }
 );
 
-const fetchMeta = async (params: string) => {
-  const meta = await Promise.all(
-    params.split(";").map(async (item: string) => {
-      const result = await getItem(item);
-      if (result.img !== "") {
-        const picture = await getItemIPFS(result.img);
-        const imageObjectURL = URL.createObjectURL(picture);
-        return {
-          ...result,
-          img: imageObjectURL,
-          date: dateFormat(new Date(result.date), DateFormatType.FullDate),
-        };
-      } else {
-        return {
-          ...result,
-          img: "",
-          date: dateFormat(new Date(result.date), DateFormatType.FullDate),
-        };
-      }
-    })
-  );
-  return meta;
-};
-
 const getItems = async (data: any, contract: any) => {
   const items = await Promise.all(
     data.map(async (i: any) => {
       const tokenUri = await contract.tokenURI(i.tokenId);
-      const meta = await fetchMeta(tokenUri);
+      const meta = tokenUri;
       const price = ethers.utils.formatUnits(i.price.toString(), "ether");
-      let img = "";
-      for (let i = meta.length - 1; i >= 0; i--) {
-        if (meta[i].img) {
-          img = meta[i].img;
-          break;
-        }
-      }
+      const picture = await getItemIPFS(i.img);
+      const imageObjectURL = URL.createObjectURL(picture);
       return {
         tokenId: i.tokenId.toNumber(),
         seller: i.seller,
         owner: i.owner,
-        number: i.number.toNumber(),
+        number: i.status.toNumber(),
         price,
         sold: i.sold,
         expired: i.date.toNumber(),
@@ -200,8 +181,9 @@ const getItems = async (data: any, contract: any) => {
           DateFormatType.FullDate
         ),
         title: i.name,
-        img: img,
+        img: imageObjectURL,
         list: meta,
+        description: i.description,
       };
     })
   );
@@ -252,6 +234,32 @@ export const createMarketSale = createAsyncThunk(
   }
 );
 
+export const deleteMarketSale = createAsyncThunk(
+  "deleteMarketSale",
+  async (item: any, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { erc721, address } = await getERC();
+    const url = await uploadToIPFS({
+      img: "",
+      date: Date.now(),
+      create: address.toString(),
+      status: false,
+      price: 0,
+      description: item.description,
+    });
+    const price = ethers.utils.parseUnits(item.price, "ether");
+    const result = await erc721.deleteMarketSale(
+      item.tokenId,
+      url as string,
+      item.description,
+      {
+        value: price,
+      }
+    );
+    await result.wait();
+  }
+);
+
 export const fetchMarketItemsUpComing = createAsyncThunk(
   "fetchMarketItemsUpComing",
   async (_item, thunkAPI) => {
@@ -285,7 +293,9 @@ export const fetch = createAsyncThunk("fetch", async (_item, thunkAPI) => {
   const itemsDate = await getItems(dataDate, contract);
   const dataNew = await erc721.fetchItemsListedNew();
   const itemsNew = await getItems(dataNew, contract);
-  return { itemsMyNFT, itemsList, itemsDate, itemsNew };
+  const dataDelete = await erc721.fetchItemsListedDelete();
+  const itemsDelete = await getItems(dataDelete, contract);
+  return { itemsMyNFT, itemsList, itemsDate, itemsNew, itemsDelete };
 });
 
 export const fetchMyNFTs = createAsyncThunk(
@@ -294,6 +304,17 @@ export const fetchMyNFTs = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
     const { contract, erc721 } = await getERC();
     const data = await erc721.fetchMyNFTs();
+    const items = await getItems(data, contract);
+    return items;
+  }
+);
+
+export const fetchItemsListedDelete = createAsyncThunk(
+  "fetchItemsListedDelete",
+  async (_item, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { contract, erc721 } = await getERC();
+    const data = await erc721.fetchItemsListedDelete();
     const items = await getItems(data, contract);
     return items;
   }
@@ -378,7 +399,7 @@ export const fetchConnect = createAsyncThunk(
           const sign = await signer.signMessage("Login");
           const result = await login(sign);
           thunkAPI.dispatch(setAccount(result));
-          console.log(result)
+          console.log(result);
           const listCarts = await getCartsByAccount(result?.wallet);
           thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
         }
@@ -457,6 +478,7 @@ export const item = createSlice({
       state.mySeller = actions.payload.itemsList;
       state.myNFT = actions.payload.itemsMyNFT;
       state.myNew = actions.payload.itemsNew;
+      state.myDelete = actions.payload.itemsDelete;
     });
     builder.addCase(fetchMyNFTs.fulfilled, (state, actions) => {
       state.loading = false;
@@ -474,7 +496,14 @@ export const item = createSlice({
       state.loading = false;
       state.myNew = actions.payload;
     });
+    builder.addCase(fetchItemsListedDelete.fulfilled, (state, actions) => {
+      state.loading = false;
+      state.myDelete = actions.payload;
+    });
     builder.addCase(createMarketSale.fulfilled, (state, _actions) => {
+      state.loading = false;
+    });
+    builder.addCase(deleteMarketSale.fulfilled, (state, _actions) => {
       state.loading = false;
     });
     builder.addCase(createToken.fulfilled, (state, _actions) => {

@@ -22,7 +22,7 @@ const OldNFT: React.FC = () => {
   };
 
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { past, loadingPast } = useSelector(
+  const { past, loadingPast, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
@@ -32,7 +32,7 @@ const OldNFT: React.FC = () => {
     store.dispatch(fetchMarketItemsPast());
   }, []);
   const handleClick = (item: any) => () => {
-    navigate(`/nft/buy`, { state: item });
+    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
   };
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });

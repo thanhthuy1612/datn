@@ -20,7 +20,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { itemsSeller, loading } = useSelector(
+  const { itemsSeller, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
@@ -30,7 +30,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     store.dispatch(fetchItemsSeller(wallet));
   }, []);
   const handleClick = (item: any) => () => {
-    navigate(`/nft/buy`, { state: item });
+    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {

@@ -84,6 +84,12 @@ export const abi = [
       },
       {
         indexed: false,
+        internalType: "string",
+        name: "img",
+        type: "string",
+      },
+      {
+        indexed: false,
         internalType: "address",
         name: "seller",
         type: "address",
@@ -115,7 +121,7 @@ export const abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "number",
+        name: "status",
         type: "uint256",
       },
       {
@@ -128,6 +134,12 @@ export const abi = [
         indexed: false,
         internalType: "string",
         name: "name",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "description",
         type: "string",
       },
     ],
@@ -257,6 +269,16 @@ export const abi = [
         name: "name",
         type: "string",
       },
+      {
+        internalType: "string",
+        name: "img",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
     ],
     name: "createToken",
     outputs: [
@@ -266,6 +288,29 @@ export const abi = [
         type: "uint256",
       },
     ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+    ],
+    name: "deleteMarketSale",
+    outputs: [],
     stateMutability: "payable",
     type: "function",
   },
@@ -285,6 +330,11 @@ export const abi = [
             internalType: "uint256",
             name: "tokenId",
             type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "img",
+            type: "string",
           },
           {
             internalType: "address payable",
@@ -313,7 +363,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -324,6 +374,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -347,6 +402,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -373,7 +433,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -384,6 +444,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -407,6 +472,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -433,7 +503,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -444,6 +514,81 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+        ],
+        internalType: "struct NFTMarketplace.MarketItem[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "fetchItemsListedDelete",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
+            internalType: "address payable",
+            name: "seller",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "time",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "sold",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "status",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "date",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -467,6 +612,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -493,7 +643,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -504,6 +654,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -533,6 +688,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -559,7 +719,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -570,6 +730,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -593,6 +758,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -619,7 +789,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -630,6 +800,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -653,6 +828,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -679,7 +859,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -690,6 +870,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -713,6 +898,11 @@ export const abi = [
             type: "uint256",
           },
           {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
             internalType: "address payable",
             name: "seller",
             type: "address",
@@ -739,7 +929,7 @@ export const abi = [
           },
           {
             internalType: "uint256",
-            name: "number",
+            name: "status",
             type: "uint256",
           },
           {
@@ -750,6 +940,11 @@ export const abi = [
           {
             internalType: "string",
             name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
             type: "string",
           },
         ],
@@ -875,6 +1070,11 @@ export const abi = [
         internalType: "uint256",
         name: "date",
         type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
       },
     ],
     name: "resellToken",
@@ -1034,6 +1234,34 @@ export const abi = [
       },
     ],
     name: "updateListingPrice",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "img",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+    ],
+    name: "updateToken",
     outputs: [],
     stateMutability: "payable",
     type: "function",

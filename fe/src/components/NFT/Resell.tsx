@@ -36,6 +36,7 @@ const ResellNFT: React.FC = () => {
 
   const localtion = useLocation();
   const item = localtion.state;
+  const { TextArea } = Input;
 
   const navigate = useNavigate();
   const dateFormat = "YYYY/MM/DD";
@@ -87,6 +88,7 @@ const ResellNFT: React.FC = () => {
         name: removeUnnecessaryWhiteSpace(values.title),
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
+        description: removeUnnecessaryWhiteSpace(values.description)
       })
     );
     navigate("/");
@@ -99,11 +101,12 @@ const ResellNFT: React.FC = () => {
     return e?.fileList;
   };
 
-  const onFinishAdd = async () => {
+  const onFinishAdd = async (value: any) => {
     await store.dispatch(
       changeTokenUri({
         tokenId: item.tokenId,
         file: file,
+        description: removeUnnecessaryWhiteSpace(value.description)
       })
     );
     navigate("/");
@@ -148,24 +151,33 @@ const ResellNFT: React.FC = () => {
       onFinish={onFinishAdd}
       className="flex flex-col w-[100%] mx-[50px]"
     >
-      <div className="w-[300px] h-[300px]">
-        <Form.Item
-          label="NFT mới:"
-          name="img"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-          rules={[{ required: true, message: "Vui lòng thêm NFT" }]}
-        >
-          <Upload
-            accept="image/*"
-            customRequest={action}
-            listType="picture-card"
-            fileList={img}
-            onChange={onChange}
-            onPreview={onPreview}
+      <div className="flex">
+        <div className="w-[300px] h-[300px]">
+          <Form.Item
+            label="NFT mới:"
+            name="img"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Vui lòng thêm NFT" }]}
           >
-            {img.length === 0 && "+ Thêm file"}
-          </Upload>
+            <Upload
+              accept="image/*"
+              customRequest={action}
+              listType="picture-card"
+              fileList={img}
+              onChange={onChange}
+              onPreview={onPreview}
+            >
+              {img.length === 0 && "+ Thêm file"}
+            </Upload>
+          </Form.Item>
+        </div>
+        <Form.Item
+          label="Mô tả:"
+          name="description"
+          rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+        >
+          <TextArea rows={4} style={{ width: "500px" }} allowClear placeholder="Nhập mô tả..." />
         </Form.Item>
       </div>
       <Form.Item label=" ">
@@ -226,6 +238,13 @@ const ResellNFT: React.FC = () => {
             ]}>
             <TimePicker format={timeFormate} placeholder="Chọn giờ" />
           </Form.Item>
+          <Form.Item
+            label="Mô tả:"
+            name="description"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
+            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
+          </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>
               {loading ? renderloading() : "Bán NFT"}
@@ -242,15 +261,17 @@ const ResellNFT: React.FC = () => {
           {item.title.toUpperCase()}
         </p>
         <div className="flex items-center pt-[15px] py-[5px]">
-          Ngày mua: {item.date}
+          Ngày tạo: {item.date}
+        </div>
+        <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
+          Mô tả: {item.description}
         </div>
         {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
-        <div className="py-[5px]">Số lần đã bán: {item.number}</div>
         <More />
       </div>
       <div className="flex mt-[50px]">
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] mr-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>
-        <Modal title="Cập nhật NFT" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
+        <Modal width={1000} title="Cập nhật NFT" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
           {renderAdd()}
         </Modal>
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán NFT</button>
@@ -261,16 +282,16 @@ const ResellNFT: React.FC = () => {
     </div>
   );
   const renderBody = () => (
-  <div className="py-[40px] flex w-[100%] justify-around">
-    <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">
-      <Image width={"100%"} height={500} src={item.img} />
-    </div>
-    <div className="flex w-[700px] justify-between">
-      {renderProfileNFT()}
-    </div>
-  </div>)
+    <div className="py-[40px] flex w-[100%] justify-around">
+      <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">
+        <Image width={"100%"} height={500} src={item.img} />
+      </div>
+      <div className="flex w-[700px] justify-between">
+        {renderProfileNFT()}
+      </div>
+    </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Bán NFT"/>
+    <ShowLayout chidren={renderBody()} title="Bán NFT" />
   );
 };
 

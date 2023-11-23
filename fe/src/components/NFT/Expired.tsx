@@ -1,16 +1,16 @@
 import React from "react";
-import { Image, Spin } from "antd";
-import { CiClock1 } from "react-icons/ci";
+import { Button, Form, Image, Spin } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, createMarketSale, setAccountSearch, setLoading, store } from "../../redux";
+import { IStateRedux, deleteMarketSale, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
 import { dateFormat } from "../../ultis";
 import { DateFormatType } from "../../interfaces/IRouter";
 import ShowLayout from "../../layouts/ShowLayout";
+import TextArea from "antd/es/input/TextArea";
 
-const Expired: React.FC = () => {
+const ExpiredNFT: React.FC = () => {
   const { loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
@@ -20,10 +20,6 @@ const Expired: React.FC = () => {
   React.useEffect(() => {
     store.dispatch(setLoading(false));
   }, []);
-  const handleBuy = async () => {
-    await store.dispatch(createMarketSale(item));
-    navigate("/");
-  };
   const handleClick = (wallet: string) => () => {
     if (account && account.wallet === wallet) {
       navigate("/personal");
@@ -32,9 +28,13 @@ const Expired: React.FC = () => {
       navigate("/search");
     }
   };
-  const antIcon = <LoadingOutlined style={{ fontSize: 21 }} spin />;
+  const onFinish = async (values: any) => {
+    await store.dispatch(deleteMarketSale({ ...item, description: values.description }));
+    navigate("/");
+  };
+  const antIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
   const renderloading = () => (
-    <div className="w-[500px] flex justify-center items-center">
+    <div className="w-[55px] flex justify-center items-center">
       <Spin indicator={antIcon} />
     </div>
   );
@@ -48,48 +48,53 @@ const Expired: React.FC = () => {
           {item.title.toUpperCase()}
         </p>
         <p>
-          Chủ sở hữu hiện tại:{" "}
+          Người bán:{" "}
           <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller}</button>
         </p>
-        <div className="flex items-center pt-[15px]">
+        <div className="flex items-center pt-[15px] pb-[5px]">
           Ngày bắt đầu bán: {item.date}
         </div>
-        <p className="py-[5px]">Số lần đã bán: {item.number}</p>
+        <p className="py-[5px]">Giá thu hồi: {item.price} BNBT</p>
+        <p className="py-[5px]">Thời gian hết hạn bán NFT: {dateFormat(
+          new Date(item.expired),
+          DateFormatType.FullDate
+        )}</p>
+
         <More />
       </div>
-      <div className="border-border border-[1px] py-[20px] rounded-[20px] w-[100%] shadow-md">
-        <p className="flex items-center border-border px-[30px] pb-[20px] border-b-[1px] w-[100%]">
-          <div className="pr-[10px]">
-            <CiClock1 />
-          </div>{" "}
-          Thời gian hết hạn bán NFT: {dateFormat(
-            new Date(item.expired),
-            DateFormatType.FullDate
-          )}
-        </p>
-        <div className="w-[100%]">
-          <p className="py-[20px] text-[30px] flex justify-center">
-            Giá bán: {item.price} BNBT
-          </p>
-          <div className="flex w-[100%] justify-around">
-            <button
-              onClick={handleBuy}
-              disabled={loading}
-              className={
-                loading
-                  ? "border-border border-[1px] mx-[50px] py-[20px] w-[100%] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
-                  : "border-border border-[1px] mx-[50px] py-[20px] w-[100%] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
-              }>
+      {item.expired > new Date() ?
+        <Form
+          name="account"
+          layout="vertical"
+          wrapperCol={{ flex: 1 }}
+          colon={false}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            label="Mô tả:"
+            name="description"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
+            <TextArea rows={4} style={{ width: "500px" }} allowClear placeholder="Nhập mô tả..." />
+          </Form.Item>
+          <Form.Item label=" ">
+            <Button htmlType="submit" disabled={loading}>
               {loading ? renderloading() : "Thu hồi"}
-            </button>
-          </div>
+            </Button>
+          </Form.Item>
+        </Form> :
+        <div className="items-center pt-[15px] pb-[5px]">
+          <p className="py-[15px]">Lý do: hết hạn bán</p>
+          <Button disabled={loading} onClick={() => onFinish({ description: "Hết hạn" })}>
+            {loading ? renderloading() : "Thu hồi"}
+          </Button>
         </div>
-      </div>
-    </div>
-  </div>)
+      }
+    </div >
+  </div >)
   return (
-    <ShowLayout title="NFT hết hạn" chidren={renderBody()} />
+    <ShowLayout title="Thu hồi" chidren={renderBody()} />
   );
 };
 
-export default Expired;
+export default ExpiredNFT;

@@ -81,7 +81,6 @@ const BuyNFT: React.FC = () => {
         <div className="flex items-center pt-[15px]">
           Ngày bắt đầu bán: {item.date}
         </div>
-        <p className="py-[5px]">Số lần đã bán: {item.number}</p>
         <More />
       </div>
       <div className="border-border border-[1px] py-[20px] rounded-[20px] w-[100%] shadow-md">

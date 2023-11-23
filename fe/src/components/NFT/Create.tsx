@@ -26,6 +26,7 @@ const Create: React.FC = () => {
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
+  const { TextArea } = Input;
   const navigate = useNavigate();
 
   const { loadingCreate } = useSelector(
@@ -92,6 +93,7 @@ const Create: React.FC = () => {
       createToken({
         name: removeUnnecessaryWhiteSpace(values.title),
         file: state.file,
+        description: removeUnnecessaryWhiteSpace(values.description)
       })
     );
     navigate("/");
@@ -142,6 +144,13 @@ const Create: React.FC = () => {
             rules={[{ required: true, message: "Vui lòng nhập tên NFT" }]}
           >
             <Input placeholder="Nhập tên NFT..." />
+          </Form.Item>
+          <Form.Item
+            label="Mô tả:"
+            name="description"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
+            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loadingCreate}>

@@ -41,7 +41,7 @@ const Cart: React.FC = () => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const handleClick = (item: any) => () => {
-    navigate("/nft/buy", { state: { item } });
+    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
   };
   const handleDeleteCart = (id: string) => async () => {
     await deleteCart(id);
