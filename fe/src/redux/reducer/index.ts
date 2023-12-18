@@ -399,7 +399,6 @@ export const fetchConnect = createAsyncThunk(
           const sign = await signer.signMessage("Login");
           const result = await login(sign);
           thunkAPI.dispatch(setAccount(result));
-          console.log(result);
           const listCarts = await getCartsByAccount(result?.wallet);
           thunkAPI.dispatch(setTotalCart(!listCarts ? null : listCarts.length));
         }
