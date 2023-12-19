@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { ITypeAccount } from 'src/interface/ITypeAccount';
 import { Account } from 'src/model/AccountSchema';
 
 @Injectable()
@@ -24,6 +25,7 @@ export class LoginService {
       const accounts = await this.accountsModel.create({
         wallet,
         timeJoin: new Date(),
+        type: ITypeAccount.None,
       });
       return accounts;
     } catch (error) {

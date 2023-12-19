@@ -102,6 +102,12 @@ export const abi = [
       },
       {
         indexed: false,
+        internalType: "address",
+        name: "shipper",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "uint256",
         name: "price",
         type: "uint256",
@@ -183,6 +189,24 @@ export const abi = [
     ],
     name: "Transfer",
     type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
+      },
+    ],
+    name: "acceptMarketSale",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
   },
   {
     inputs: [
@@ -318,6 +342,99 @@ export const abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
+      },
+    ],
+    name: "doneShipMarketSale",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "fetch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
+            internalType: "address payable",
+            name: "seller",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "time",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "sold",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "status",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "date",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+        ],
+        internalType: "struct NFTMarketplace.MarketItem[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "id",
         type: "uint256",
       },
@@ -344,6 +461,11 @@ export const abi = [
           {
             internalType: "address payable",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
             type: "address",
           },
           {
@@ -417,6 +539,11 @@ export const abi = [
             type: "address",
           },
           {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
             internalType: "uint256",
             name: "price",
             type: "uint256",
@@ -484,6 +611,11 @@ export const abi = [
           {
             internalType: "address payable",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
             type: "address",
           },
           {
@@ -557,6 +689,11 @@ export const abi = [
             type: "address",
           },
           {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
             internalType: "uint256",
             name: "price",
             type: "uint256",
@@ -624,6 +761,11 @@ export const abi = [
           {
             internalType: "address payable",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
             type: "address",
           },
           {
@@ -703,6 +845,11 @@ export const abi = [
             type: "address",
           },
           {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
             internalType: "uint256",
             name: "price",
             type: "uint256",
@@ -770,6 +917,11 @@ export const abi = [
           {
             internalType: "address payable",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
             type: "address",
           },
           {
@@ -843,6 +995,11 @@ export const abi = [
             type: "address",
           },
           {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
             internalType: "uint256",
             name: "price",
             type: "uint256",
@@ -910,6 +1067,11 @@ export const abi = [
           {
             internalType: "address payable",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
             type: "address",
           },
           {
@@ -1149,6 +1311,24 @@ export const abi = [
     name: "setApprovalForAll",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
+      },
+    ],
+    name: "shipMarketSale",
+    outputs: [],
+    stateMutability: "payable",
     type: "function",
   },
   {

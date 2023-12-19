@@ -1,5 +1,5 @@
 import React from "react";
-import { IAccount } from "../../../interfaces/IRouter";
+import { IAccount, ITypeAccount } from "../../../interfaces/IRouter";
 import Item from "./Item";
 import { useSelector } from "react-redux";
 import { IStateRedux } from "../../../redux";
@@ -34,9 +34,12 @@ const ListItem: React.FC<{
   const renderNotLogin = () => (
     <p className="flex justify-center py-[5px]">Vui lòng kết nối ví Metamask</p>
   );
+  const renderNotType = () => (
+    <p className="flex justify-center py-[5px]">Vui lòng chọn vai trò của bạn</p>
+  );
   return (
     <div className="border-[1px] border-border bg-white rounded-[15px] w-[600px] py-[15px] flex max-h-[min((100vh - 96px) - 60px, 734px)] flex-col shadow-md z-10">
-      {account ? renderLogin() : renderNotLogin()}
+      {account ? account.type === ITypeAccount.None ? renderNotType():  renderLogin() : renderNotLogin()}
     </div>
   );
 };

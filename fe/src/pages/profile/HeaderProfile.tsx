@@ -3,7 +3,7 @@ import React from "react";
 import { CiEdit, CiSettings, CiShare2 } from "react-icons/ci";
 import ava from "../../assets/ava.png";
 import banner from "../../assets/bannar.png";
-import { DateFormatType, IAccount } from "../../interfaces/IRouter";
+import { DateFormatType, IAccount, ITypeAccount } from "../../interfaces/IRouter";
 import { dateFormat } from "../../ultis";
 import { Image, Modal, Spin } from "antd";
 import SettingProfile from "../../components/setting/SettingProfile";
@@ -82,6 +82,17 @@ const HeaderProfile: React.FC<{
       <Spin indicator={antIcon} />
     </div>
   );
+  const getType = (type: ITypeAccount) => {
+    switch (type) {
+      case ITypeAccount.Farm:
+        return "Nông dân"
+      case ITypeAccount.Ship:
+        return "Giao hàng"
+      case ITypeAccount.Buy:
+        return "Người thu mua"
+      default: return ""
+    }
+  }
   return (
     <div className="w-[100%] pt-[20px]">
       <div className="relative w-[100%]">
@@ -106,6 +117,10 @@ const HeaderProfile: React.FC<{
               </button>
             )}
           </div>
+          <Item
+            title="Vai trò:"
+            item={getType(account?.type ?? ITypeAccount.None)}
+          />
           <Item title="Địa chỉ ví:" item={account?.wallet} />
           <Item
             title="Ngày tham gia:"

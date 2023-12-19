@@ -9,7 +9,7 @@ contract NFTMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
-    uint256 listingPrice = 0.00025 ether; // Giá tiền trả cho sàn
+    uint256 listingPrice = 0.0025 ether; // Giá tiền trả cho sàn
     address payable owner; // địa chỉ chủ chợ
     mapping(uint256 => MarketItem) private idToMarketItem;
     struct MarketItem {
@@ -17,6 +17,7 @@ contract NFTMarketplace is ERC721URIStorage {
         string img;
         address payable seller; // địa chỉ thg bán
         address payable owner; // địa chỉ ng tạo ra
+        address payable shipper; // địa chỉ ng ship
         uint256 price; // giá nft
         uint time;
         bool sold; //đã được bán hay chưa
@@ -31,6 +32,7 @@ contract NFTMarketplace is ERC721URIStorage {
         string img,
         address seller,
         address owner,
+        address shipper,
         uint256 price,
         uint time,
         bool sold,
@@ -88,6 +90,7 @@ contract NFTMarketplace is ERC721URIStorage {
             img,
             payable(address(0)),
             payable(msg.sender),
+            payable(address(0)),
             0,
             block.timestamp,
             true,
@@ -102,6 +105,7 @@ contract NFTMarketplace is ERC721URIStorage {
             img,
             address(0),
             msg.sender,
+            address(0),
             0,
             block.timestamp,
             true,
@@ -131,7 +135,6 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 date,
         string memory description
     ) public payable {
-        // bán lại sau khi mua
         require(
             idToMarketItem[tokenId].owner == msg.sender,
             "Only item owner can perform this operation"
@@ -166,25 +169,75 @@ contract NFTMarketplace is ERC721URIStorage {
         string memory tokenURI
     ) public payable {
         // mua item
-        uint price = idToMarketItem[tokenId].price;
-        address payable creator = idToMarketItem[tokenId].seller;
-        require(
-            msg.value == price,
-            "Please submit the asking price in order to complete the purchase"
-        );
         require(
             idToMarketItem[tokenId].seller != payable(msg.sender),
             "Please submit the asking price in order to complete the purchase"
         );
         changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].owner = payable(msg.sender);
+        idToMarketItem[tokenId].time = block.timestamp;
+        idToMarketItem[tokenId].status = 1;
+    }
+
+    function shipMarketSale(
+        uint256 tokenId,
+        string memory tokenURI
+    ) public payable {
+        require(
+            idToMarketItem[tokenId].status == 1,
+            "Price must be equal to status"
+        );
+        changeTokenUri(tokenId, tokenURI);
+        idToMarketItem[tokenId].shipper = payable(msg.sender);
+        idToMarketItem[tokenId].time = block.timestamp;
+        idToMarketItem[tokenId].status = 2;
+    }
+    function doneShipMarketSale(
+        uint256 tokenId,
+        string memory tokenURI
+    ) public payable {
+        require(
+            idToMarketItem[tokenId].status == 2,
+            "Price must be equal to status"
+        );
+        require(
+            idToMarketItem[tokenId].shipper == payable(msg.sender),
+            "Please submit the asking price in order to complete the purchase"
+        );
+        changeTokenUri(tokenId, tokenURI);
+        idToMarketItem[tokenId].time = block.timestamp;
+        idToMarketItem[tokenId].status = 3;
+    }
+
+    function acceptMarketSale(
+        uint256 tokenId,
+        string memory tokenURI
+    ) public payable {
+        // mua item
+        uint price = idToMarketItem[tokenId].price;
+        address payable creator = idToMarketItem[tokenId].seller;
+        address payable ship = idToMarketItem[tokenId].shipper;
+        require(
+            msg.value == price,
+            "Please submit the asking price in order to complete the purchase"
+        );
+        require(
+            idToMarketItem[tokenId].owner == payable(msg.sender),
+            "Please submit the asking price in order to complete the purchase"
+        );
+        require(
+            idToMarketItem[tokenId].status == 3,
+            "Price must be equal to status"
+        );
+        changeTokenUri(tokenId, tokenURI);
+        idToMarketItem[tokenId].owner = payable(msg.sender);
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].seller = payable(address(0));
         idToMarketItem[tokenId].time = block.timestamp;
-        idToMarketItem[tokenId].status = 1;
+        idToMarketItem[tokenId].status = 3;
         _itemsSold.increment();
         _transfer(address(this), msg.sender, tokenId);
-        payable(owner).transfer(listingPrice);
+        payable(ship).transfer(listingPrice);
         payable(creator).transfer(msg.value);
     }
 
@@ -215,6 +268,28 @@ contract NFTMarketplace is ERC721URIStorage {
         _transfer(address(this), msg.sender, tokenId);
         payable(owner).transfer(listingPrice);
         payable(creator).transfer(msg.value);
+    }
+
+    function fetch()
+        public
+        view
+        returns (MarketItem[] memory)
+    {
+        // lấy tất cả item có trên sàn
+        uint totalItemCount = _tokenIds.current();
+        uint itemCount = 0;
+        uint currentIndex = 0;
+        for (uint i = 0; i < totalItemCount; i++) {
+                itemCount += 1;
+        }
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for (uint i = 0; i < totalItemCount; i++) {
+                uint currentId = i + 1;
+                MarketItem storage currentItem = idToMarketItem[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+        }
+        return items;
     }
 
     function fetchMarketItemsAll() public view returns (MarketItem[] memory) {

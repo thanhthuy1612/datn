@@ -25,6 +25,9 @@ export class Account extends Document {
 
   @Prop({ type: Date })
   timeJoin: Date;
+
+  @Prop()
+  type: number;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

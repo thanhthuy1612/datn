@@ -7,6 +7,7 @@ import Tippy from "@tippyjs/react/headless";
 import { followCursor } from "tippy.js";
 import { Badge } from "antd";
 import { useNavigate } from "react-router-dom";
+import { ITypeAccount } from "../../interfaces/IRouter";
 
 const Connect: React.FC = () => {
   const { account, totalCart, loadingCart } = useSelector((state: { item: IStateRedux }) => state.item);
@@ -56,10 +57,10 @@ const Connect: React.FC = () => {
         </button>
         <MenuAccount />
       </div>
-      {<Badge count={!loadingCart && account ? totalCart : null} dot={loadingCart} status={loadingCart ? 'processing' : undefined} overflowCount={99} className="flex h-[100%] items-center justify-center">
+      {<Badge count={!loadingCart && account && account?.type !== ITypeAccount.None ? totalCart : null} dot={loadingCart} status={loadingCart ? 'processing' : undefined} overflowCount={99} className="flex h-[100%] items-center justify-center">
         <button
           onClick={handleClickCart}
-          disabled={!account}
+          disabled={!account || account?.type === ITypeAccount.None}
           className="flex border-[1px] rounded-[15px] h-[100%] border-border items-center px-[10px] cursor-pointer ml-[10px] hover:bg-hover hover:rounded-[15px] shadow-md">
           <div className="px-[5px]">
             <CiShoppingCart />

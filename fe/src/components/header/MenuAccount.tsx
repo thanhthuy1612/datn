@@ -11,6 +11,7 @@ import {
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { IStateRedux } from "../../redux";
+import { ITypeAccount } from "../../interfaces/IRouter";
 
 interface IMenu {
   id: number;
@@ -59,7 +60,7 @@ const MenuAccount: React.FC = () => {
   return (
     <Tippy
       interactive
-      disabled={!account}
+      disabled={!account || account?.type === ITypeAccount.None}
       delay={[0, 500]}
       render={(attrs) => (
         <div

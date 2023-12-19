@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { CiWallet } from "react-icons/ci";
 import Tippy from "@tippyjs/react/headless";
-import { DateFormatType, IAccount } from "../../interfaces/IRouter";
+import { DateFormatType, IAccount, ITypeAccount } from "../../interfaces/IRouter";
 import { RcFile } from "antd/es/upload";
 import { useSelector } from "react-redux";
 import { IStateRedux, setAccount, store } from "../../redux";
@@ -153,6 +153,18 @@ const SettingProfile: React.FC = () => {
     setState({ alert: result.data !== null, visible: true, loading: false });
   };
 
+  const getType = (type: ITypeAccount) => {
+    switch (type) {
+      case ITypeAccount.Farm:
+        return "Nông dân"
+      case ITypeAccount.Ship:
+        return "Giao hàng"
+      case ITypeAccount.Buy:
+        return "Người thu mua"
+      default: return ""
+    }
+  }
+
   const handleCancel = () => setState({ previewOpen: false });
   const antIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
   const renderloading = () => (
@@ -214,6 +226,9 @@ const SettingProfile: React.FC = () => {
                 <p className="pl-[10px]">{account?.wallet}</p>
               </button>
             </Tippy>
+          </Form.Item>
+          <Form.Item label="Vai trò của người dùng:">
+            <div>{getType(account?.type ?? ITypeAccount.None)}</div>
           </Form.Item>
         </div>
         <div className="flex flex-col pr-[50px]">

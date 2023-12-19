@@ -7,16 +7,23 @@ export interface IRouter {
   layout?: React.FC<{ children: React.ReactNode }>;
 }
 
+export enum ITypeAccount {
+  None = 0,
+  Farm = 1,
+  Ship = 2,
+  Buy = 3,
+}
 export interface IAccount {
   id?: string;
   username?: string;
   bio?: string;
   email?: string;
-  ava: string | undefined;
-  banner: string | undefined;
+  ava?: string;
+  banner?: string;
   wallet?: string;
   timeJoin?: Date;
   carts?: unknown;
+  type?: ITypeAccount;
 }
 
 export interface ICart {

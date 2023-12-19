@@ -11,7 +11,7 @@ import {
   CiStar,
 } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
-import { IStateRedux, fetchConnect, store } from "../../redux";
+import { IStateRedux, fetchConnect, setAccount, store } from "../../redux";
 import { useSelector } from "react-redux";
 import ListNFT from "../profile/ListNFT";
 import login from "../../assets/dangnhap.png";
@@ -20,6 +20,9 @@ import buy from "../../assets/buy.png";
 import resellNFT from "../../assets/banlai.png";
 import Tippy from "@tippyjs/react/headless";
 import { followCursor } from "tippy.js";
+import { ITypeAccount } from "../../interfaces/IRouter";
+import { Button, Form, Radio } from "antd";
+import { uploadPicture } from "../../api/account";
 
 interface IText {
   id: number;
@@ -112,6 +115,13 @@ const textInstruct: ITextInstruct[] = [
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
+
+  const onFinish = async (values: any) => {
+    const result = await uploadPicture(account?.wallet as string, {
+      type: values.type as ITypeAccount
+    });
+    await store.dispatch(setAccount(result.data[0]));
+  };
 
   const refNew = React.useRef<null | HTMLDivElement>(null);
   const refOld = React.useRef<null | HTMLDivElement>(null);
@@ -262,17 +272,8 @@ const Home: React.FC = () => {
       </div>
     </>
   );
-  const renderButtonLogin = () => (
+  const renderListTitle = () => (
     <>
-      <div className="mt-[30px] w-[100%] rounded-[20px] py-[25px] flex justify-center flex-col items-center">
-        <p className="text-[25px]">Vui lòng kết nối ví Metamask</p>
-        <button
-          onClick={handleClickLogin}
-          className="my-[20px] py-[10px] px-[30px] w-[200px] border-border border-[1px] rounded-[15px] shadow-md hover:shadow-xl hover:bg-hover"
-        >
-          Kết nối ví
-        </button>
-      </div>
       {renderTagHome({ title: "Giới thiệu về sản phẩm", items: textIntroduce })}
       {renderTagHome({
         title: "Điểm nổi bật của sản phẩm",
@@ -295,9 +296,56 @@ const Home: React.FC = () => {
             })}
           </div>
         ))}
+      </div></>
+  )
+  const renderButtonLogin = () => (
+    <>
+      <div className="mt-[30px] w-[100%] rounded-[20px] py-[25px] flex justify-center flex-col items-center">
+        <p className="text-[25px]">Vui lòng kết nối ví Metamask</p>
+        <button
+          onClick={handleClickLogin}
+          className="my-[20px] py-[10px] px-[30px] w-[200px] border-border border-[1px] rounded-[15px] shadow-md hover:shadow-xl hover:bg-hover"
+        >
+          Kết nối ví
+        </button>
       </div>
+      {renderListTitle()}
     </>
   );
+  const renderChooseType = () => (
+    <div className="mt-[30px] w-[100%] rounded-[20px] py-[25px] flex justify-center flex-col items-center">
+      <div className="py-[30px] px-[50px] w-[100%] border-[2px] rounded-r-[20px] rounded-b-[20px] shadow-xl flex flex-col items-center">
+        <p className="p-[20px] text-[25px] flex items-center justify-center w-[400px] h-[100%] ">
+          Vui lòng chọn vai trò của bạn
+        </p>
+        <p className="text-[20px] mb-[20px] underline">Lưu ý việc lựa chọn vai trò chỉ được thực hiện 1 lần duy nhất</p>
+        <Form
+          layout="horizontal"
+          name="validate_other"
+          onFinish={onFinish}
+          initialValues={{
+          }}
+          style={{ maxWidth: 600 }}
+        >
+          <Form.Item
+            name="type"
+            rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
+          >
+            <Radio.Group>
+              <Radio.Button value={ITypeAccount.Farm}>Nông dân</Radio.Button>
+              <Radio.Button value={ITypeAccount.Ship}>Giao hàng</Radio.Button>
+              <Radio.Button value={ITypeAccount.Buy}>Người thu mua</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item className="flex justify-center w-[100%]">
+            <Button type="primary" htmlType="submit">
+              Xác nhận
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </div>
+  )
   const renderMenu = () => (
     <Tippy
       interactive
@@ -334,7 +382,7 @@ const Home: React.FC = () => {
   return (
     <div className="pt-[20px]">
       <CarouselHome />
-      {account ? renderLogin() : renderButtonLogin()}
+      {account ? account.type === ITypeAccount.None ? renderChooseType() : renderLogin() : renderButtonLogin()}
       {renderMenu()}
     </div>
   );
