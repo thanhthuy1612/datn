@@ -9,7 +9,7 @@ contract NFTMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
-    uint256 listingPrice = 0.0025 ether; // Giá tiền trả cho sàn
+    uint256 listingPrice = 0.01 ether; // Giá tiền trả cho sàn
     address payable owner; // địa chỉ chủ chợ
     mapping(uint256 => MarketItem) private idToMarketItem;
     struct MarketItem {
@@ -234,7 +234,7 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].seller = payable(address(0));
         idToMarketItem[tokenId].time = block.timestamp;
-        idToMarketItem[tokenId].status = 3;
+        idToMarketItem[tokenId].status = 4;
         _itemsSold.increment();
         _transfer(address(this), msg.sender, tokenId);
         payable(ship).transfer(listingPrice);
@@ -288,6 +288,60 @@ contract NFTMarketplace is ERC721URIStorage {
                 MarketItem storage currentItem = idToMarketItem[currentId];
                 items[currentIndex] = currentItem;
                 currentIndex += 1;
+        }
+        return items;
+    }
+
+    function fetchMarketStartShip() public view returns (MarketItem[] memory) {
+        // lấy tất cả item có trên sàn
+        uint totalItemCount = _tokenIds.current();
+        uint itemCount = 0;
+        uint currentIndex = 0;
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (
+                idToMarketItem[i + 1].date > block.timestamp * 1000 &&
+                idToMarketItem[i + 1].status == 1
+            ) {
+                itemCount += 1;
+            }
+        }
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (
+                idToMarketItem[i + 1].date > block.timestamp * 1000 &&
+                idToMarketItem[i + 1].status == 1
+            ) {
+                uint currentId = i + 1;
+                MarketItem storage currentItem = idToMarketItem[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
+        }
+        return items;
+    }
+
+    function fetchMarketMyShip() public view returns (MarketItem[] memory) {
+        // lấy tất cả item có trên sàn
+        uint totalItemCount = _tokenIds.current();
+        uint itemCount = 0;
+        uint currentIndex = 0;
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (
+                idToMarketItem[i + 1].shipper == msg.sender
+            ) {
+                itemCount += 1;
+            }
+        }
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (
+                idToMarketItem[i + 1].shipper == msg.sender
+            ) {
+                uint currentId = i + 1;
+                MarketItem storage currentItem = idToMarketItem[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
         }
         return items;
     }
@@ -362,8 +416,7 @@ contract NFTMarketplace is ERC721URIStorage {
         for (uint i = 0; i < totalItemCount; i++) {
             // check if nft is mine
             if (
-                idToMarketItem[i + 1].owner == msg.sender &&
-                idToMarketItem[i + 1].status == 1
+                idToMarketItem[i + 1].owner == msg.sender
             ) {
                 itemCount += 1;
             }
@@ -371,8 +424,7 @@ contract NFTMarketplace is ERC721URIStorage {
         MarketItem[] memory items = new MarketItem[](itemCount);
         for (uint i = 0; i < totalItemCount; i++) {
             if (
-                idToMarketItem[i + 1].owner == msg.sender &&
-                idToMarketItem[i + 1].status == 1
+                idToMarketItem[i + 1].owner == msg.sender
             ) {
                 uint currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];

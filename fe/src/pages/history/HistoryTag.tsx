@@ -13,19 +13,19 @@ interface IMenu {
 const menu: IMenu[] = [
   {
     id: 1,
-    title: "Khởi tạo NFT",
+    title: "Khởi tạo sản phẩm",
   },
   {
     id: 2,
-    title: 'Cập nhật NFT'
+    title: 'Cập nhật sản phẩm'
   },
   {
     id: 3,
-    title: "Mua NFT",
+    title: "Mua sản phẩm",
   },
   {
     id: 4,
-    title: "Bán NFT",
+    title: "Bán sản phẩm",
   },
   {
     id: 5,

@@ -1045,6 +1045,156 @@ export const abi = [
   },
   {
     inputs: [],
+    name: "fetchMarketMyShip",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
+            internalType: "address payable",
+            name: "seller",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "time",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "sold",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "status",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "date",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+        ],
+        internalType: "struct NFTMarketplace.MarketItem[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "fetchMarketStartShip",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "img",
+            type: "string",
+          },
+          {
+            internalType: "address payable",
+            name: "seller",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address payable",
+            name: "shipper",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "time",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "sold",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "status",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "date",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "description",
+            type: "string",
+          },
+        ],
+        internalType: "struct NFTMarketplace.MarketItem[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "fetchMyNFTs",
     outputs: [
       {

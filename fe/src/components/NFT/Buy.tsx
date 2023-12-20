@@ -88,7 +88,7 @@ const BuyNFT: React.FC = () => {
           <div className="pr-[10px]">
             <CiClock1 />
           </div>{" "}
-          Thời gian hết hạn bán NFT: {dateFormat(
+          Thời gian hết hạn: {dateFormat(
             new Date(item.expired),
             DateFormatType.FullDate
           )}

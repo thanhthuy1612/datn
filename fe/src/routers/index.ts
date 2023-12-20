@@ -16,6 +16,10 @@ import AccountSearch from "../pages/accountSearch";
 import DeleteNFT from "../components/NFT/Delete";
 import ExpiredNFT from "../components/NFT/Expired";
 import MyListNFT from "../components/NFT/My";
+import Ship from "../components/NFT/Ship";
+import DoingShip from "../components/NFT/DoingShip";
+import View from "../components/NFT/View";
+import Accept from "../components/NFT/Accept";
 
 const publicRoutes: IRouter[] = [
   { id: 1, path: "/", component: Home },
@@ -39,6 +43,11 @@ const publicRoutes: IRouter[] = [
   { id: 14, path: "/nft/my", component: MyListNFT },
   { id: 15, path: "/cart", component: Cart },
   { id: 16, path: "/search", component: AccountSearch },
+  { id: 17, path: "/nft/ship", component: Ship },
+  { id: 18, path: "/nft/doing-ship", component: DoingShip },
+  { id: 18, path: "/nft/view", component: View },
+  { id: 19, path: "/nft/accept", component: Accept },
+
 ];
 
 const privateRoutes: IRouter[] = [];

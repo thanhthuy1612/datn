@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ButtonItem from "../../components/button";
 import {
   IStateRedux,
-  fetchMarketItemsUpComing,
+  fetchMarketStartShip,
   store
 } from "../../redux";
 
@@ -15,7 +15,7 @@ interface IState {
   pageSize: number;
 }
 
-const NewNFT: React.FC = () => {
+const ShipNFT: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
@@ -24,17 +24,17 @@ const NewNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { upComing, loadingUpComing, account } = useSelector(
+  const { shipNFT, loadingUpComing, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    store.dispatch(fetchMarketItemsUpComing());
-  }, []);
+    store.dispatch(fetchMarketStartShip());
+  }, [account]);
   const handleClick = (item: any) => () => {
-    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
+    navigate('/nft/ship', { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {
@@ -44,8 +44,8 @@ const NewNFT: React.FC = () => {
 
   const renderList = () => (
     <>
-      {upComing && upComing.length > 0 ? (
-        upComing
+      {shipNFT && shipNFT.length > 0 ? (
+        shipNFT
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item: any) => (
             <button
@@ -69,10 +69,10 @@ const NewNFT: React.FC = () => {
           />
         </div>
       )}
-      {upComing && upComing.length > 0 && (
+      {shipNFT && shipNFT.length > 0 && (
         <div className="w-[100%] flex items-end justify-center mt-[50px]">
           <Pagination
-            total={upComing ? upComing.length : 0}
+            total={shipNFT ? shipNFT.length : 0}
             showSizeChanger
             showQuickJumper
             pageSizeOptions={[8, 12, 16, 20]}
@@ -95,7 +95,7 @@ const NewNFT: React.FC = () => {
     <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%]">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          Sản phẩm mới nhất
+          Sản phẩm chờ giao
         </p>
         <div className="border-b-[1px] border-border w-[calc(100%-318px)] rounded-[20px]"></div>
       </div>
@@ -106,4 +106,4 @@ const NewNFT: React.FC = () => {
   );
 };
 
-export default React.memo(NewNFT);
+export default React.memo(ShipNFT);

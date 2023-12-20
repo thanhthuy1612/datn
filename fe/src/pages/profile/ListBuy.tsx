@@ -2,7 +2,7 @@ import React from "react";
 import ButtonItem from "../../components/button";
 import { Empty, Pagination, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-import { IStateRedux, fetch, store } from "../../redux";
+import { IStateRedux, fetchBuy, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -13,19 +13,19 @@ interface IMenu {
 const menu: IMenu[] = [
   {
     id: 1,
-    title: "Sản phẩm mới tạo"
+    title: "Sản phẩm trong kho"
   },
   {
     id: 2,
-    title: "Sản phẩm đang bán",
+    title: "Sản phẩm đang chờ giao",
   },
   {
     id: 3,
-    title: "Sản phẩm hết hạn",
+    title: "Sản phẩm đang giao",
   },
   {
     id: 4,
-    title: "Sản phầm đã thu hồi",
+    title: "Sản phẩm chờ xác nhận",
   }
 ];
 
@@ -36,7 +36,7 @@ interface IState {
   items: any[];
 }
 
-const ListNFT: React.FC = () => {
+const ListBuy: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
@@ -47,15 +47,15 @@ const ListNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
-  const { myNFT, mySeller, myDate, myNew, myDelete, loading, account } = useSelector(
+  const { myNFT, account, loading } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
   const handleClickItem = (item: any) => () => {
-    navigate(setNavigate(item), { state: item });
+    navigate(setNavigate(), { state: item });
   };
   React.useEffect(() => {
     const renderRedux = async () => {
-      await store.dispatch(fetch());
+      await store.dispatch(fetchBuy());
     };
     renderRedux();
   }, [account]);
@@ -63,32 +63,33 @@ const ListNFT: React.FC = () => {
     const getItems = async () => {
       switch (state.choose) {
         case 1:
-          setState({ items: myNew });
+          setState({ items: myNFT.filter(item => { return item?.number === 4 }) });
           break;
         case 2:
-          setState({ items: mySeller });
+          setState({ items: myNFT.filter(item => { return item?.number === 1 }) });
           break;
         case 3:
-          setState({ items: myDate });
+          setState({ items: myNFT.filter(item => { return item?.number === 2 }) });
           break;
         case 4:
-          setState({ items: myDate });
+          setState({ items: myNFT.filter(item => { return item?.number === 3 }) });
           break;
       }
     };
     getItems();
-  }, [myNFT, mySeller, myDate, myNew, state.choose, myDelete]);
+  }, [myNFT, state.choose]);
 
-  const setNavigate = (item: any) => {
+  console.log(myNFT)
+
+  const setNavigate = () => {
     switch (state.choose) {
       case 1:
         return '/nft/sell'
       case 2:
-        return item.seller === account?.wallet ? 'nft/expired' : '/nft/buy'
       case 3:
-        return '/nft/expired'
+        return '/nft/view'
       case 4:
-        return '/nft/delete'
+        return '/nft/accept'
       default:
         return '/'
     }
@@ -158,13 +159,13 @@ const ListNFT: React.FC = () => {
             key={item.id}
             className={
               state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                ? "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-1018px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-1218px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loading ? renderList() : renderloading()}
@@ -173,4 +174,4 @@ const ListNFT: React.FC = () => {
   );
 };
 
-export default ListNFT;
+export default ListBuy;

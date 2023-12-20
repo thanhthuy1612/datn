@@ -6,7 +6,7 @@ export interface IUploadIPFS {
   img: string;
   date: number;
   create: string;
-  status: boolean;
+  status: number;
   price: number;
   description?: string;
 }

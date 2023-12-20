@@ -92,7 +92,7 @@ const OldNFT: React.FC = () => {
     <div className="w-[100%] z-0" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%] mt-[50px]">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          Kho NFT
+          Tất cả sản phẩm đang bán
         </p>
         <div className="border-b-[1px] border-border w-[calc(100%-318px)] rounded-[20px]"></div>
       </div>

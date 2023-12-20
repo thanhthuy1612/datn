@@ -50,7 +50,7 @@ const CreateNFT: React.FC = () => {
           <button
             onClick={handleOpenCreate}
             className="w-[500px] mt-[40px] border-border border-[1px] rounded-[20px] py-[25px] shadow-md flex justify-center hover:bg-hover hover:shadow-xl">
-            Thêm NFT vào kho của bạn
+            Thêm sản phẩm mới
             <CiCirclePlus className="text-[25px] ml-[10px]" />
           </button>
           <button

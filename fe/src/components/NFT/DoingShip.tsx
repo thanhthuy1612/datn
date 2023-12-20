@@ -1,10 +1,10 @@
 import React from "react";
-import { Button, DatePicker, Form, Image, Input, Modal, Spin, TimePicker, Upload, UploadFile } from "antd";
+import { Button, Form, Image, Input, Modal, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, changeTokenUri, resellToken, setLoading, store } from "../../redux";
+import { IStateRedux, changeTokenUri, doneShipMarketSale, setLoading, shipMarketSale, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
-import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
+import { LoadingOutlined } from "@ant-design/icons";
+import { removeUnnecessaryWhiteSpace } from "../../ultis";
 import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
@@ -16,7 +16,7 @@ interface IState {
   previewTitleNFT: string;
 }
 
-const ResellNFT: React.FC = () => {
+const DoingShip: React.FC = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = React.useState<boolean>(false);
   const [isModalOpenCreate, setIsModalOpenCreate] = React.useState<boolean>(false);
   const [file, setFile] = React.useState<string>("");
@@ -30,7 +30,7 @@ const ResellNFT: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
-  const { loading, loadingCreate } = useSelector(
+  const { loadingCreate } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
@@ -39,8 +39,6 @@ const ResellNFT: React.FC = () => {
   const { TextArea } = Input;
 
   const navigate = useNavigate();
-  const dateFormat = "YYYY/MM/DD";
-  const timeFormate = "hh:mm:ss";
 
   React.useEffect(() => {
     store.dispatch(setLoading(false));
@@ -54,20 +52,20 @@ const ResellNFT: React.FC = () => {
     return result;
   };
 
-  const showModalAdd = () => {
-    setIsModalOpenAdd(true);
-  };
-
-  const handleCancelAdd = () => {
-    setIsModalOpenAdd(false);
-  };
-
   const showModalCreate = () => {
     setIsModalOpenCreate(true);
   };
 
+  const showModalAdd = () => {
+    setIsModalOpenAdd(true);
+  };
+
   const handleCancelCreate = () => {
     setIsModalOpenCreate(false);
+  };
+
+  const handleCancelAdd = () => {
+    setIsModalOpenAdd(false);
   };
 
   const action = async (options: any) => {
@@ -81,19 +79,6 @@ const ResellNFT: React.FC = () => {
     }
   };
 
-  const onFinish = async (values: any) => {
-    await store.dispatch(
-      resellToken({
-        tokenId: item.tokenId,
-        name: removeUnnecessaryWhiteSpace(values.title),
-        price: removeUnnecessaryWhiteSpace(values.price),
-        date: getDate(new Date(values.date), new Date(values.time)),
-        description: removeUnnecessaryWhiteSpace(values.description)
-      })
-    );
-    navigate("/");
-  };
-
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
@@ -102,14 +87,26 @@ const ResellNFT: React.FC = () => {
   };
 
   const onFinishAdd = async (value: any) => {
-    await store.dispatch(
-      changeTokenUri({
-        tokenId: item.tokenId,
-        file: file,
-        description: removeUnnecessaryWhiteSpace(value.description)
-      })
-    );
-    navigate("/");
+    if (isModalOpenAdd) {
+      await store.dispatch(
+        changeTokenUri({
+          tokenId: item.tokenId,
+          file: file,
+          description: removeUnnecessaryWhiteSpace(value.description)
+        })
+      );
+      navigate("/");
+    }
+    if (isModalOpenCreate) {
+      await store.dispatch(
+        doneShipMarketSale({
+          tokenId: item.tokenId,
+          file: file,
+          description: removeUnnecessaryWhiteSpace(value.description)
+        })
+      );
+      navigate("/");
+    }
   };
 
   const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
@@ -199,61 +196,6 @@ const ResellNFT: React.FC = () => {
       </Modal>
     </Form>
   )
-  const renderResell = () => (
-    <Form
-      name="account"
-      layout="vertical"
-      wrapperCol={{ flex: 1 }}
-      colon={false}
-      onFinish={onFinish}
-      className="flex flex-col w-[300px] items-center">
-      <div className="flex w-[100%] justify-between">
-        <div className="flex flex-col w-[300px]">
-          <Form.Item
-            label="Tên mới NFT:"
-            name="title"
-            rules={[{ required: true, message: "Vui lòng nhập tên mới" }]}>
-            <Input placeholder="Nhập tên NFT..." />
-          </Form.Item>
-          <Form.Item
-            label="Giá bán NFT:"
-            name="price"
-            tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
-            rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
-            <Input placeholder="Nhập giá bán NFT..." />
-          </Form.Item>
-          <Form.Item
-            label="Ngày hết hạn bán NFT:"
-            name="date"
-            rules={[
-              { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
-            ]}>
-            <DatePicker format={dateFormat} placeholder="Chọn ngày" />
-          </Form.Item>
-          <Form.Item
-            label="Giờ hết hạn bán NFT:"
-            name="time"
-            rules={[
-              { required: true, message: "Vui lòng nhập giờ hết hạn bán mới" },
-            ]}>
-            <TimePicker format={timeFormate} placeholder="Chọn giờ" />
-          </Form.Item>
-          <Form.Item
-            label="Mô tả:"
-            name="description"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-          >
-            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
-          </Form.Item>
-          <Form.Item label=" ">
-            <Button htmlType="submit" disabled={loading}>
-              {loading ? renderloading() : "Bán sản phẩm"}
-            </Button>
-          </Form.Item>
-        </div>
-      </div>
-    </Form>
-  );
   const renderProfileNFT = () => (
     <div className="rounded-[20px] flex flex-col justify-between pb-[60px]">
       <div className="rounded-[20px] flex flex-col">
@@ -270,13 +212,13 @@ const ResellNFT: React.FC = () => {
         <More />
       </div>
       <div className="flex mt-[50px]">
-        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] mr-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>
+        <button className="border-boder mr-[20px] border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Cập nhật</button>
         <Modal width={1000} title="Cập nhật sản phẩm" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
           {renderAdd()}
         </Modal>
-        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán sản phẩm</button>
-        <Modal title="Bán sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
-          {renderResell()}
+        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Xác nhận giao hàng</button>
+        <Modal width={1000} title="Xác nhận giao hàng" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+          {renderAdd()}
         </Modal>
       </div>
     </div>
@@ -291,8 +233,8 @@ const ResellNFT: React.FC = () => {
       </div>
     </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Bán sản phẩm" />
+    <ShowLayout chidren={renderBody()} title="Giao hàng" />
   );
 };
 
-export default ResellNFT;
+export default DoingShip;

@@ -23,6 +23,9 @@ import { followCursor } from "tippy.js";
 import { ITypeAccount } from "../../interfaces/IRouter";
 import { Button, Form, Radio } from "antd";
 import { uploadPicture } from "../../api/account";
+import ListShip from "../profile/ListShip";
+import ListBuy from "../profile/ListBuy";
+import ShipNFT from "./ShipNFT";
 
 interface IText {
   id: number;
@@ -158,22 +161,56 @@ const Home: React.FC = () => {
     {
       id: 1,
       handle: handleNew,
-      title: "NFT mới nhất",
+      title: "Sản phẩm mới nhất",
       icon: <CiCloudSun />,
     },
     {
       id: 2,
       handle: handleOld,
-      title: "Kho NFT",
+      title: "Tất cả sản phẩm đang bán",
       icon: <CiCloudMoon />,
     },
     {
       id: 3,
       handle: handleMyNFT,
-      title: "NFT của bạn",
+      title: "Sản phẩm của bạn",
       icon: <CiCloudRainbow />,
     },
   ];
+
+  const renderBody = () => {
+    switch (account?.type) {
+      case ITypeAccount.Farm:
+        return <>
+          <div ref={refNew}>
+            <NewNFT />
+          </div>
+          <div ref={refOld}>
+            <OldNFT />
+          </div>
+          <div ref={refMyNFT}>
+            <ListNFT />
+          </div>
+        </>
+      case ITypeAccount.Ship:
+        return <>
+          <div ref={refNew}>
+            <ShipNFT />
+          </div>
+          <div ref={refMyNFT}>
+            <ListShip />
+          </div>
+        </>
+      case ITypeAccount.Buy:
+        return <>
+          <div ref={refMyNFT}>
+            <ListBuy />
+          </div>
+        </>
+      case ITypeAccount.None:
+        <></>
+    }
+  }
 
   const renderButton = (item: IMenu) => (
     <button
@@ -212,15 +249,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <div ref={refNew}>
-        <NewNFT />
-      </div>
-      <div ref={refOld}>
-        <OldNFT />
-      </div>
-      <div ref={refMyNFT}>
-        <ListNFT />
-      </div>
+      {renderBody()}
     </>
   );
   const renderItem = ({ title }: { title: string }) => (
