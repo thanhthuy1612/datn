@@ -1,7 +1,8 @@
 import React from "react";
-import { Image} from "antd";
+import { Image } from "antd";
 import { useLocation } from "react-router-dom";
 import ShowLayout from "../../layouts/ShowLayout";
+import More from "./More";
 
 const View: React.FC = () => {
   const localtion = useLocation();
@@ -20,6 +21,7 @@ const View: React.FC = () => {
           Mô tả: {item.description}
         </div>
         {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
+        <More />
       </div>
     </div>
   );

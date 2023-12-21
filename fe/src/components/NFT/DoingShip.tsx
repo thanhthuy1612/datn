@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Form, Image, Input, Modal, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, changeTokenUri, doneShipMarketSale, setLoading, shipMarketSale, store } from "../../redux";
+import { IStateRedux, changeTokenUri, doneShipMarketSale, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { removeUnnecessaryWhiteSpace } from "../../ultis";
@@ -205,10 +205,15 @@ const DoingShip: React.FC = () => {
         <div className="flex items-center pt-[15px] py-[5px]">
           Ngày tạo: {item.date}
         </div>
-        <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
+        <div className="flex items-center py-[5px]">
           Mô tả: {item.description}
         </div>
-        {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
+        <div className="flex items-center py-[5px]">
+          Giao từ: {item.from}
+        </div>
+        <div className="flex items-center py-[5px]">
+          Giao đến: {item.to}
+        </div>
         <More />
       </div>
       <div className="flex mt-[50px]">

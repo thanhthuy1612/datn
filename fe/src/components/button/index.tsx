@@ -24,10 +24,10 @@ const ButtonItem: React.FC<{
               <p className="text-[15px] pb-[5px] text-textButton">Ngày bán</p>
               <p className="text-[18px] font-[500]">{date.split(",")[0]}</p>
             </div>
-            <div className="flex flex-col items-end">
+            {parseInt(price) > 0 && <div className="flex flex-col items-end">
               <p className="text-[15px] pb-[5px] text-textButton">Giá</p>
               <p className="text-[18px] font-[500]">{price} BNBT</p>
-            </div>
+            </div>}
           </div>
         }
       </div>

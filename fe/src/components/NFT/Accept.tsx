@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Form, Image, Input, Modal, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, acceptMarketSale, setLoading, shipMarketSale, store } from "../../redux";
+import { IStateRedux, acceptMarketSale, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { removeUnnecessaryWhiteSpace } from "../../ultis";

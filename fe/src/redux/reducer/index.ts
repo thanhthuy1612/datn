@@ -109,12 +109,11 @@ export const shipMarketSale = createAsyncThunk(
       thunkAPI.dispatch(setLoadingCreate(true));
       const { erc721, address } = await getERC();
       const url = await uploadToIPFS({
-        img: `${option.file}`,
+        img: "",
         date: Date.now(),
         create: address.toString(),
         status: 2,
         price: 0,
-        description: option.description,
       });
       const transaction = await erc721.shipMarketSale(
         option.tokenId,
@@ -137,7 +136,7 @@ export const doneShipMarketSale = createAsyncThunk(
         img: `${option.file}`,
         date: Date.now(),
         create: address.toString(),
-        status: 2,
+        status: 3,
         price: 0,
         description: option.description,
       });
@@ -205,7 +204,9 @@ export const resellToken = createAsyncThunk(
       item.name,
       price,
       item.date,
-      item.description
+      item.description,
+      item.from,
+      { value: listingPrice }
     );
     await result.wait();
   }
@@ -236,6 +237,8 @@ const getItems = async (data: any, contract: any) => {
         img: imageObjectURL,
         list: meta,
         description: i.description,
+        from: i.from,
+        to: i.to
       };
     })
   );
@@ -278,10 +281,11 @@ export const createMarketSale = createAsyncThunk(
       status: 1,
       price: 0,
     });
-    const price = ethers.utils.parseUnits(item.price, "ether");
-    const result = await erc721.createMarketSale(item.tokenId, url as string, {
-      value: price,
-    });
+    const result = await erc721.createMarketSale(
+      item?.item.tokenId,
+      url as string,
+      item?.to
+    );
     await result.wait();
   }
 );
@@ -300,9 +304,13 @@ export const acceptMarketSale = createAsyncThunk(
       description: item.description,
     });
     const price = ethers.utils.parseUnits(item?.item.price, "ether");
-    const result = await erc721.acceptMarketSale(item?.item.tokenId, url as string, {
-      value: price,
-    });
+    const result = await erc721.acceptMarketSale(
+      item?.item.tokenId,
+      url as string,
+      {
+        value: price,
+      }
+    );
     await result.wait();
   }
 );
@@ -330,17 +338,6 @@ export const deleteMarketSale = createAsyncThunk(
       }
     );
     await result.wait();
-  }
-);
-
-export const fetchMarketItemsUpComing = createAsyncThunk(
-  "fetchMarketItemsUpComing",
-  async (_item, thunkAPI) => {
-    thunkAPI.dispatch(setLoadingUpcoming(true));
-    const { contract, erc721 } = await getERC();
-    const data = await erc721.fetchMarketItemsUpComing();
-    const items = await getItems(data, contract);
-    return items;
   }
 );
 
@@ -569,10 +566,6 @@ export const item = createSlice({
         state.loadingCart = false;
       }
     );
-    builder.addCase(fetchMarketItemsUpComing.fulfilled, (state, actions) => {
-      state.loadingUpComing = false;
-      state.upComing = actions.payload;
-    });
     builder.addCase(fetchMarketStartShip.fulfilled, (state, actions) => {
       state.loadingUpComing = false;
       state.shipNFT = actions.payload;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Spin } from "antd";
+import { Button, Form, Image, Input, Modal, Spin } from "antd";
 import { CiClock1 } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { IStateRedux, createMarketSale, setAccountSearch, setTotalCart, store } from "../../redux";
@@ -7,13 +7,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
 import { DateFormatType, ICart } from "../../interfaces/IRouter";
-import { dateFormat } from "../../ultis";
+import { dateFormat, removeUnnecessaryWhiteSpace } from "../../ultis";
 import { addCart, deleteCart, getCartsByTokenUri } from "../../api/cart";
 import ShowLayout from "../../layouts/ShowLayout";
 
 const BuyNFT: React.FC = () => {
   const [cart, setCart] = React.useState<ICart[]>([]);
-  const [reload, setReload] = React.useState<boolean>(true)
+  const [reload, setReload] = React.useState<boolean>(true);
+  const [isModalOpenCreate, setIsModalOpenCreate] = React.useState<boolean>(false);
 
   const { loading, account, totalCart } = useSelector(
     (state: { item: IStateRedux }) => state.item
@@ -22,18 +23,21 @@ const BuyNFT: React.FC = () => {
   const item = localtion.state;
   const navigate = useNavigate();
   const fetch = async () => {
-    if(account){
+    if (account) {
       const res = await getCartsByTokenUri({ account: account?.wallet, url: item.tokenId })
-    setCart(res.data)
-    setReload(false)
+      setCart(res.data)
+      setReload(false)
     }
   }
   React.useEffect(() => {
     fetch()
   }, [account]);
 
-  const handleBuy = async () => {
-    await store.dispatch(createMarketSale(item));
+  const handleBuy = async (values: any) => {
+    await store.dispatch(createMarketSale({
+      item: item,
+      to: removeUnnecessaryWhiteSpace(values.to)
+    }));
     navigate("/");
   };
   const handleClick = (wallet: string) => () => {
@@ -44,11 +48,18 @@ const BuyNFT: React.FC = () => {
       navigate("/search");
     }
   };
+  const showModalCreate = () => {
+    setIsModalOpenCreate(true);
+  };
+
+  const handleCancelCreate = () => {
+    setIsModalOpenCreate(false);
+  };
   const handleAddCart = async () => {
     setReload(true)
     await addCart({ account: account?.wallet, url: item.tokenId })
     await fetch()
-    store.dispatch(setTotalCart(totalCart ? totalCart + 1 : 0))
+    store.dispatch(setTotalCart(totalCart ? totalCart + 1 : 1))
     setReload(false)
   }
   const handleDeleteCart = async () => {
@@ -58,11 +69,38 @@ const BuyNFT: React.FC = () => {
     store.dispatch(setTotalCart(totalCart ? totalCart - 1 : 0))
     setReload(false)
   }
+
   const antIcon = <LoadingOutlined style={{ fontSize: 21 }} spin />;
   const renderloading = () => (
     <div className="w-[500px] flex justify-center items-center">
       <Spin indicator={antIcon} />
     </div>
+  );
+
+  const renderForm = () => (
+    <Form
+      name="account"
+      layout="vertical"
+      wrapperCol={{ flex: 1 }}
+      colon={false}
+      onFinish={handleBuy}
+      className="flex flex-col w-[300px] items-center">
+      <div className="flex w-[100%] justify-between">
+        <div className="flex flex-col w-[300px]">
+          <Form.Item
+            label="Địa chỉ của bạn:"
+            name="to"
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}>
+            <Input placeholder="Nhập địa chỉ..." />
+          </Form.Item>
+          <Form.Item label=" ">
+            <Button htmlType="submit" disabled={loading}>
+              {loading ? renderloading() : "Bán sản phẩm"}
+            </Button>
+          </Form.Item>
+        </div>
+      </div>
+    </Form>
   );
 
   const renderBody = () => (<div className="py-[40px] flex w-[100%] justify-around">
@@ -99,7 +137,7 @@ const BuyNFT: React.FC = () => {
           </p>
           <div className="flex w-[100%] justify-around">
             <button
-              onClick={handleBuy}
+              onClick={showModalCreate}
               disabled={loading}
               className={
                 loading
@@ -108,6 +146,9 @@ const BuyNFT: React.FC = () => {
               }>
               Mua ngay
             </button>
+            <Modal title="Bán sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+              {renderForm()}
+            </Modal>
             <button
               className={
                 reload || loading

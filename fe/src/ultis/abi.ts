@@ -148,6 +148,18 @@ export const abi = [
         name: "description",
         type: "string",
       },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "from",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "to",
+        type: "string",
+      },
     ],
     name: "MarketItemCreated",
     type: "event",
@@ -275,6 +287,11 @@ export const abi = [
         name: "tokenURI",
         type: "string",
       },
+      {
+        internalType: "string",
+        name: "to",
+        type: "string",
+      },
     ],
     name: "createMarketSale",
     outputs: [],
@@ -357,81 +374,6 @@ export const abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "fetch",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "img",
-            type: "string",
-          },
-          {
-            internalType: "address payable",
-            name: "seller",
-            type: "address",
-          },
-          {
-            internalType: "address payable",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "address payable",
-            name: "shipper",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "price",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "time",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "sold",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "status",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "date",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "name",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "description",
-            type: "string",
-          },
-        ],
-        internalType: "struct NFTMarketplace.MarketItem[]",
-        name: "",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -501,6 +443,16 @@ export const abi = [
           {
             internalType: "string",
             name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
             type: "string",
           },
         ],
@@ -578,6 +530,16 @@ export const abi = [
             name: "description",
             type: "string",
           },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
+            type: "string",
+          },
         ],
         internalType: "struct NFTMarketplace.MarketItem[]",
         name: "",
@@ -651,6 +613,16 @@ export const abi = [
           {
             internalType: "string",
             name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
             type: "string",
           },
         ],
@@ -728,6 +700,16 @@ export const abi = [
             name: "description",
             type: "string",
           },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
+            type: "string",
+          },
         ],
         internalType: "struct NFTMarketplace.MarketItem[]",
         name: "",
@@ -801,6 +783,16 @@ export const abi = [
           {
             internalType: "string",
             name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
             type: "string",
           },
         ],
@@ -884,6 +876,16 @@ export const abi = [
             name: "description",
             type: "string",
           },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
+            type: "string",
+          },
         ],
         internalType: "struct NFTMarketplace.MarketItem[]",
         name: "",
@@ -959,79 +961,14 @@ export const abi = [
             name: "description",
             type: "string",
           },
-        ],
-        internalType: "struct NFTMarketplace.MarketItem[]",
-        name: "",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "fetchMarketItemsUpComing",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
           {
             internalType: "string",
-            name: "img",
-            type: "string",
-          },
-          {
-            internalType: "address payable",
-            name: "seller",
-            type: "address",
-          },
-          {
-            internalType: "address payable",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "address payable",
-            name: "shipper",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "price",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "time",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "sold",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "status",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "date",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "name",
+            name: "from",
             type: "string",
           },
           {
             internalType: "string",
-            name: "description",
+            name: "to",
             type: "string",
           },
         ],
@@ -1109,6 +1046,16 @@ export const abi = [
             name: "description",
             type: "string",
           },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
+            type: "string",
+          },
         ],
         internalType: "struct NFTMarketplace.MarketItem[]",
         name: "",
@@ -1184,6 +1131,16 @@ export const abi = [
             name: "description",
             type: "string",
           },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
+            type: "string",
+          },
         ],
         internalType: "struct NFTMarketplace.MarketItem[]",
         name: "",
@@ -1257,6 +1214,16 @@ export const abi = [
           {
             internalType: "string",
             name: "description",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "from",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "to",
             type: "string",
           },
         ],
@@ -1386,6 +1353,11 @@ export const abi = [
       {
         internalType: "string",
         name: "description",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "from",
         type: "string",
       },
     ],

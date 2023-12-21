@@ -1,6 +1,5 @@
 import React from "react";
 import CarouselHome from "./Carousel";
-import NewNFT from "./NewNFT";
 import OldNFT from "./OldNFT";
 import {
   CiCloud,
@@ -182,9 +181,6 @@ const Home: React.FC = () => {
     switch (account?.type) {
       case ITypeAccount.Farm:
         return <>
-          <div ref={refNew}>
-            <NewNFT />
-          </div>
           <div ref={refOld}>
             <OldNFT />
           </div>
@@ -203,6 +199,9 @@ const Home: React.FC = () => {
         </>
       case ITypeAccount.Buy:
         return <>
+          <div ref={refOld}>
+            <OldNFT />
+          </div>
           <div ref={refMyNFT}>
             <ListBuy />
           </div>

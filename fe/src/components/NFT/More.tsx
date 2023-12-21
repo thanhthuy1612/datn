@@ -5,7 +5,7 @@ import { IStateRedux, setAccountSearch, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getItem, getItemIPFS } from "../../api/uploadPicture";
 import { dateFormat } from "../../ultis";
-import { DateFormatType } from "../../interfaces/IRouter";
+import { DateFormatType, ITypeAccount } from "../../interfaces/IRouter";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const More: React.FC = () => {
@@ -55,6 +55,37 @@ const More: React.FC = () => {
     setOpen(false);
   };
 
+  const getTiTle = (item: any) => {
+    switch (item?.status) {
+      case 0:
+        return 'Bán:'
+      case 1:
+        return 'Mua:'
+      case 2:
+        return 'Nhận giao hàng:'
+    }
+  }
+
+  const getTiTleRole = (item: any) => {
+    switch (item?.status) {
+      case 0:
+        return 'Người bán'
+      case 1:
+        return 'Người mua'
+      case 2:
+        return 'Người giao'
+    }
+  }
+
+  const getTiTleDate = (item: any) => {
+    switch (item?.status) {
+      case 0:
+        return 'Ngày bán'
+      case 1:
+        return 'Ngày mua'
+    }
+  }
+
   const handleClick = (wallet: string) => () => {
     if (account && account.wallet === wallet) {
       navigate("/personal");
@@ -64,10 +95,10 @@ const More: React.FC = () => {
     }
   };
 
-  const renderPanel = () => (
-    <>
-      {listItems.map((item: any, index: number) =>
-        <>{item?.img !== '' ? (
+  const renderBody = (item: any, index: number) => {
+    switch (item?.status) {
+      case 0:
+        return <>{item?.img !== '' ? (
           <>
             <p className="text-[17px] mb-[5px] font-bold">{index === 0 ? 'Khởi tạo:' : 'Cập nhật:'}</p>
             <div key={item?.img} className="flex mb-[20px]">
@@ -78,7 +109,7 @@ const More: React.FC = () => {
               />
               <div className="ml-[20px]">
                 <div className="mb-[10px]">
-                  <p className="text-[17px] mb-[3px]">Người đăng:</p>
+                  <p className="text-[17px] mb-[3px]">Người tạo:</p>
                   <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
                 </div>
                 <div>
@@ -93,19 +124,17 @@ const More: React.FC = () => {
             </div>
           </>) :
           (<div className='mb-[20px]'>
-            <p className="text-[17px] mb-[5px] font-bold">{item?.status ? 'Bán:' : (account && account.wallet === item.create) ? "Thu hồi: " : 'Mua:'}</p>
+            <p className="text-[17px] mb-[5px] font-bold">{getTiTle(item)}</p>
             <div className="mb-[10px]">
-              <p className="text-[17px] mb-[3px]">{item.status ? 'Người bán:' : 'Người mua:'}</p>
+              <p className="text-[17px] mb-[3px]">{getTiTleRole(item)}</p>
               <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
             </div>
-            {
-              item.status && <div>
-                <p className="text-[17px] mb-[3px]">Giá bán:</p>
-                <p>{item?.price ?? 0} BNBT</p>
-              </div>
-            }
+            {(account?.type !== ITypeAccount.Ship) && <div>
+              <p className="text-[17px] mb-[3px]">Giá sản phẩm:</p>
+              <p>{item?.price} BNBT</p>
+            </div>}
             <div>
-              <p className="text-[17px] mb-[3px]">{item?.status ? 'Ngày bán:' : 'Ngày mua:'}</p>
+              <p className="text-[17px] mb-[3px]">{getTiTleDate(item)}</p>
               <p>{item?.date}</p>
             </div>
             {item?.description && <div>
@@ -114,6 +143,80 @@ const More: React.FC = () => {
             </div>}
           </ div>)}
         </>
+      case 1:
+      case 2:
+        return <div className='mb-[20px]'>
+          <p className="text-[17px] mb-[5px] font-bold">{getTiTle(item)}</p>
+          <div className="mb-[10px]">
+            <p className="text-[17px] mb-[3px]">{getTiTleRole(item)}</p>
+            <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+          </div>
+          <div>
+            <p className="text-[17px] mb-[3px]">{getTiTleDate(item)}</p>
+            <p>{item?.date}</p>
+          </div>
+          {item?.description && <div>
+            <p className="text-[17px] mb-[3px]">Mô tả:</p>
+            <p>{item?.description}</p>
+          </div>}
+        </ div>
+      case 3:
+        return <>
+          <p className="text-[17px] mb-[5px] font-bold">Giao hàng thành công:</p>
+          <div key={item?.img} className="flex mb-[20px]">
+            <Image
+              width={300}
+              height={300}
+              src={item?.img}
+            />
+            <div className="ml-[20px]">
+              <div className="mb-[10px]">
+                <p className="text-[17px] mb-[3px]">Người giao hàng:</p>
+                <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+              </div>
+              <div>
+                <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+                <p>{item?.date}</p>
+              </div>
+              <div>
+                <p className="text-[17px] mb-[3px]">Mô tả:</p>
+                <p>{item?.description}</p>
+              </div>
+            </div>
+          </div>
+        </>
+      case 4:
+        return <>
+          <p className="text-[17px] mb-[5px] font-bold">Xác nhận giao hàng thành công:</p>
+          <div key={item?.img} className="flex mb-[20px]">
+            <Image
+              width={300}
+              height={300}
+              src={item?.img}
+            />
+            <div className="ml-[20px]">
+              <div className="mb-[10px]">
+                <p className="text-[17px] mb-[3px]">Người nhận:</p>
+                <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+              </div>
+              <div>
+                <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+                <p>{item?.date}</p>
+              </div>
+              <div>
+                <p className="text-[17px] mb-[3px]">Mô tả:</p>
+                <p>{item?.description}</p>
+              </div>
+            </div>
+          </div>
+        </>
+    }
+  }
+
+  const renderPanel = () => (
+    <>
+      {listItems.map((item: any, index: number) =>
+        <>{renderBody(item, index)}</>
       )}
     </>
   )

@@ -5,10 +5,12 @@ const client = create({ url: "https://ipfs-ivirse.pokeheo.xyz/api/v0/add" });
 export interface IUploadIPFS {
   img: string;
   date: number;
-  create: string;
+  create?: string;
   status: number;
   price: number;
   description?: string;
+  buyer?: string;
+  shipper?: string;
 }
 
 export const uploadPicture = async (file: FormData) => {

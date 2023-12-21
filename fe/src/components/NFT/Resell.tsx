@@ -88,7 +88,8 @@ const ResellNFT: React.FC = () => {
         name: removeUnnecessaryWhiteSpace(values.title),
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
-        description: removeUnnecessaryWhiteSpace(values.description)
+        description: removeUnnecessaryWhiteSpace(values.description),
+        from: removeUnnecessaryWhiteSpace(values.from)
       })
     );
     navigate("/");
@@ -138,7 +139,7 @@ const ResellNFT: React.FC = () => {
   const handleCancel = () => setState({ previewOpenNFT: false });
   const antIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
   const renderloading = () => (
-    <div className="w-[60px] flex justify-center items-center">
+    <div className="w-[100%] flex justify-center items-center">
       <Spin indicator={antIcon} />
     </div>
   );
@@ -210,20 +211,26 @@ const ResellNFT: React.FC = () => {
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[300px]">
           <Form.Item
-            label="Tên mới NFT:"
+            label="Tên mới :"
             name="title"
             rules={[{ required: true, message: "Vui lòng nhập tên mới" }]}>
-            <Input placeholder="Nhập tên NFT..." />
+            <Input placeholder="Nhập tên ..." />
           </Form.Item>
           <Form.Item
-            label="Giá bán NFT:"
+            label="Địa chỉ sản phẩm:"
+            name="from"
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}>
+            <Input placeholder="Nhập tên sản phẩm..." />
+          </Form.Item>
+          <Form.Item
+            label="Giá bán sản phẩm:"
             name="price"
             tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
             rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
-            <Input placeholder="Nhập giá bán NFT..." />
+            <Input placeholder="Nhập giá bán sản phẩm..." />
           </Form.Item>
           <Form.Item
-            label="Ngày hết hạn bán NFT:"
+            label="Ngày hết hạn bán sản phẩm:"
             name="date"
             rules={[
               { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
@@ -231,7 +238,7 @@ const ResellNFT: React.FC = () => {
             <DatePicker format={dateFormat} placeholder="Chọn ngày" />
           </Form.Item>
           <Form.Item
-            label="Giờ hết hạn bán NFT:"
+            label="Giờ hết hạn bán sản phẩm:"
             name="time"
             rules={[
               { required: true, message: "Vui lòng nhập giờ hết hạn bán mới" },

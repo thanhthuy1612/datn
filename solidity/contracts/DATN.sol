@@ -25,6 +25,8 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 date;
         string name;
         string description;
+        string from;
+        string to;
     }
     event MarketItemCreated(
         //event
@@ -39,7 +41,9 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 status,
         uint256 date,
         string name,
-        string description
+        string description,
+        string from,
+        string to
     );
 
     constructor() ERC721("ThanhThuy", "TT") {
@@ -97,7 +101,9 @@ contract NFTMarketplace is ERC721URIStorage {
             0,
             block.timestamp * 1000,
             name,
-            description
+            description,
+            '',
+            ''
         );
         _itemsSold.increment();
         emit MarketItemCreated(
@@ -112,7 +118,9 @@ contract NFTMarketplace is ERC721URIStorage {
             0,
             block.timestamp * 1000,
             name,
-            description
+            description,
+            '',
+            ''
         );
     }
 
@@ -133,7 +141,8 @@ contract NFTMarketplace is ERC721URIStorage {
         string memory name,
         uint256 price,
         uint256 date,
-        string memory description
+        string memory description,
+        string memory from
     ) public payable {
         require(
             idToMarketItem[tokenId].owner == msg.sender,
@@ -159,6 +168,7 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].time = block.timestamp;
         idToMarketItem[tokenId].name = name;
         idToMarketItem[tokenId].date = date;
+        idToMarketItem[tokenId].from = from;
         idToMarketItem[tokenId].description = description;
         _itemsSold.decrement();
         _transfer(msg.sender, address(this), tokenId);
@@ -166,7 +176,8 @@ contract NFTMarketplace is ERC721URIStorage {
 
     function createMarketSale(
         uint256 tokenId,
-        string memory tokenURI
+        string memory tokenURI,
+        string memory to
     ) public payable {
         // mua item
         require(
@@ -176,6 +187,7 @@ contract NFTMarketplace is ERC721URIStorage {
         changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].owner = payable(msg.sender);
         idToMarketItem[tokenId].time = block.timestamp;
+        idToMarketItem[tokenId].to = to;
         idToMarketItem[tokenId].status = 1;
     }
 
@@ -270,28 +282,6 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(creator).transfer(msg.value);
     }
 
-    function fetch()
-        public
-        view
-        returns (MarketItem[] memory)
-    {
-        // lấy tất cả item có trên sàn
-        uint totalItemCount = _tokenIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-        for (uint i = 0; i < totalItemCount; i++) {
-                itemCount += 1;
-        }
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-        }
-        return items;
-    }
-
     function fetchMarketStartShip() public view returns (MarketItem[] memory) {
         // lấy tất cả item có trên sàn
         uint totalItemCount = _tokenIds.current();
@@ -363,40 +353,6 @@ contract NFTMarketplace is ERC721URIStorage {
         for (uint i = 0; i < totalItemCount; i++) {
             if (
                 idToMarketItem[i + 1].owner == address(this) &&
-                idToMarketItem[i + 1].date > block.timestamp * 1000
-            ) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
-
-    function fetchMarketItemsUpComing()
-        public
-        view
-        returns (MarketItem[] memory)
-    {
-        // lấy tất cả item có trên sàn
-        uint totalItemCount = _tokenIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (
-                idToMarketItem[i + 1].owner == address(this) &&
-                idToMarketItem[i + 1].time >= block.timestamp - 1 days &&
-                idToMarketItem[i + 1].date > block.timestamp * 1000
-            ) {
-                itemCount += 1;
-            }
-        }
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (
-                idToMarketItem[i + 1].owner == address(this) &&
-                idToMarketItem[i + 1].time >= block.timestamp - 1 days &&
                 idToMarketItem[i + 1].date > block.timestamp * 1000
             ) {
                 uint currentId = i + 1;
