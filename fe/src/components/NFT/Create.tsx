@@ -119,7 +119,7 @@ const Create: React.FC = () => {
       <div className="flex w-[100%] justify-between">
         <div className="flex justify-center w-[300px] h-[300px]">
           <Form.Item
-            label="NFT mới:"
+            label="Hình ảnh sản phẩm:"
             name="img"
             valuePropName="fileList"
             getValueFromEvent={normFile}
@@ -139,14 +139,14 @@ const Create: React.FC = () => {
         </div>
         <div className="flex flex-col w-[550px]">
           <Form.Item
-            label="Tên NFT:"
+            label="Tên sản phẩm:"
             name="title"
-            rules={[{ required: true, message: "Vui lòng nhập tên NFT" }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm:" }]}
           >
-            <Input placeholder="Nhập tên NFT..." />
+            <Input placeholder="Nhập tên sản phẩm..." />
           </Form.Item>
           <Form.Item
-            label="Mô tả:"
+            label="Mô tả sản phẩm:"
             name="description"
             rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
           >
@@ -154,7 +154,7 @@ const Create: React.FC = () => {
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loadingCreate}>
-              {loadingCreate ? renderloading() : "Thêm NFT"}
+              {loadingCreate ? renderloading() : "Thêm sản phẩm"}
             </Button>
           </Form.Item>
         </div>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IStateRedux, fetchMarketItemsPast, store } from "../../redux";
 import { LoadingOutlined } from "@ant-design/icons";
+import { ITypeAccount } from "../../interfaces/IRouter";
 
 interface IState {
   page: number;
@@ -31,8 +32,13 @@ const OldNFT: React.FC = () => {
   React.useEffect(() => {
     store.dispatch(fetchMarketItemsPast());
   }, []);
+
+  const getNavigate = (item: any) => {
+    if (account?.type === ITypeAccount.Buy) return '/nft/buy'
+    return item.seller === account?.wallet ? `/nft/expired` : `/nft/view`
+  }
   const handleClick = (item: any) => () => {
-    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
+    navigate(getNavigate(item), { state: item });
   };
   const onChange = (page: number, pageSize: number) => {
     setState({ page: page, pageSize: pageSize });
@@ -92,7 +98,7 @@ const OldNFT: React.FC = () => {
     <div className="w-[100%] z-0" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%] mt-[50px]">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          Tất cả sản phẩm đang bán
+          Tất cả sản phẩm
         </p>
         <div className="border-b-[1px] border-border w-[calc(100%-318px)] rounded-[20px]"></div>
       </div>

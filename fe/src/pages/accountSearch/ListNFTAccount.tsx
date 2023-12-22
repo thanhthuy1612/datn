@@ -30,7 +30,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     store.dispatch(fetchItemsSeller(wallet));
   }, []);
   const handleClick = (item: any) => () => {
-    navigate(item.seller === account?.wallet ? `nft/expired` : `/nft/buy`, { state: item });
+    navigate(item.seller === account?.wallet ? `/nft/expired` : `/nft/buy`, { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {
@@ -91,7 +91,7 @@ const ListNFTAccount: React.FC<{ wallet: string }> = ({ wallet }) => {
     <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
       <div className="flex h-[70px] items-end w-[100%]">
         <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          NFT đang bán
+          Sản phẩm đang bán
         </p>
         <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
       </div>

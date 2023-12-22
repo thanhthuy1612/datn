@@ -57,6 +57,8 @@ const ShipNFT: React.FC = () => {
                 date={item.date}
                 price={item.price}
                 img={item.img}
+                from={item.from}
+                to={item.to}
               />
             </button>
           ))

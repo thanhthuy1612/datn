@@ -71,8 +71,8 @@ const BuyNFT: React.FC = () => {
   }
 
   const antIcon = <LoadingOutlined style={{ fontSize: 21 }} spin />;
-  const renderloading = () => (
-    <div className="w-[500px] flex justify-center items-center">
+  const renderloading = (x: string) => (
+    <div className={`w-[${x}] flex justify-center items-center`}>
       <Spin indicator={antIcon} />
     </div>
   );
@@ -84,7 +84,7 @@ const BuyNFT: React.FC = () => {
       wrapperCol={{ flex: 1 }}
       colon={false}
       onFinish={handleBuy}
-      className="flex flex-col w-[300px] items-center">
+      className="flex flex-col w-[1000px] items-center">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[300px]">
           <Form.Item
@@ -95,7 +95,7 @@ const BuyNFT: React.FC = () => {
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>
-              {loading ? renderloading() : "Bán sản phẩm"}
+              {loading ? renderloading('100%') : "Mua sản phẩm"}
             </Button>
           </Form.Item>
         </div>
@@ -116,8 +116,11 @@ const BuyNFT: React.FC = () => {
           Người bán:{" "}
           <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{account && account.wallet === item.seller ? `${item.seller} (Bạn)` : item.seller}</button>
         </p>
-        <div className="flex items-center pt-[15px]">
+        <div className="flex items-center pt-[5px]">
           Ngày bắt đầu bán: {item.date}
+        </div>
+        <div className="flex items-center pt-[5px]">
+          Địa chỉ người bán: {item.from}
         </div>
         <More />
       </div>
@@ -146,7 +149,7 @@ const BuyNFT: React.FC = () => {
               }>
               Mua ngay
             </button>
-            <Modal title="Bán sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+            <Modal title="Bán sản phẩm" width={700} open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
               {renderForm()}
             </Modal>
             <button
@@ -157,7 +160,7 @@ const BuyNFT: React.FC = () => {
               }
               disabled={loading || reload}
               onClick={cart?.length === 0 ? handleAddCart : handleDeleteCart}>
-              {reload ? renderloading() : cart?.length ? 'Đã trong giỏ hàng (Nhấn Xóa)' : 'Thêm vào giỏ hàng'}
+              {reload ? renderloading('500px') : cart?.length ? 'Đã trong giỏ hàng (Nhấn Xóa)' : 'Thêm vào giỏ hàng'}
             </button>
           </div>
         </div>
@@ -165,7 +168,7 @@ const BuyNFT: React.FC = () => {
     </div>
   </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Mua NFT" />
+    <ShowLayout chidren={renderBody()} title="Mua sản phẩm" />
   );
 };
 

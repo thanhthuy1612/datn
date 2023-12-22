@@ -18,6 +18,10 @@ const menu: IMenu[] = [
   {
     id: 2,
     title: "Sản phẩm chờ xác nhận",
+  },
+  {
+    id: 3,
+    title: "Sản phẩm đã giao",
   }
 ];
 
@@ -60,6 +64,9 @@ const ListShip: React.FC = () => {
         case 2:
           setState({ items: myShip.filter((item) => item.number === 3) });
           break;
+        case 3:
+          setState({ items: myShip.filter((item) => item.number > 3) });
+          break;
       }
     };
     getItems();
@@ -70,6 +77,7 @@ const ListShip: React.FC = () => {
       case 1:
         return '/nft/doing-ship'
       case 2:
+      case 3:
         return '/nft/view'
       default:
         return '/'
@@ -98,6 +106,8 @@ const ListShip: React.FC = () => {
                 date={item.date}
                 price={item.price}
                 img={item.img}
+                from={item.from}
+                to={item.to}
               />
             </button>
           ))
@@ -146,7 +156,7 @@ const ListShip: React.FC = () => {
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-1018px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-918px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loading ? renderList() : renderloading()}

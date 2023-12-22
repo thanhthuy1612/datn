@@ -17,7 +17,7 @@ const menu: IMenu[] = [
   },
   {
     id: 2,
-    title: "Sản phẩm đang chờ giao",
+    title: "Sản phẩm chờ giao",
   },
   {
     id: 3,
@@ -26,6 +26,10 @@ const menu: IMenu[] = [
   {
     id: 4,
     title: "Sản phẩm chờ xác nhận",
+  },
+  {
+    id: 5,
+    title: "Sản phẩm đã bán",
   }
 ];
 
@@ -74,19 +78,21 @@ const ListBuy: React.FC = () => {
         case 4:
           setState({ items: myNFT.filter(item => { return item?.number === 3 }) });
           break;
+        case 5:
+          setState({ items: myNFT.filter(item => { return item?.number === 5 }) });
+          break;
       }
     };
     getItems();
   }, [myNFT, state.choose]);
 
-  console.log(myNFT)
-
   const setNavigate = () => {
     switch (state.choose) {
       case 1:
-        return '/nft/sell'
+        return '/nft/done'
       case 2:
       case 3:
+      case 5:
         return '/nft/view'
       case 4:
         return '/nft/accept'
@@ -159,13 +165,13 @@ const ListBuy: React.FC = () => {
             key={item.id}
             className={
               state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                ? "p-[20px] text-[20px] flex items-center justify-center w-[270px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[270px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-1218px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-1368px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loading ? renderList() : renderloading()}

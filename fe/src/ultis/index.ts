@@ -1,5 +1,7 @@
 import { DateFormatType } from "../interfaces/IRouter";
 
+export const defaultAddress = '0x0000000000000000000000000000000000000000';
+
 export const removeUnnecessaryWhiteSpace = (string: string | undefined) => {
   if (!string) return undefined;
   const result = string.trim().replace(/ +/g, " ");

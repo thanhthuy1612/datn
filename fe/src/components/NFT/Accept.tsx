@@ -1,14 +1,15 @@
 import React from "react";
 import { Button, Form, Image, Input, Modal, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, acceptMarketSale, setLoading, store } from "../../redux";
+import { IStateRedux, acceptMarketSale, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
-import { removeUnnecessaryWhiteSpace } from "../../ultis";
+import { dateFormat, defaultAddress, removeUnnecessaryWhiteSpace } from "../../ultis";
 import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import ShowLayout from "../../layouts/ShowLayout";
+import { DateFormatType, ITypeAccount } from "../../interfaces/IRouter";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -29,9 +30,17 @@ const Accept: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
-  const { loadingCreate } = useSelector(
+  const { loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
+  const handleClick = (wallet: string) => () => {
+    if (account && account.wallet === wallet) {
+      navigate("/personal");
+    } else {
+      store.dispatch(setAccountSearch(account));
+      navigate("/search");
+    }
+  };
 
   const localtion = useLocation();
   const item = localtion.state;
@@ -119,6 +128,13 @@ const Accept: React.FC = () => {
       <Spin indicator={antIcon} />
     </div>
   );
+
+  const checkAccount = (wallet: string)=>{
+    if(wallet === account?.wallet){
+      return '(Bạn)'
+    }
+    return ""
+  }
   const renderAdd = () => (
     <Form
       name="account"
@@ -158,8 +174,8 @@ const Accept: React.FC = () => {
         </Form.Item>
       </div>
       <Form.Item label=" ">
-        <Button htmlType="submit" disabled={loadingCreate}>
-          {loadingCreate ? renderloading() : "Xác nhận"}
+        <Button htmlType="submit" disabled={loading}>
+          {loading ? renderloading() : "Xác nhận"}
         </Button>
       </Form.Item>
       <Modal
@@ -182,16 +198,33 @@ const Accept: React.FC = () => {
         <p className="mt-[5px] mb-[10px] text-[35px] font-[500] overflow-hidden whitespace-nowrap overflow-ellipsis">
           {item.title.toUpperCase()}
         </p>
-        <div className="flex items-center pt-[15px] py-[5px]">
-          Ngày tạo: {item.date}
+        {item.seller !== defaultAddress && <div className="flex items-center pt-[5px]">
+          Người bán: <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller} {checkAccount(item.seller)}</button>
+        </div>}
+        {item.owner !== defaultAddress && <div className="flex items-center pt-[5px]">
+          Người mua: <button onClick={handleClick(item.owner)} className="text-settingChoose cursor-pointer underline">{item.owner} {checkAccount(item.owner)}</button>
+        </div>}
+        {item.shipper !== defaultAddress && <div className="flex items-center pt-[5px]">
+          Người giao hàng: <button onClick={handleClick(item.shipper)} className="text-settingChoose cursor-pointer underline">{item.shipper} {checkAccount(item.shipper)}</button>
+        </div>}
+        {item.from && <div className="flex items-center pt-[5px]">Địa chỉ người bán: {item.from}</div>}
+        {item.to && <div className="flex items-center pt-[5px]">Địa chỉ mua: {item.to}</div>}
+        <div className="flex items-center pt-[5px]">
+          Ngày cập nhật: {item.date}
         </div>
-        <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
+        <div className="flex items-center pt-[5px]">
+          Ngày hết hạn sản phẩm: {dateFormat(
+            new Date(item.expired),
+            DateFormatType.FullDate
+          )}
+        </div>
+        <div className="flex items-center pt-[5px] mb-[20px]">
           Mô tả: {item.description}
         </div>
-        {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
+        {item.price > 0 && account?.type !== ITypeAccount.Ship && <div className="py-[5px] text-[20px]">Giá sản phẩm: {item.price} BNBT</div>}
         <More />
       </div>
-      <div className="flex mt-[50px]">
+      <div className="flex mt-[15px]">
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Xác nhận</button>
         <Modal width={1000} title="Đã nhận đơn hàng" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
           {renderAdd()}

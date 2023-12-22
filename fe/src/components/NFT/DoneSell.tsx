@@ -1,6 +1,6 @@
 import React from "react";
 import { Image, Spin } from "antd";
-import { IStateRedux, setAccountSearch, setLoading, shipMarketSale, store } from "../../redux";
+import { IStateRedux, doneShipMarketSale, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import More from "./More";
 import ShowLayout from "../../layouts/ShowLayout";
@@ -9,7 +9,7 @@ import { dateFormat, defaultAddress } from "../../ultis";
 import { DateFormatType } from "../../interfaces/IRouter";
 import { LoadingOutlined } from "@ant-design/icons";
 
-const Ship: React.FC = () => {
+const DoneSell: React.FC = () => {
   const localtion = useLocation();
   const item = localtion.state;
 
@@ -32,7 +32,7 @@ const Ship: React.FC = () => {
 
   const onFinish = async () => {
     await store.dispatch(
-      shipMarketSale({
+      doneShipMarketSale({
         tokenId: item.tokenId,
       })
     );
@@ -78,10 +78,11 @@ const Ship: React.FC = () => {
         <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
           Mô tả: {item.description}
         </div>
+        <div className="py-[5px] text-[20px]">Giá sản phẩm: {item.price} BNBT</div>
         <More />
       </div>
       <div className="flex mt-[50px]">
-        <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={onFinish}>{loadingCreate ? renderloading() : 'Nhận đơn'}</button>
+        <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={onFinish}>{loadingCreate ? renderloading() : 'Xác nhận đã bán sản phẩm'}</button>
       </div>
     </div>
   );
@@ -95,8 +96,8 @@ const Ship: React.FC = () => {
       </div>
     </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Nhận đơn hàng" />
+    <ShowLayout chidren={renderBody()} title="Cập nhật trạng thái" />
   );
 };
 
-export default Ship;
+export default DoneSell;

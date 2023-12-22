@@ -1,14 +1,15 @@
 import React from "react";
 import { Button, Form, Image, Input, Modal, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
-import { IStateRedux, changeTokenUri, doneShipMarketSale, setLoading, store } from "../../redux";
+import { IStateRedux, changeTokenUri, doneShipMarketSale, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
-import { removeUnnecessaryWhiteSpace } from "../../ultis";
+import { dateFormat, defaultAddress, removeUnnecessaryWhiteSpace } from "../../ultis";
 import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import ShowLayout from "../../layouts/ShowLayout";
+import { DateFormatType } from "../../interfaces/IRouter";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -30,7 +31,7 @@ const DoingShip: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
-  const { loadingCreate } = useSelector(
+  const { loadingCreate, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
@@ -43,6 +44,21 @@ const DoingShip: React.FC = () => {
   React.useEffect(() => {
     store.dispatch(setLoading(false));
   }, []);
+
+  const handleClick = (wallet: string) => () => {
+    if (account && account.wallet === wallet) {
+      navigate("/personal");
+    } else {
+      store.dispatch(setAccountSearch(account));
+      navigate("/search");
+    }
+  };
+  const checkAccount = (wallet: string) => {
+    if (wallet === account?.wallet) {
+      return '(Bạn)'
+    }
+    return ""
+  }
 
   const upload = async (file: File) => {
     const input = new FormData();
@@ -202,17 +218,27 @@ const DoingShip: React.FC = () => {
         <p className="mt-[5px] mb-[10px] text-[35px] font-[500] overflow-hidden whitespace-nowrap overflow-ellipsis">
           {item.title.toUpperCase()}
         </p>
-        <div className="flex items-center pt-[15px] py-[5px]">
-          Ngày tạo: {item.date}
+        {item.seller !== defaultAddress && <div className="flex items-center pt-[5px]">
+          Người bán: <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller} {checkAccount(item.seller)}</button>
+        </div>}
+        {item.owner !== defaultAddress && <div className="flex items-center pt-[5px]">
+          Người mua: <button onClick={handleClick(item.owner)} className="text-settingChoose cursor-pointer underline">{item.owner} {checkAccount(item.owner)}</button>
+        </div>}
+        {item.shipper !== defaultAddress && <div className="flex items-center pt-[5px]">
+          Người giao hàng: <button onClick={handleClick(item.shipper)} className="text-settingChoose cursor-pointer underline">{item.shipper} {checkAccount(item.shipper)}</button>
+        </div>}
+        {item.from && <div className="flex items-center pt-[5px]">Địa chỉ người bán: {item.from}</div>}
+        {item.to && <div className="flex items-center pt-[5px]">Địa chỉ mua: {item.to}</div>}
+        <div className="flex items-center pt-[5px]">
+          Ngày cập nhật: {item.date}
         </div>
-        <div className="flex items-center py-[5px]">
+        <div className="flex items-center pt-[5px]">
+          Ngày hết hạn sản phẩm: {dateFormat(
+            new Date(item.expired),
+            DateFormatType.FullDate
+          )}</div>
+        <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
           Mô tả: {item.description}
-        </div>
-        <div className="flex items-center py-[5px]">
-          Giao từ: {item.from}
-        </div>
-        <div className="flex items-center py-[5px]">
-          Giao đến: {item.to}
         </div>
         <More />
       </div>
@@ -238,7 +264,7 @@ const DoingShip: React.FC = () => {
       </div>
     </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Giao hàng" />
+    <ShowLayout chidren={renderBody()} title="Cập nhật giao hàng" />
   );
 };
 

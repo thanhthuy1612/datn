@@ -3,6 +3,7 @@ import HeaderProfile from "../profile/HeaderProfile";
 import { useSelector } from "react-redux";
 import { IStateRedux } from "../../redux";
 import ListNFTAccount from "./ListNFTAccount";
+import { ITypeAccount } from "../../interfaces/IRouter";
 
 const AccountSearch: React.FC = () => {
   const { accountSearch } = useSelector(
@@ -18,7 +19,7 @@ const AccountSearch: React.FC = () => {
   return (
     <div className="w-[100%]">
       <HeaderProfile account={accountSearch} personal={false} />
-      <ListNFTAccount wallet={accountSearch?.wallet ?? ""} />
+      {accountSearch?.type === ITypeAccount.Farm && <ListNFTAccount wallet={accountSearch?.wallet ?? ""} />}
     </div>
   );
 };

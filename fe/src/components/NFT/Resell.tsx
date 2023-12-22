@@ -240,6 +240,7 @@ const ResellNFT: React.FC = () => {
           <Form.Item
             label="Giờ hết hạn bán sản phẩm:"
             name="time"
+            tooltip={{ title: 'Lớn hơn giờ hiện tại ít nhất 2 phút', icon: <InfoCircleOutlined /> }}
             rules={[
               { required: true, message: "Vui lòng nhập giờ hết hạn bán mới" },
             ]}>

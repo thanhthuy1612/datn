@@ -18,6 +18,7 @@ interface IMenu {
   icon: React.ReactNode;
   title: string;
   to: string;
+  disable?: boolean
 }
 const menu: IMenu[] = [
   {
@@ -35,14 +36,15 @@ const menu: IMenu[] = [
   {
     id: 3,
     icon: <CiBoxList />,
-    title: "Bộ sưu tập",
+    title: "Kho sản phẩm",
     to: `/myNFT`,
   },
   {
     id: 4,
     icon: <CiPen />,
-    title: "Tạo NFT mới",
+    title: "Tạo sản phẩm mới",
     to: `/createNFT`,
+    disable: true
   },
   {
     id: 5,
@@ -57,6 +59,19 @@ const MenuAccount: React.FC = () => {
   const handleClick = (to: string) => () => {
     navigate(to);
   };
+
+  const renderBody = (item: IMenu) => {
+    if (!item.disable || (item.disable && account?.type === ITypeAccount.Farm)) {
+      return <button
+        className="flex items-center hover:bg-hover p-[5px]"
+        key={item.id}
+        onClick={handleClick(item.to)}>
+        <div className="px-[10px]">{item.icon}</div>
+        <p>{item.title}</p>
+      </button>
+    }
+    return <></>
+  }
   return (
     <Tippy
       interactive
@@ -68,13 +83,7 @@ const MenuAccount: React.FC = () => {
           tabIndex={-1}
           {...attrs}>
           {menu.map((item) => (
-            <button
-              className="flex items-center hover:bg-hover p-[5px]"
-              key={item.id}
-              onClick={handleClick(item.to)}>
-              <div className="px-[10px]">{item.icon}</div>
-              <p>{item.title}</p>
-            </button>
+            <>{renderBody(item)}</>
           ))}
         </div>
       )}>

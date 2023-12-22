@@ -49,13 +49,13 @@ const ExpiredNFT: React.FC = () => {
         </p>
         <p>
           Người bán:{" "}
-          <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller}</button>
+          <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller}(Bạn)</button>
         </p>
+        <p className="py-[5px]">Giá sản phẩm: {item.price} BNBT</p>
         <div className="flex items-center pt-[15px] pb-[5px]">
           Ngày bắt đầu bán: {item.date}
         </div>
-        <p className="py-[5px]">Giá thu hồi: {item.price} BNBT</p>
-        <p className="py-[5px]">Thời gian hết hạn bán NFT: {dateFormat(
+        <p className="py-[5px]">Thời gian hết hạn bán sản phẩm: {dateFormat(
           new Date(item.expired),
           DateFormatType.FullDate
         )}</p>

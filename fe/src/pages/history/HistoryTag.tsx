@@ -125,13 +125,13 @@ const HistoryTag: React.FC = () => {
             key={item.id}
             className={
               state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[200px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                ? "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-1018px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-1268px)]"></div>
       </div>
       <div className="p-[50px] border-[1px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl w-[100%]">
         {renderTable()}

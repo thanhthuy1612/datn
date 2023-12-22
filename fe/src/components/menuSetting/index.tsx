@@ -28,7 +28,7 @@ const MenuSetting: React.FC = () => {
     {
       id: 2,
       icon: <CiGrid32 />,
-      title: "Bộ sưu tập",
+      title: "Kho sản phẩm",
       to: `/collection`,
     },
     {

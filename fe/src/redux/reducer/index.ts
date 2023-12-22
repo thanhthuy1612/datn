@@ -16,8 +16,6 @@ const initialState: IStateRedux = {
   upComing: [],
   past: [],
   myNFT: [],
-  myNew: [],
-  myDelete: [],
   mySeller: [],
   myDate: [],
   itemsSeller: [],
@@ -40,8 +38,6 @@ export interface IStateRedux {
   upComing?: any[];
   past?: any[];
   myNFT: any[];
-  myNew: any[];
-  myDelete: any[];
   mySeller: any[];
   myDate: any[];
   itemsSeller: any[];
@@ -372,11 +368,7 @@ export const fetch = createAsyncThunk("fetch", async (_item, thunkAPI) => {
   const itemsList = await getItems(dataList, contract);
   const dataDate = await erc721.fetchItemsListedDate();
   const itemsDate = await getItems(dataDate, contract);
-  const dataNew = await erc721.fetchItemsListedNew();
-  const itemsNew = await getItems(dataNew, contract);
-  const dataDelete = await erc721.fetchItemsListedDelete();
-  const itemsDelete = await getItems(dataDelete, contract);
-  return { itemsMyNFT, itemsList, itemsDate, itemsNew, itemsDelete };
+  return { itemsMyNFT, itemsList, itemsDate };
 });
 
 export const fetchBuy = createAsyncThunk(
@@ -412,17 +404,6 @@ export const fetchMyNFTs = createAsyncThunk(
   }
 );
 
-export const fetchItemsListedDelete = createAsyncThunk(
-  "fetchItemsListedDelete",
-  async (_item, thunkAPI) => {
-    thunkAPI.dispatch(setLoading(true));
-    const { contract, erc721 } = await getERC();
-    const data = await erc721.fetchItemsListedDelete();
-    const items = await getItems(data, contract);
-    return items;
-  }
-);
-
 export const fetchItemsListed = createAsyncThunk(
   "fetchItemsListed",
   async (_item, thunkAPI) => {
@@ -440,17 +421,6 @@ export const fetchItemsListedDate = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
     const { contract, erc721 } = await getERC();
     const data = await erc721.fetchItemsListedDate();
-    const items = await getItems(data, contract);
-    return items;
-  }
-);
-
-export const fetchItemsListedNew = createAsyncThunk(
-  "fetchItemsListedNew",
-  async (_item, thunkAPI) => {
-    thunkAPI.dispatch(setLoading(true));
-    const { contract, erc721 } = await getERC();
-    const data = await erc721.fetchItemsListedNew();
     const items = await getItems(data, contract);
     return items;
   }
@@ -579,8 +549,6 @@ export const item = createSlice({
       state.myDate = actions.payload.itemsDate;
       state.mySeller = actions.payload.itemsList;
       state.myNFT = actions.payload.itemsMyNFT;
-      state.myNew = actions.payload.itemsNew;
-      state.myDelete = actions.payload.itemsDelete;
     });
     builder.addCase(fetchBuy.fulfilled, (state, actions) => {
       state.loading = false;
@@ -601,14 +569,6 @@ export const item = createSlice({
     builder.addCase(fetchItemsListedDate.fulfilled, (state, actions) => {
       state.loading = false;
       state.myDate = actions.payload;
-    });
-    builder.addCase(fetchItemsListedNew.fulfilled, (state, actions) => {
-      state.loading = false;
-      state.myNew = actions.payload;
-    });
-    builder.addCase(fetchItemsListedDelete.fulfilled, (state, actions) => {
-      state.loading = false;
-      state.myDelete = actions.payload;
     });
     builder.addCase(createMarketSale.fulfilled, (state, _actions) => {
       state.loading = false;

@@ -26,7 +26,7 @@ const CreateNFT: React.FC = () => {
   );
 
   const handleOpenCreate = () => {
-    setState({ open: true, isCreateNFT: true, title: "Tạo NFT" });
+    setState({ open: true, isCreateNFT: true, title: "Tạo sản phẩm mới" });
   };
   const handleOpenEdit = () => {
     setState({

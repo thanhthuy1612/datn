@@ -2,7 +2,6 @@ import React from "react";
 import CarouselHome from "./Carousel";
 import OldNFT from "./OldNFT";
 import {
-  CiCloud,
   CiCloudMoon,
   CiCloudRainbow,
   CiCloudSun,
@@ -93,14 +92,14 @@ const textInstruct: ITextInstruct[] = [
   },
   {
     id: 2,
-    text: "Tạo NFT mới",
+    text: "Tạo sản phẩm mới",
     img: create,
     description:
-      "Chọn tạo trong menu nhập đầy đủ thông tin yêu cầu và nhấn -Thêm NFT-",
+      "Chọn tạo trong menu nhập đầy đủ thông tin yêu cầu và nhấn -Thêm  sản phẩm-",
   },
   {
     id: 3,
-    text: "Mua NFT",
+    text: "Mua",
     img: buy,
     description:
       "Người dùng chọn NFT sau đó chọn -Mua ngay- thanh toán và NFT sẽ tự động vào kho của bạn",
@@ -124,8 +123,6 @@ const Home: React.FC = () => {
     });
     await store.dispatch(setAccount(result.data[0]));
   };
-
-  const refNew = React.useRef<null | HTMLDivElement>(null);
   const refOld = React.useRef<null | HTMLDivElement>(null);
   const refMyNFT = React.useRef<null | HTMLDivElement>(null);
 
@@ -137,9 +134,6 @@ const Home: React.FC = () => {
     navigate("/personal");
   };
 
-  const handleNew = () => {
-    refNew.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
   const handleOld = () => {
     refOld.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -159,21 +153,21 @@ const Home: React.FC = () => {
   const menu: IMenu[] = [
     {
       id: 1,
-      handle: handleNew,
-      title: "Sản phẩm mới nhất",
+      handle: handleOld,
+      title: "Tất cả sản phẩm",
       icon: <CiCloudSun />,
     },
     {
       id: 2,
-      handle: handleOld,
-      title: "Tất cả sản phẩm đang bán",
-      icon: <CiCloudMoon />,
-    },
-    {
-      id: 3,
       handle: handleMyNFT,
       title: "Sản phẩm của bạn",
       icon: <CiCloudRainbow />,
+    },
+    {
+      id: 3,
+      handle: handleClickPerson,
+      title: "Trang cá nhân",
+      icon: <CiCloudMoon />,
     },
   ];
 
@@ -190,7 +184,7 @@ const Home: React.FC = () => {
         </>
       case ITypeAccount.Ship:
         return <>
-          <div ref={refNew}>
+          <div ref={refOld}>
             <ShipNFT />
           </div>
           <div ref={refMyNFT}>
@@ -214,7 +208,7 @@ const Home: React.FC = () => {
   const renderButton = (item: IMenu) => (
     <button
       onClick={item.handle}
-      className="flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
+      className="flex items-center justify-center w-[350px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
     >
       {item.title}
       <div className="px-[10px]">{item.icon}</div>
@@ -231,20 +225,6 @@ const Home: React.FC = () => {
             {menu.map((item) => (
               <div key={item.id}>{renderButton(item)}</div>
             ))}
-            <button
-              onClick={handleClickPerson}
-              disabled={account === undefined}
-              className={
-                account === undefined
-                  ? "flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] cursor-not-allowed"
-                  : "flex items-center justify-center w-[300px] border-[2px] border-border py-[20px] rounded-[20px] shadow-md hover:bg-hover hover:shadow-xl"
-              }
-            >
-              Trang cá nhân
-              <div className="px-[10px]">
-                <CiCloud />
-              </div>
-            </button>
           </div>
         </div>
       </div>
