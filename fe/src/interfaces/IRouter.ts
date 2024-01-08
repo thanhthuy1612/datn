@@ -12,6 +12,7 @@ export enum ITypeAccount {
   Farm = 1,
   Ship = 2,
   Buy = 3,
+  Custom = 4
 }
 export interface IAccount {
   id?: string;

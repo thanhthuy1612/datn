@@ -24,6 +24,9 @@ import { uploadPicture } from "../../api/account";
 import ListShip from "../profile/ListShip";
 import ListBuy from "../profile/ListBuy";
 import ShipNFT from "./ShipNFT";
+import CustomNFT from "./CustomNFT";
+import ListCustom from "../profile/ListCustom";
+import ListBuyer from "../profile/ListBuyer";
 
 interface IText {
   id: number;
@@ -198,8 +201,18 @@ const Home: React.FC = () => {
           </div>
           <div ref={refMyNFT}>
             <ListBuy />
+            <ListBuyer/>
           </div>
         </>
+      case ITypeAccount.Custom:
+        return <>
+        <div ref={refOld}>
+          <CustomNFT />
+        </div>
+        <div ref={refMyNFT}>
+          <ListCustom />
+        </div>
+      </>
       case ITypeAccount.None:
         <></>
     }
@@ -343,6 +356,7 @@ const Home: React.FC = () => {
               <Radio.Button value={ITypeAccount.Farm}>Nông dân</Radio.Button>
               <Radio.Button value={ITypeAccount.Ship}>Giao hàng</Radio.Button>
               <Radio.Button value={ITypeAccount.Buy}>Người thu mua</Radio.Button>
+              <Radio.Button value={ITypeAccount.Custom}>Khách hàng</Radio.Button>
             </Radio.Group>
           </Form.Item>
           <Form.Item className="flex justify-center w-[100%]">
@@ -387,10 +401,17 @@ const Home: React.FC = () => {
     </Tippy>
   );
 
+  const renderBodyHome = ()=>{
+    if(account){
+      return account.type === ITypeAccount.None ? renderChooseType() : renderLogin()
+    }
+    return renderButtonLogin()
+  }
+
   return (
     <div className="pt-[20px]">
       <CarouselHome />
-      {account ? account.type === ITypeAccount.None ? renderChooseType() : renderLogin() : renderButtonLogin()}
+      {renderBodyHome()}
       {renderMenu()}
     </div>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import ButtonItem from "../../components/button";
 import { Empty, Pagination, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-import { IStateRedux, fetchBuy, store } from "../../redux";
+import { IStateRedux, fetch, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -13,20 +13,20 @@ interface IMenu {
 const menu: IMenu[] = [
   {
     id: 1,
-    title: "Sản phẩm trong kho"
+    title: "Sản phẩm đang bán",
   },
   {
     id: 2,
-    title: "Sản phẩm chờ giao",
+    title: "Sản phẩm hết hạn",
   },
   {
     id: 3,
-    title: "Sản phẩm đang giao",
+    title: "Sản phẩm đã thu hồi",
   },
   {
     id: 4,
-    title: "Sản phẩm chờ xác nhận",
-  }
+    title: "Sản phẩm đã bán",
+  },
 ];
 
 interface IState {
@@ -36,7 +36,7 @@ interface IState {
   items: any[];
 }
 
-const ListBuy: React.FC = () => {
+const ListBuyer: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
@@ -47,7 +47,7 @@ const ListBuy: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const navigate = useNavigate();
-  const { myNFT, account, loading } = useSelector(
+  const { myNFT, mySeller, myDate, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
   const handleClickItem = (item: any) => () => {
@@ -55,7 +55,7 @@ const ListBuy: React.FC = () => {
   };
   React.useEffect(() => {
     const renderRedux = async () => {
-      await store.dispatch(fetchBuy());
+      await store.dispatch(fetch());
     };
     renderRedux();
   }, [account]);
@@ -63,31 +63,31 @@ const ListBuy: React.FC = () => {
     const getItems = async () => {
       switch (state.choose) {
         case 1:
-          setState({ items: myNFT.filter(item => { return item?.number === 4 }) });
+          setState({ items: mySeller.filter(item => item.number === 4) });
           break;
         case 2:
-          setState({ items: myNFT.filter(item => { return item?.number === 1 }) });
+          setState({ items: myDate });
           break;
         case 3:
-          setState({ items: myNFT.filter(item => { return item?.number === 2 }) });
+          setState({ items: myNFT.filter(item => item.number === 10) });
           break;
         case 4:
-          setState({ items: myNFT.filter(item => { return item?.number === 3 }) });
+          setState({ items: mySeller.filter(item => item.number !== 4) });
           break;
       }
     };
     getItems();
-  }, [myNFT, state.choose]);
+  }, [myNFT, mySeller, myDate, state.choose]);
 
   const setNavigate = () => {
     switch (state.choose) {
       case 1:
-        return '/nft/done'
       case 2:
+        return '/nft/expired'
       case 3:
-        return '/nft/view'
+        return '/nft/delete'
       case 4:
-        return '/nft/accept'
+        return '/nft/view'
       default:
         return '/'
     }
@@ -157,13 +157,13 @@ const ListBuy: React.FC = () => {
             key={item.id}
             className={
               state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[270px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[270px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                ? "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[250px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-1368px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-1268px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loading ? renderList() : renderloading()}
@@ -172,4 +172,4 @@ const ListBuy: React.FC = () => {
   );
 };
 
-export default ListBuy;
+export default ListBuyer;

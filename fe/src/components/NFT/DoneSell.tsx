@@ -1,22 +1,36 @@
 import React from "react";
-import { Image, Spin } from "antd";
-import { IStateRedux, doneShipMarketSale, setAccountSearch, setLoading, store } from "../../redux";
+import { Button, DatePicker, Form, Image, Input, Modal, Spin, TimePicker } from "antd";
+import { IStateRedux, resellToken, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import More from "./More";
 import ShowLayout from "../../layouts/ShowLayout";
 import { useSelector } from "react-redux";
-import { dateFormat, defaultAddress } from "../../ultis";
+import { dateFormat, defaultAddress, getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import { DateFormatType } from "../../interfaces/IRouter";
-import { LoadingOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
 
 const DoneSell: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const localtion = useLocation();
   const item = localtion.state;
 
+  const { TextArea } = Input;
+  const dateFormatForm = "YYYY/MM/DD";
+  const timeFormateForm = "hh:mm:ss";
+
   const navigate = useNavigate();
-  const { loadingCreate, account } = useSelector(
+  const { loadingCreate, account, loading } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const handleClick = (wallet: string) => () => {
     if (account && account.wallet === wallet) {
       navigate("/personal");
@@ -30,14 +44,76 @@ const DoneSell: React.FC = () => {
     store.dispatch(setLoading(false));
   }, []);
 
-  const onFinish = async () => {
+  const onFinish = async (values: any) => {
     await store.dispatch(
-      doneShipMarketSale({
+      resellToken({
         tokenId: item.tokenId,
+        name: removeUnnecessaryWhiteSpace(values.title),
+        price: removeUnnecessaryWhiteSpace(values.price),
+        date: getDate(new Date(values.date), new Date(values.time)),
+        description: removeUnnecessaryWhiteSpace(values.description),
+        from: ""
       })
     );
     navigate("/");
   };
+
+  const renderResell = () => (
+    <Form
+      name="account"
+      layout="vertical"
+      wrapperCol={{ flex: 1 }}
+      colon={false}
+      onFinish={onFinish}
+      className="flex flex-col w-[300px] items-center">
+      <div className="flex w-[100%] justify-between">
+        <div className="flex flex-col w-[300px]">
+          <Form.Item
+            label="Tên mới :"
+            name="title"
+            rules={[{ required: true, message: "Vui lòng nhập tên mới" }]}>
+            <Input placeholder="Nhập tên ..." />
+          </Form.Item>
+          <Form.Item
+            label="Giá bán sản phẩm:"
+            name="price"
+            tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
+            rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
+            <Input placeholder="Nhập giá bán sản phẩm..." />
+          </Form.Item>
+          <Form.Item
+            label="Ngày hết hạn bán sản phẩm:"
+            name="date"
+            rules={[
+              { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
+            ]}>
+            <DatePicker format={dateFormatForm} placeholder="Chọn ngày" />
+          </Form.Item>
+          <Form.Item
+            label="Giờ hết hạn bán sản phẩm:"
+            name="time"
+            tooltip={{ title: 'Lớn hơn giờ hiện tại ít nhất 2 phút', icon: <InfoCircleOutlined /> }}
+            rules={[
+              { required: true, message: "Vui lòng nhập giờ hết hạn bán mới" },
+            ]}>
+            <TimePicker format={timeFormateForm} placeholder="Chọn giờ" />
+          </Form.Item>
+          <Form.Item
+            label="Mô tả:"
+            name="description"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
+            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
+          </Form.Item>
+          <Form.Item label=" ">
+            <Button htmlType="submit" disabled={loading}>
+              {loading ? renderloading() : "Bán sản phẩm"}
+            </Button>
+          </Form.Item>
+        </div>
+      </div>
+    </Form>
+  );
 
   const checkAccount = (wallet: string) => {
     if (wallet === account?.wallet) {
@@ -82,7 +158,10 @@ const DoneSell: React.FC = () => {
         <More />
       </div>
       <div className="flex mt-[50px]">
-        <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={onFinish}>{loadingCreate ? renderloading() : 'Xác nhận đã bán sản phẩm'}</button>
+        <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModal}>Bán sản phẩm</button>
+        <Modal width={500} title="Bán sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
+          {renderResell()}
+        </Modal>
       </div>
     </div>
   );

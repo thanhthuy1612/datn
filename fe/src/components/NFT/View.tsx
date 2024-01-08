@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { IStateRedux, setAccountSearch, store } from "../../redux";
 import { DateFormatType, ITypeAccount } from "../../interfaces/IRouter";
 import { dateFormat, defaultAddress } from "../../ultis";
+import { addressContract } from "../../ultis/addressContract";
 
 const View: React.FC = () => {
   const localtion = useLocation();
@@ -39,7 +40,7 @@ const View: React.FC = () => {
         {item.seller !== defaultAddress && <div className="flex items-center pt-[5px]">
           Người bán: <button onClick={handleClick(item.seller)} className="text-settingChoose cursor-pointer underline">{item.seller} {checkAccount(item.seller)}</button>
         </div>}
-        {item.owner !== defaultAddress && <div className="flex items-center pt-[5px]">
+        {item.owner !== defaultAddress && item.owner !== addressContract && <div className="flex items-center pt-[5px]">
           Người mua: <button onClick={handleClick(item.owner)} className="text-settingChoose cursor-pointer underline">{item.owner} {checkAccount(item.owner)}</button>
         </div>}
         {item.shipper !== defaultAddress && <div className="flex items-center pt-[5px]">

@@ -90,6 +90,8 @@ const HeaderProfile: React.FC<{
         return "Giao hàng"
       case ITypeAccount.Buy:
         return "Người thu mua"
+      case ITypeAccount.Custom:
+        return "Khách hàng"
       default: return ""
     }
   }

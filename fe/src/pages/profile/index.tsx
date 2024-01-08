@@ -7,6 +7,8 @@ import ListNFT from "./ListNFT";
 import { ITypeAccount } from "../../interfaces/IRouter";
 import ListShip from "./ListShip";
 import ListBuy from "./ListBuy";
+import ListBuyer from "./ListBuyer";
+import ListCustom from "./ListCustom";
 
 const Pesonal: React.FC = () => {
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
@@ -24,9 +26,11 @@ const Pesonal: React.FC = () => {
           <ListNFT />
         </>
       case ITypeAccount.Ship:
-        return <ListShip/>
+        return <ListShip />
       case ITypeAccount.Buy:
-        return <ListBuy/>
+        return <><ListBuy /> <ListBuyer /></>
+      case ITypeAccount.Custom:
+        return <ListCustom />
       case ITypeAccount.None:
         <></>
     }

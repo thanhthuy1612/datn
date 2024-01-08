@@ -5,6 +5,8 @@ import { IStateRedux } from "../../redux";
 import { ITypeAccount } from "../../interfaces/IRouter";
 import ListBuy from "../profile/ListBuy";
 import ListShip from "../profile/ListShip";
+import ListBuyer from "../profile/ListBuyer";
+import ListCustom from "../profile/ListCustom";
 
 const MyNFT: React.FC = () => {
   React.useEffect(() => {
@@ -19,7 +21,9 @@ const MyNFT: React.FC = () => {
       case ITypeAccount.Farm:
         return <ListNFT />
       case ITypeAccount.Buy:
-        return <ListBuy />
+        return <><ListBuy /> <ListBuyer /></>
+      case ITypeAccount.Custom:
+        return <ListCustom />
       case ITypeAccount.Ship:
         return <ListShip />
     }

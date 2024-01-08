@@ -10,32 +10,15 @@ import { ITypeAccount } from "../../interfaces/IRouter";
 interface IState {
   page: number;
   pageSize: number;
-  choose: number;
-  items: any[];
-}
-interface IMenu {
-  id: number;
-  title: string;
+  item: any[]
 }
 
-const OldNFT: React.FC = () => {
+const CustomNFT: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
     page: 1,
     pageSize: 8,
-    choose: 1,
-    items: [],
+    item: []
   });
-
-  const menu: IMenu[] = [
-    {
-      id: 1,
-      title: "Sản phẩm của nông dân"
-    },
-    {
-      id: 2,
-      title: "Sản phẩm đang bán",
-    },
-  ];
 
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
@@ -52,41 +35,17 @@ const OldNFT: React.FC = () => {
     store.dispatch(fetchMarketItemsPast());
   }, []);
 
-  const getNavigate = (item: any) => {
-    if (account?.type === ITypeAccount.Buy) return '/nft/buy'
-    return item.seller === account?.wallet ? `/nft/expired` : `/nft/view`
-  }
-  const handleClickNav = (id: number) => () => {
-    id !== state.choose && setState({ choose: id });
-  };
-
   React.useEffect(() => {
-    const getItems = async () => {
-      switch (state.choose) {
-        case 1:
-          setState({ items: (past?? []).filter((item) => item.number === 0) });
-          break;
-        case 2:
-          setState({ items:  (past?? []).filter((item) => item.number === 4) });
-          break;
-      }
-    };
-    getItems();
-  }, [past, state.choose]);
+    setState({ item: past?.filter(item => item.number === 4) ?? [] })
+  }, [past])
 
-  const setNavigate = (item: any) => {
-    switch (state.choose) {
-      case 1:
-        return getNavigate(item)
-      case 2:
-        return item.seller === account?.wallet ? `/nft/expired` : `/nft/view`
-      default:
-        return ""
-    }
+  const getNavigate = (item: any) => {
+    if (account?.type === ITypeAccount.Custom) return '/nft/buy'
+    return item.seller === account?.wallet ? `/nft/expired` : `/nft/view`
   }
 
   const handleClick = (item: any) => () => {
-    navigate(setNavigate(item), { state: item });
+    navigate(getNavigate(item), { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {
@@ -96,8 +55,8 @@ const OldNFT: React.FC = () => {
 
   const renderList = () => (
     <>
-      {state.items.length > 0 ? (
-        state.items
+      {state.item.length > 0 ? (
+        state.item
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item) => (
             <button
@@ -121,10 +80,10 @@ const OldNFT: React.FC = () => {
           />
         </div>
       )}
-      {state.items.length > 0 && (
+      {state.item.length > 0 && (
         <div className="w-[100%] flex items-end justify-center mt-[50px]">
           <Pagination
-            total={state.items.length}
+            total={state.item.length}
             showSizeChanger
             showQuickJumper
             pageSizeOptions={[8, 12, 16, 20]}
@@ -144,27 +103,18 @@ const OldNFT: React.FC = () => {
   );
 
   return (
-    <div className="w-[100%] z-0" ref={ref}>
-    <div className="flex h-[70px] items-end w-[100%] mt-[50px]">
-      {menu.map((item) => (
-        <button
-          onClick={handleClickNav(item.id)}
-          key={item.id}
-          className={
-            state.choose === item.id
-              ? "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-              : "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
-          }>
-          {item.title}
-        </button>
-      ))}
-      <div className="border-b-[1px] border-border w-[calc(100%-918px)]"></div>
+    <div className="w-[100%] z-0 mt-[60px]" ref={ref}>
+      <div className="flex h-[70px] items-end w-[100%]">
+        <p className="p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
+          Tất cả sản phẩm
+        </p>
+        <div className="border-b-[1px] border-border w-[calc(100%-318px)] rounded-[20px]"></div>
+      </div>
+      <div className="py-[50px] flex flex-wrap w-[100%] border-[2px] border-t-0 rounded-r-[20px] min-h-[680px] rounded-b-[20px] shadow-xl">
+        {!loadingPast ? renderList() : renderloading()}
+      </div>
     </div>
-    <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-    {!loadingPast ? renderList() : renderloading()}
-    </div>
-  </div>
   );
 };
 
-export default React.memo(OldNFT);
+export default React.memo(CustomNFT);

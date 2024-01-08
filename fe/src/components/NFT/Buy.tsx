@@ -6,7 +6,7 @@ import { IStateRedux, createMarketSale, setAccountSearch, setTotalCart, store } 
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import More from "./More";
-import { DateFormatType, ICart } from "../../interfaces/IRouter";
+import { DateFormatType, ICart, ITypeAccount } from "../../interfaces/IRouter";
 import { dateFormat, removeUnnecessaryWhiteSpace } from "../../ultis";
 import { addCart, deleteCart, getCartsByTokenUri } from "../../api/cart";
 import ShowLayout from "../../layouts/ShowLayout";
@@ -48,8 +48,16 @@ const BuyNFT: React.FC = () => {
       navigate("/search");
     }
   };
-  const showModalCreate = () => {
-    setIsModalOpenCreate(true);
+  const showModalCreate = async() => {
+    if (account?.type === ITypeAccount.Custom) {
+      console.log(item)
+      await store.dispatch(createMarketSale({
+        item: item,
+        to: ""
+      }));
+      navigate("/");
+    }
+    else { setIsModalOpenCreate(true); }
   };
 
   const handleCancelCreate = () => {

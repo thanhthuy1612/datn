@@ -234,7 +234,7 @@ const getItems = async (data: any, contract: any) => {
         list: meta,
         description: i.description,
         from: i.from,
-        to: i.to
+        to: i.to,
       };
     })
   );
@@ -277,10 +277,14 @@ export const createMarketSale = createAsyncThunk(
       status: 1,
       price: 0,
     });
+    const price = ethers.utils.parseUnits(item?.item.price.toString(), "ether");
     const result = await erc721.createMarketSale(
       item?.item.tokenId,
       url as string,
-      item?.to
+      item?.to ?? "",
+      {
+        value: price,
+      }
     );
     await result.wait();
   }
@@ -299,7 +303,7 @@ export const acceptMarketSale = createAsyncThunk(
       img: `${item.file}`,
       description: item.description,
     });
-    const price = ethers.utils.parseUnits(item?.item.price, "ether");
+    const price = ethers.utils.parseUnits(item?.item.price.toString(), "ether");
     const result = await erc721.acceptMarketSale(
       item?.item.tokenId,
       url as string,
