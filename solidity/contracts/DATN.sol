@@ -157,10 +157,6 @@ contract NFTMarketplace is ERC721URIStorage {
             msg.value == listingPrice,
             "Price must be equal to listing price"
         );
-        require(
-            idToMarketItem[tokenId].status == 0,
-            "Price must be equal to status"
-        );
         changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].sold = false;
         idToMarketItem[tokenId].price = price;
@@ -170,8 +166,13 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].name = name;
         idToMarketItem[tokenId].date = date;
         idToMarketItem[tokenId].from = from;
+        idToMarketItem[tokenId].to = "";
+        idToMarketItem[tokenId].shipper = payable(address(0));
         idToMarketItem[tokenId].description = description;
         _itemsSold.decrement();
+        if (idToMarketItem[tokenId].status == 0) {
+            _transfer(msg.sender, address(this), tokenId);
+        }
     }
 
     function createMarketSale(
@@ -180,15 +181,23 @@ contract NFTMarketplace is ERC721URIStorage {
         string memory to
     ) public payable {
         // mua item
+        uint price = idToMarketItem[tokenId].price;
+        address payable creator = idToMarketItem[tokenId].seller;
         require(
             idToMarketItem[tokenId].seller != payable(msg.sender),
+            "Please submit the asking price in order to complete the purchase"
+        );
+        require(
+            msg.value == price,
             "Please submit the asking price in order to complete the purchase"
         );
         changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].owner = payable(msg.sender);
         idToMarketItem[tokenId].time = block.timestamp;
         idToMarketItem[tokenId].to = to;
-        idToMarketItem[tokenId].status = 1;
+        idToMarketItem[tokenId].status += 1;
+        _transfer(address(this), msg.sender, tokenId);
+        payable(creator).transfer(msg.value);
     }
 
     function shipMarketSale(
@@ -219,13 +228,7 @@ contract NFTMarketplace is ERC721URIStorage {
         string memory tokenURI
     ) public payable {
         // mua item
-        uint price = idToMarketItem[tokenId].price;
-        address payable creator = idToMarketItem[tokenId].seller;
         address payable ship = idToMarketItem[tokenId].shipper;
-        require(
-            msg.value == price,
-            "Please submit the asking price in order to complete the purchase"
-        );
         require(
             idToMarketItem[tokenId].owner == payable(msg.sender),
             "Please submit the asking price in order to complete the purchase"
@@ -235,14 +238,11 @@ contract NFTMarketplace is ERC721URIStorage {
             "Price must be equal to status"
         );
         changeTokenUri(tokenId, tokenURI);
-        idToMarketItem[tokenId].owner = payable(msg.sender);
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].time = block.timestamp;
         idToMarketItem[tokenId].status = 4;
         _itemsSold.increment();
-        _transfer(address(this), msg.sender, tokenId);
         payable(ship).transfer(listingPrice);
-        payable(creator).transfer(msg.value);
     }
 
     function deleteMarketSale(
@@ -261,7 +261,7 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].seller = payable(address(0));
         idToMarketItem[tokenId].time = block.timestamp;
-        idToMarketItem[tokenId].status = 6;
+        idToMarketItem[tokenId].status = 10;
         idToMarketItem[tokenId].description = description;
         _itemsSold.increment();
         _transfer(address(this), msg.sender, tokenId);
