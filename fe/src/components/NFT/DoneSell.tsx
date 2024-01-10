@@ -52,7 +52,8 @@ const DoneSell: React.FC = () => {
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
         description: removeUnnecessaryWhiteSpace(values.description),
-        from: ""
+        from: "",
+        item: item
       })
     );
     navigate("/");

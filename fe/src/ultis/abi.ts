@@ -1098,6 +1098,19 @@ export const abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getListingShip",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -1355,19 +1368,6 @@ export const abi = [
     name: "transferFrom",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_listingPrice",
-        type: "uint256",
-      },
-    ],
-    name: "updateListingPrice",
-    outputs: [],
-    stateMutability: "payable",
     type: "function",
   },
   {

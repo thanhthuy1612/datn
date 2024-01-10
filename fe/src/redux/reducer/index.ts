@@ -192,7 +192,10 @@ export const resellToken = createAsyncThunk(
       description: item.description,
     });
     const price = ethers.utils.parseUnits(item.price, "ether");
-    let listingPrice = await contract.getListingPrice();
+    let listingPrice =
+      item.item?.number < 2
+        ? await contract.getListingShip()
+        : await contract.getListingPrice();
     listingPrice = listingPrice.toString();
     const result = await erc721.resellToken(
       item.tokenId,

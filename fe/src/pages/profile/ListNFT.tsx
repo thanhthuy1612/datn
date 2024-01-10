@@ -76,7 +76,7 @@ const ListNFT: React.FC = () => {
           setState({ items: myDate });
           break;
         case 4:
-          setState({ items: myNFT.filter(item => item.number === 6) });
+          setState({ items: myNFT.filter(item => item.number === 10) });
           break;
         case 5:
           setState({ items: mySeller.filter(item => item.number !== 0) });
