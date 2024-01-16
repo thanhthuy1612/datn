@@ -10,4 +10,5 @@ export class IAccount extends Document {
   wallet: string;
   timeJoin: Date;
   type: ITypeAccount;
+  address: string;
 }

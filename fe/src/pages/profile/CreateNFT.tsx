@@ -61,7 +61,7 @@ const CreateNFT: React.FC = () => {
           </button>
         </div>
       </div>
-      <Modal
+      {state.open && <Modal
         width={1000}
         open={state.open}
         title={state.title}
@@ -70,7 +70,7 @@ const CreateNFT: React.FC = () => {
         <div className="w-[100%] border-border border-t-[1px] mt-[20px] pt-[20px]">
           {state.isCreateNFT ? <Create /> : <SettingProfile />}
         </div>
-      </Modal>
+      </Modal>}
     </div>
   );
 };

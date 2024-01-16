@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, DatePicker, Form, Image, Input, Modal, Spin, TimePicker, Upload, UploadFile } from "antd";
+import { Button, DatePicker, Form, Image, Input, InputNumber, Modal, Radio, RadioChangeEvent, Select, Space, Spin, TimePicker, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
 import { IStateRedux, changeTokenUri, resellToken, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import ShowLayout from "../../layouts/ShowLayout";
+import { listDescription } from "../../ultis/description";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -19,6 +20,8 @@ interface IState {
 const ResellNFT: React.FC = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = React.useState<boolean>(false);
   const [isModalOpenCreate, setIsModalOpenCreate] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<number>();
+  const [input, setInput] = React.useState<string>('');
   const [file, setFile] = React.useState<string>("");
   const [img, setImg] = React.useState<UploadFile[]>([]);
   const [state, _setState] = React.useState<IState>({
@@ -26,17 +29,17 @@ const ResellNFT: React.FC = () => {
     previewImageNFT: "",
     previewTitleNFT: "",
   });
+  const [form] = Form.useForm();
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
 
-  const { loading, loadingCreate } = useSelector(
+  const { loading, loadingCreate, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 
   const localtion = useLocation();
   const item = localtion.state;
-  const { TextArea } = Input;
 
   const navigate = useNavigate();
   const dateFormat = "YYYY/MM/DD";
@@ -64,10 +67,12 @@ const ResellNFT: React.FC = () => {
 
   const showModalCreate = () => {
     setIsModalOpenCreate(true);
+    form.resetFields()
   };
 
   const handleCancelCreate = () => {
     setIsModalOpenCreate(false);
+    form.resetFields()
   };
 
   const action = async (options: any) => {
@@ -85,11 +90,11 @@ const ResellNFT: React.FC = () => {
     await store.dispatch(
       resellToken({
         tokenId: item.tokenId,
-        name: removeUnnecessaryWhiteSpace(values.title),
+        name: item.title,
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
-        description: removeUnnecessaryWhiteSpace(values.description),
-        from: removeUnnecessaryWhiteSpace(values.from),
+        description: `${removeUnnecessaryWhiteSpace(values.description)} - ${values.number} ${removeUnnecessaryWhiteSpace(values.kg)}`,
+        from: value === 1 ? account?.address : removeUnnecessaryWhiteSpace(input),
         item: item
       })
     );
@@ -116,6 +121,10 @@ const ResellNFT: React.FC = () => {
 
   const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setImg(newFileList)
+  };
+
+  const onChangeRadio = (e: RadioChangeEvent) => {
+    setValue(e.target.value);
   };
 
   const getBase64 = (file: RcFile): Promise<string> =>
@@ -152,6 +161,7 @@ const ResellNFT: React.FC = () => {
       colon={false}
       onFinish={onFinishAdd}
       className="flex flex-col w-[100%] mx-[50px]"
+      form={form}
     >
       <div className="flex">
         <div className="w-[300px] h-[300px]">
@@ -175,11 +185,14 @@ const ResellNFT: React.FC = () => {
           </Form.Item>
         </div>
         <Form.Item
-          label="Mô tả:"
+          label="Trạng thái sản phẩm:"
           name="description"
-          rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          className="w-[400px]"
+          rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
         >
-          <TextArea rows={4} style={{ width: "500px" }} allowClear placeholder="Nhập mô tả..." />
+          <Select placeholder="Trạng thái sản phẩm">
+            {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+          </Select>
         </Form.Item>
       </div>
       <Form.Item label=" ">
@@ -208,26 +221,32 @@ const ResellNFT: React.FC = () => {
       wrapperCol={{ flex: 1 }}
       colon={false}
       onFinish={onFinish}
+      form={form}
       className="flex flex-col w-[300px] items-center">
       <div className="flex w-[100%] justify-between">
-        <div className="flex flex-col w-[300px]">
-          <Form.Item
-            label="Tên mới :"
-            name="title"
-            rules={[{ required: true, message: "Vui lòng nhập tên mới" }]}>
-            <Input placeholder="Nhập tên ..." />
-          </Form.Item>
+        <div className="flex flex-col w-[500px]">
           <Form.Item
             label="Địa chỉ sản phẩm:"
-            name="from"
-            rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}>
-            <Input placeholder="Nhập tên sản phẩm..." />
+            name="address"
+            rules={[{ required: true, message: "Vui lòng chọn loại địa chỉ" }]}>
+            <Radio.Group onChange={onChangeRadio} value={value}>
+              <Space direction="vertical">
+                <Radio className="w-[500px]" value={1} disabled={!account?.address}>
+                  Địa chỉ mặc định: {" "}
+                  {account?.address ?? 'Không có dữ liệu'}
+                </Radio>
+                <Radio value={2}><div className="flex items-center">
+                  <p className="w-[150px]">Địa chỉ khác:</p>
+                  {value === 2 && <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Nhập tên sản phẩm..." />}</div></Radio>
+              </Space>
+            </Radio.Group>
           </Form.Item>
+          <button onClick={() => { navigate('/setting') }} className="flex underline italic cursor-pointer text-settingChoose">Chỉnh sửa địa chỉ mặc định</button>
           <Form.Item
             label="Giá bán sản phẩm:"
             name="price"
             tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
-            rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
+            rules={[{ required: true, message: "Vui lòng nhập giá bán" }]}>
             <Input placeholder="Nhập giá bán sản phẩm..." />
           </Form.Item>
           <Form.Item
@@ -248,12 +267,33 @@ const ResellNFT: React.FC = () => {
             <TimePicker format={timeFormate} placeholder="Chọn giờ" />
           </Form.Item>
           <Form.Item
-            label="Mô tả:"
+            label="Trạng thái sản phẩm:"
             name="description"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+            rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
           >
-            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
+            <Select placeholder="Trạng thái sản phẩm">
+              {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+            </Select>
           </Form.Item>
+          <div className="flex w-[100%]">
+            <Form.Item
+              label="Số lượng sản phẩm:"
+              name="number"
+              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
+            >
+              <InputNumber className="w-[300px] mr-[20px]" placeholder="Nhập số lượng sản phẩm" />
+            </Form.Item>
+            <Form.Item
+              label="Định lượng sản phẩm:"
+              name="kg"
+              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
+            >
+              <Select placeholder="Định lượng">
+                <Select.Option value="gam">GAM</Select.Option>
+                <Select.Option value="kg">KG</Select.Option>
+              </Select>
+            </Form.Item>
+          </div>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>
               {loading ? renderloading() : "Bán sản phẩm"}
@@ -280,11 +320,11 @@ const ResellNFT: React.FC = () => {
       </div>
       <div className="flex mt-[50px]">
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] mr-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>
-        <Modal width={1000} title="Cập nhật sản phẩm" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
+        <Modal width={800} title="Cập nhật sản phẩm" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
           {renderAdd()}
         </Modal>
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán sản phẩm</button>
-        <Modal title="Bán sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+        <Modal width={800} title="Bán sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
           {renderResell()}
         </Modal>
       </div>

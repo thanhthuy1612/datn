@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Image, Input, Modal, Spin } from "antd";
+import { Button, Form, Image, Input, Modal, Radio, RadioChangeEvent, Space, Spin } from "antd";
 import { CiClock1 } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { IStateRedux, createMarketSale, setAccountSearch, setTotalCart, store } from "../../redux";
@@ -15,6 +15,8 @@ const BuyNFT: React.FC = () => {
   const [cart, setCart] = React.useState<ICart[]>([]);
   const [reload, setReload] = React.useState<boolean>(true);
   const [isModalOpenCreate, setIsModalOpenCreate] = React.useState<boolean>(false);
+  const [value, setValue] = React.useState<number>();
+  const [input, setInput] = React.useState<string>('');
 
   const { loading, account, totalCart } = useSelector(
     (state: { item: IStateRedux }) => state.item
@@ -33,10 +35,10 @@ const BuyNFT: React.FC = () => {
     fetch()
   }, [account]);
 
-  const handleBuy = async (values: any) => {
+  const handleBuy = async () => {
     await store.dispatch(createMarketSale({
       item: item,
-      to: removeUnnecessaryWhiteSpace(values.to)
+      to: value === 1 ? account?.address : removeUnnecessaryWhiteSpace(input)
     }));
     navigate("/");
   };
@@ -50,7 +52,6 @@ const BuyNFT: React.FC = () => {
   };
   const showModalCreate = async() => {
     if (account?.type === ITypeAccount.Custom) {
-      console.log(item)
       await store.dispatch(createMarketSale({
         item: item,
         to: ""
@@ -84,6 +85,9 @@ const BuyNFT: React.FC = () => {
       <Spin indicator={antIcon} />
     </div>
   );
+  const onChangeRadio = (e: RadioChangeEvent) => {
+    setValue(e.target.value);
+  };
 
   const renderForm = () => (
     <Form
@@ -95,11 +99,21 @@ const BuyNFT: React.FC = () => {
       className="flex flex-col w-[1000px] items-center">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[300px]">
-          <Form.Item
-            label="Địa chỉ của bạn:"
-            name="to"
-            rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}>
-            <Input placeholder="Nhập địa chỉ..." />
+        <Form.Item
+            label="Địa chỉ sản phẩm:"
+            name="address"
+            rules={[{ required: true, message: "Vui lòng chọn loại địa chỉ" }]}>
+            <Radio.Group onChange={onChangeRadio} value={value}>
+              <Space direction="vertical">
+                <Radio className="w-[500px]" value={1} disabled={!account?.address}>
+                  Địa chỉ mặc định: {" "}
+                  {account?.address ?? 'Không có dữ liệu'}
+                </Radio>
+                <Radio value={2}><div className="flex items-center">
+                  <p className="w-[150px]">Địa chỉ khác:</p>
+                  {value === 2 && <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Nhập tên sản phẩm..." />}</div></Radio>
+              </Space>
+            </Radio.Group>
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>

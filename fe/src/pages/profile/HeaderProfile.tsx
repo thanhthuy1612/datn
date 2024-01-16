@@ -134,6 +134,7 @@ const HeaderProfile: React.FC<{
           {account?.email && (
             <Item title="Email liên lạc:" item={account?.email} />
           )}
+          {account?.address && <Item title="Địa chỉ:" item={account?.address} />}
           {account?.bio && <Item title="Tiểu sử:" item={account?.bio} />}
         </div>
         <div className="flex h-[fit-content]">

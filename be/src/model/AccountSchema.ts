@@ -28,6 +28,9 @@ export class Account extends Document {
 
   @Prop()
   type: number;
+
+  @Prop()
+  address: string;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

@@ -1,6 +1,9 @@
 import React from "react";
 import { CiEdit, CiGrid32, CiBellOn, CiReceipt } from "react-icons/ci";
 import { useLocation, useNavigate } from "react-router-dom";
+import { IStateRedux } from "../../redux";
+import { useSelector } from "react-redux";
+import { ITypeAccount } from "../../interfaces/IRouter";
 
 interface IMenu {
   id: number;
@@ -17,6 +20,7 @@ const MenuSetting: React.FC = () => {
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
+  const { account } = useSelector((state: { item: IStateRedux }) => state.item);
   const navigate = useNavigate();
   const menu: IMenu[] = [
     {
@@ -28,7 +32,7 @@ const MenuSetting: React.FC = () => {
     {
       id: 2,
       icon: <CiGrid32 />,
-      title: "Kho sản phẩm",
+      title: "Chỉnh sửa kho nông sản",
       to: `/collection`,
     },
     {
@@ -59,7 +63,7 @@ const MenuSetting: React.FC = () => {
         Cài đặt
       </p>
       <div className="w-[100%]">
-        {menu.map((item) => (
+        {(account?.type === ITypeAccount.Farm ? menu : menu.filter(item => item.id !== 2)).map((item) => (
           <button
             key={item.id}
             className={

@@ -82,8 +82,8 @@ const MenuAccount: React.FC = () => {
           className="flex border-border border-[1px] shadow-md flex-col py-[15px] bg-white rounded-[15px] w-[200px] z-10"
           tabIndex={-1}
           {...attrs}>
-          {menu.map((item) => (
-            <>{renderBody(item)}</>
+          {menu.map((item, index) => (
+            <div key={index}>{renderBody(item)}</div>
           ))}
         </div>
       )}>

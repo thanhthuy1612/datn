@@ -8,4 +8,5 @@ export const url = {
   account: "accounts",
   cart: "cart",
   login: "login",
+  product: "product",
 };

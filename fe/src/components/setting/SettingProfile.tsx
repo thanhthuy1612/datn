@@ -144,6 +144,7 @@ const SettingProfile: React.FC = () => {
       username: removeUnnecessaryWhiteSpace(values.username),
       bio: removeUnnecessaryWhiteSpace(values.bio),
       email: removeUnnecessaryWhiteSpace(values.email),
+      address: removeUnnecessaryWhiteSpace(values.address),
       ava: state.account?.ava,
       banner: state.account?.banner,
     });
@@ -189,6 +190,10 @@ const SettingProfile: React.FC = () => {
 
           <Form.Item label="Email:" name="email">
             <Input placeholder="Nhập email..." />
+          </Form.Item>
+
+          <Form.Item label="Địa chỉ:" name="address">
+            <Input placeholder="Nhập địa chỉ..." />
           </Form.Item>
 
           <Form.Item label="Mô tả bản thân:" name="bio">

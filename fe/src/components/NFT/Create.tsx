@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Spin, Upload, UploadFile } from "antd";
+import { Button, Form, Input, Modal, Select, Spin, Upload, UploadFile } from "antd";
 import React from "react";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
@@ -8,12 +8,17 @@ import { IStateRedux, createToken, setLoading, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { IProduct } from "../../interfaces/IRouter";
+import { getProductsByAccount } from "../../api/product";
+import { listDescription } from "../../ultis/description";
 interface IState {
   img: UploadFile[];
   file: string;
   previewOpenNFT: boolean;
   previewImageNFT: string;
   previewTitleNFT: string;
+  listProduct: IProduct[];
+  isLoading: boolean
 }
 const Create: React.FC = () => {
   const [state, _setState] = React.useState<IState>({
@@ -22,20 +27,28 @@ const Create: React.FC = () => {
     previewOpenNFT: false,
     previewImageNFT: "",
     previewTitleNFT: "",
+    listProduct: [],
+    isLoading: true
   });
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
-  const { TextArea } = Input;
   const navigate = useNavigate();
-
-  const { loadingCreate } = useSelector(
+  const { loadingCreate, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
+  const [form] = Form.useForm();
+
+  const fetch = React.useCallback(async () => {
+    setState({ isLoading: true });
+    const result = await getProductsByAccount(account?.wallet ?? '');
+    setState({ listProduct: result ?? [], isLoading: false });
+  }, [account?.wallet])
 
   React.useEffect(() => {
     store.dispatch(setLoading(false));
-  }, []);
+    fetch()
+  }, [fetch])
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -91,7 +104,7 @@ const Create: React.FC = () => {
   const onFinish = async (values: any) => {
     await store.dispatch(
       createToken({
-        name: removeUnnecessaryWhiteSpace(values.title),
+        name: `${removeUnnecessaryWhiteSpace(values.title)}-${removeUnnecessaryWhiteSpace(values.hash)}`,
         file: state.file,
         description: removeUnnecessaryWhiteSpace(values.description)
       })
@@ -99,7 +112,9 @@ const Create: React.FC = () => {
     navigate("/");
   };
 
-  const handleCancel = () => setState({ previewOpenNFT: false });
+  const handleCancel = () => {
+    setState({ previewOpenNFT: false });
+  }
   const antIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
   const renderloading = () => (
     <div className="w-[55px] flex justify-center items-center">
@@ -115,6 +130,7 @@ const Create: React.FC = () => {
       colon={false}
       onFinish={onFinish}
       className="flex flex-col w-[100%] items-center"
+      form={form}
     >
       <div className="flex w-[100%] justify-between">
         <div className="flex justify-center w-[300px] h-[300px]">
@@ -139,18 +155,30 @@ const Create: React.FC = () => {
         </div>
         <div className="flex flex-col w-[550px]">
           <Form.Item
-            label="Tên sản phẩm:"
+            label="Loại sản phẩm:"
             name="title"
-            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm:" }]}
+            rules={[{ required: true, message: "Vui lòng chọn loại sản phẩm" }]}
           >
-            <Input placeholder="Nhập tên sản phẩm..." />
+            <Select placeholder="Loại sản phẩm">
+              {state.listProduct.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+            </Select>
+          </Form.Item>
+          <button onClick={() => { navigate('/collection') }} className="flex underline italic cursor-pointer text-settingChoose">Chỉnh sửa danh sách nông sản</button>
+          <Form.Item
+            label="Mã sản phẩm:"
+            name="hash"
+            rules={[{ required: true, message: "Vui lòng chọn loại sản phẩm" }]}
+          >
+            <Input placeholder="Nhập mã sản phẩm" />
           </Form.Item>
           <Form.Item
-            label="Mô tả sản phẩm:"
+            label="Trạng thái sản phẩm:"
             name="description"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+            rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
           >
-            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
+            <Select placeholder="Trạng thái sản phẩm">
+              {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+            </Select>
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loadingCreate}>

@@ -12,10 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { IStateRedux, fetchConnect, setAccount, store } from "../../redux";
 import { useSelector } from "react-redux";
 import ListNFT from "../profile/ListNFT";
-import login from "../../assets/dangnhap.png";
-import create from "../../assets/taoNFT.png";
-import buy from "../../assets/buy.png";
-import resellNFT from "../../assets/banlai.png";
 import Tippy from "@tippyjs/react/headless";
 import { followCursor } from "tippy.js";
 import { ITypeAccount } from "../../interfaces/IRouter";
@@ -31,12 +27,6 @@ import ListBuyer from "../profile/ListBuyer";
 interface IText {
   id: number;
   text: string;
-}
-interface ITextInstruct {
-  id: number;
-  text: string;
-  img: string;
-  description?: string;
 }
 
 interface IMenu {
@@ -82,37 +72,6 @@ const textSetting: IText[] = [
   {
     id: 1,
     text: "Phần lớn thị trường NFT đều nằm trong Blockchain Ethereum. Do đó, điều kiện đầu tiên và quan trọng để có thể thực hiện giao dịch trên sàn là bạn phải sở hữu một chiếc ví điện tử để tương tác với Ethereum, thanh toán phí cũng như nhận các khoản mua bán khác. Ở đây chúng tôi sử dụng Metamask do Metamask được xem là ví thông dụng nhất.",
-  },
-];
-
-const textInstruct: ITextInstruct[] = [
-  {
-    id: 1,
-    text: "Kết nối ví Metamask",
-    img: login,
-    description:
-      "Sau khi vào trang chủ nhấn vào 1 trong 2 nút tô đổ để kết nối ví:",
-  },
-  {
-    id: 2,
-    text: "Tạo sản phẩm mới",
-    img: create,
-    description:
-      "Chọn tạo trong menu nhập đầy đủ thông tin yêu cầu và nhấn -Thêm  sản phẩm-",
-  },
-  {
-    id: 3,
-    text: "Mua",
-    img: buy,
-    description:
-      "Người dùng chọn NFT sau đó chọn -Mua ngay- thanh toán và NFT sẽ tự động vào kho của bạn",
-  },
-  {
-    id: 4,
-    text: "Bán lại NFT",
-    img: resellNFT,
-    description:
-      "Người dùng chọn NFT trong kho của mình sau đó nhập đầy đủ thông tin chọn -Bán lại NFT-",
   },
 ];
 
@@ -252,26 +211,6 @@ const Home: React.FC = () => {
       {title}
     </p>
   );
-  const renderItemInstruct = ({
-    title,
-    img,
-    description,
-  }: {
-    title: string;
-    img: string;
-    description: string;
-  }) => (
-    <p className="py-[10px] flex items-start">
-      <div className="pr-[15px] pt-[5px]">
-        <CiStar />
-      </div>
-      <div>
-        <p className="text-[20px] pb-[10px]">{title}</p>
-        <p className="pb-[10px]">{description}</p>
-        <img src={img} className="rounded-[15px] w-[100%]" />
-      </div>
-    </p>
-  );
   const renderTagHome = ({
     title,
     items,
@@ -300,24 +239,7 @@ const Home: React.FC = () => {
         title: "Điểm nổi bật của sản phẩm",
         items: textCharacteristic,
       })}
-      {renderTagHome({ title: "Cần chuẩn bị gì?", items: textSetting })}
-      <div className="flex h-[70px] items-end w-[100%] mt-[50px] w-[100%] z-0">
-        <p className="p-[20px] text-[20px] flex items-center justify-center w-[400px] h-[100%] border-[2px] border-b-[0px] border-border rounded-t-[15px]">
-          Hướng dẫn sử dụng
-        </p>
-        <div className="border-b-[1px] border-border w-[calc(100%-418px)] rounded-[20px]"></div>
-      </div>
-      <div className="py-[30px] px-[50px] w-[100%] border-[2px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
-        {textInstruct.map((item) => (
-          <div key={item.id}>
-            {renderItemInstruct({
-              title: item.text,
-              img: item.img,
-              description: item.description ?? "",
-            })}
-          </div>
-        ))}
-      </div></>
+      {renderTagHome({ title: "Cần chuẩn bị gì?", items: textSetting })}</>
   )
   const renderButtonLogin = () => (
     <>

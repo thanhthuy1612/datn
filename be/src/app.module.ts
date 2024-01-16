@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { CartModule } from './modules/cart/cart.module';
 import { LoginModule } from './modules/login/login.module';
+import { ProductModule } from './modules/product/product.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -17,6 +18,7 @@ import { JwtModule } from '@nestjs/jwt';
     AccountsModule,
     CartModule,
     LoginModule,
+    ProductModule,
     MongooseModule.forRoot(process.env.DB_URL),
     JwtModule.register({
       global: true,

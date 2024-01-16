@@ -12,7 +12,7 @@ export enum ITypeAccount {
   Farm = 1,
   Ship = 2,
   Buy = 3,
-  Custom = 4
+  Custom = 4,
 }
 export interface IAccount {
   id?: string;
@@ -25,11 +25,18 @@ export interface IAccount {
   timeJoin?: Date;
   carts?: unknown;
   type?: ITypeAccount;
+  address?: string;
 }
 
 export interface ICart {
   _id?: string;
   url?: string;
+  account?: string;
+}
+
+export interface IProduct {
+  _id?: string;
+  name?: string;
   account?: string;
 }
 

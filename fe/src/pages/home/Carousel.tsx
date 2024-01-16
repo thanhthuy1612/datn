@@ -1,9 +1,9 @@
 import React from "react";
 import { Carousel } from "antd";
-import carousel3 from "../../assets/carousel3.jpg";
-import carousel4 from "../../assets/carousel4.jpg";
-import carousel5 from "../../assets/carousel5.jpg";
-import carousel2 from "../../assets/carousel2.jpg";
+import carousel1 from "../../assets/carousel1.png"
+import carousel2 from"../../assets/carousel2.png"
+import carousel3 from "../../assets/carousel3.png"
+import carousel4 from "../../assets/carousel4.jpg"
 
 interface ICarousel {
   id: number;
@@ -13,7 +13,7 @@ interface ICarousel {
 const carousel: ICarousel[] = [
   {
     id: 1,
-    banner: carousel5,
+    banner: carousel1,
   },
   {
     id: 2,
