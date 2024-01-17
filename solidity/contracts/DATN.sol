@@ -219,16 +219,19 @@ contract NFTMarketplace is ERC721URIStorage {
 
     function doneShipMarketSale(
         uint256 tokenId,
-        string memory tokenURI
+        string memory tokenURI,
+        string memory description
     ) public payable {
         changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].time = block.timestamp;
         idToMarketItem[tokenId].status += 1;
+        idToMarketItem[tokenId].description = description;
     }
 
     function acceptMarketSale(
         uint256 tokenId,
-        string memory tokenURI
+        string memory tokenURI,
+        string memory description
     ) public payable {
         // mua item
         address payable ship = idToMarketItem[tokenId].shipper;
@@ -243,6 +246,7 @@ contract NFTMarketplace is ERC721URIStorage {
         changeTokenUri(tokenId, tokenURI);
         idToMarketItem[tokenId].time = block.timestamp;
         idToMarketItem[tokenId].status = 4;
+        idToMarketItem[tokenId].description = description;
         _itemsSold.increment();
         payable(ship).transfer(listingShip);
     }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, DatePicker, Form, Image, Input, Modal, Spin, TimePicker } from "antd";
+import { Button, DatePicker, Form, Image, Input, InputNumber, Modal, Select, Spin, TimePicker } from "antd";
 import { IStateRedux, resellToken, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import More from "./More";
@@ -8,13 +8,14 @@ import { useSelector } from "react-redux";
 import { dateFormat, defaultAddress, getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
 import { DateFormatType } from "../../interfaces/IRouter";
 import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import { listDescription } from "../../ultis/description";
 
 const DoneSell: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [form] = Form.useForm();
   const localtion = useLocation();
   const item = localtion.state;
 
-  const { TextArea } = Input;
   const dateFormatForm = "YYYY/MM/DD";
   const timeFormateForm = "hh:mm:ss";
 
@@ -29,6 +30,7 @@ const DoneSell: React.FC = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    form.resetFields()
   };
 
   const handleClick = (wallet: string) => () => {
@@ -48,10 +50,10 @@ const DoneSell: React.FC = () => {
     await store.dispatch(
       resellToken({
         tokenId: item.tokenId,
-        name: removeUnnecessaryWhiteSpace(values.title),
+        name: item.title,
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
-        description: removeUnnecessaryWhiteSpace(values.description),
+        description: `${removeUnnecessaryWhiteSpace(values.description)} - ${values.number} ${removeUnnecessaryWhiteSpace(values.kg)}`,
         from: "",
         item: item
       })
@@ -66,15 +68,10 @@ const DoneSell: React.FC = () => {
       wrapperCol={{ flex: 1 }}
       colon={false}
       onFinish={onFinish}
+      form={form}
       className="flex flex-col w-[300px] items-center">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[300px]">
-          <Form.Item
-            label="Tên mới :"
-            name="title"
-            rules={[{ required: true, message: "Vui lòng nhập tên mới" }]}>
-            <Input placeholder="Nhập tên ..." />
-          </Form.Item>
           <Form.Item
             label="Giá bán sản phẩm:"
             name="price"
@@ -88,7 +85,7 @@ const DoneSell: React.FC = () => {
             rules={[
               { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
             ]}>
-            <DatePicker format={dateFormatForm} placeholder="Chọn ngày" />
+            <DatePicker  format={dateFormatForm} placeholder="Chọn ngày" />
           </Form.Item>
           <Form.Item
             label="Giờ hết hạn bán sản phẩm:"
@@ -100,12 +97,33 @@ const DoneSell: React.FC = () => {
             <TimePicker format={timeFormateForm} placeholder="Chọn giờ" />
           </Form.Item>
           <Form.Item
-            label="Mô tả:"
+            label="Trạng thái sản phẩm:"
             name="description"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+            rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
           >
-            <TextArea rows={4} allowClear placeholder="Nhập mô tả..." />
+            <Select placeholder="Trạng thái sản phẩm">
+              {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+            </Select>
           </Form.Item>
+          <div className="flex w-[800px]">
+            <Form.Item
+              label="Số lượng sản phẩm:"
+              name="number"
+              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
+            >
+              <InputNumber className="w-[300px] mr-[20px]" placeholder="Nhập số lượng sản phẩm" />
+            </Form.Item>
+            <Form.Item
+              label="Định lượng sản phẩm:"
+              name="kg"
+              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
+            >
+              <Select placeholder="Định lượng">
+                <Select.Option value="gam">GAM</Select.Option>
+                <Select.Option value="kg">KG</Select.Option>
+              </Select>
+            </Form.Item>
+          </div>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>
               {loading ? renderloading() : "Bán sản phẩm"}
@@ -160,7 +178,7 @@ const DoneSell: React.FC = () => {
       </div>
       <div className="flex mt-[50px]">
         <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModal}>Bán sản phẩm</button>
-        <Modal width={500} title="Bán sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
+        <Modal width={800} title="Bán sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
           {renderResell()}
         </Modal>
       </div>
@@ -176,7 +194,7 @@ const DoneSell: React.FC = () => {
       </div>
     </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Cập nhật trạng thái" />
+    <ShowLayout chidren={renderBody()} title="Bán sản phẩm" />
   );
 };
 

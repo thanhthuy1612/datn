@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Image, Input, Modal, Spin, Upload, UploadFile } from "antd";
+import { Button, Form, Image, Modal, Select, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
 import { IStateRedux, acceptMarketSale, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import ShowLayout from "../../layouts/ShowLayout";
 import { DateFormatType, ITypeAccount } from "../../interfaces/IRouter";
+import { listAccept } from "../../ultis/description";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -44,7 +45,6 @@ const Accept: React.FC = () => {
 
   const localtion = useLocation();
   const item = localtion.state;
-  const { TextArea } = Input;
 
   const navigate = useNavigate();
 
@@ -166,11 +166,14 @@ const Accept: React.FC = () => {
           </Form.Item>
         </div>
         <Form.Item
-          label="Mô tả:"
+          label="Trạng thái sản phẩm:"
           name="description"
-          rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          className="w-[400px]"
+          rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
         >
-          <TextArea rows={4} style={{ width: "500px" }} allowClear placeholder="Nhập mô tả..." />
+          <Select placeholder="Trạng thái sản phẩm">
+            {listAccept.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+          </Select>
         </Form.Item>
       </div>
       <Form.Item label=" ">

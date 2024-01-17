@@ -138,7 +138,8 @@ export const doneShipMarketSale = createAsyncThunk(
       });
       const transaction = await erc721.doneShipMarketSale(
         option.tokenId,
-        url as string
+        url as string,
+        option.description
       );
       await transaction.wait();
     } catch (err) {
@@ -310,6 +311,7 @@ export const acceptMarketSale = createAsyncThunk(
     const result = await erc721.acceptMarketSale(
       item?.item.tokenId,
       url as string,
+      item.description,
       {
         value: price,
       }

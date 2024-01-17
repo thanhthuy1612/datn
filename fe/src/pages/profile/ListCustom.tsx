@@ -34,7 +34,7 @@ const ListCustom: React.FC = () => {
     store.dispatch(fetchMyNFTs());
   }, [account]);
   const handleClick = (item: any) => () => {
-    navigate('/nft/ship', { state: item });
+    navigate('/nft/view', { state: item });
   };
 
   const onChange = (page: number, pageSize: number) => {
