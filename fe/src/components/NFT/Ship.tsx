@@ -78,7 +78,7 @@ const Ship: React.FC = () => {
         <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
           Mô tả: {item.description}
         </div>
-        <More />
+        <More items={item} />
       </div>
       <div className="flex mt-[50px]">
         <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={onFinish}>{loadingCreate ? renderloading() : 'Nhận đơn'}</button>

@@ -54,7 +54,7 @@ const HeaderProfile: React.FC<{
       if (account?.ava) {
         const ava = await getItemIPFS(account?.ava);
         const avaObjectURL = await URL.createObjectURL(ava);
-        setState({ ava: avaObjectURL})
+        setState({ ava: avaObjectURL })
       }
       if (account?.banner) {
         const banner = await getItemIPFS(account?.banner);

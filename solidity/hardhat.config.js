@@ -6,6 +6,8 @@ module.exports = {
     bsctestnet: {
       url: "https://data-seed-prebsc-1-s3.binance.org:8545",
       accounts: [process.env.PRIVATE_KEY],
+      gasPrice: 35000000000,
+      saveDeployments: true,
     },
     bscmainnet: {
       url: "https://bsc-dataseed.binance.org/",

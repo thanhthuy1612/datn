@@ -5,7 +5,12 @@ export const listDescription = [
   { id: 4, name: "Cây lớn" },
   { id: 5, name: "Ra hoa" },
   { id: 6, name: "Kết quả" },
-  { id: 7, name: "Quả chín" },
+  { id: 7, name: "Quả xanh" },
+  { id: 8, name: "Quả chín" },
+];
+
+export const listDescriptionAction = [
+  { id: 1, name: "Đóng hộp" }
 ];
 
 export const listDescriptionShip = [
@@ -13,6 +18,7 @@ export const listDescriptionShip = [
   { id: 2, name: "Nhập kho" },
   { id: 3, name: "Đã xuất kho" },
   { id: 4, name: "Đang giao hàng" },
+  { id: 5, name: "Đã giao hàng" },
 ];
 
 export const listDescriptionKho = [
@@ -31,3 +37,8 @@ export const listAccept = [
   { id: 2, name: "Thiếu trọng lượng" },
   { id: 3, name: "Giao hàng lâu" },
 ];
+
+export enum IKG{
+  'kg' =  1,
+  'gam' = 2
+}

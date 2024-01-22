@@ -19,7 +19,7 @@ const Item: React.FC<{ account: IAccount }> = ({ account }) => {
 
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
-  };   
+  };
   React.useEffect(() => {
     const fetch = async () => {
       if (account?.ava) {

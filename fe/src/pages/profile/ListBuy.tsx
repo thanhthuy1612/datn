@@ -26,6 +26,10 @@ const menu: IMenu[] = [
   {
     id: 4,
     title: "Sản phẩm chờ xác nhận",
+  },
+  {
+    id: 5,
+    title: "Sản phẩm đã đóng gói",
   }
 ];
 
@@ -63,7 +67,7 @@ const ListBuy: React.FC = () => {
     const getItems = async () => {
       switch (state.choose) {
         case 1:
-          setState({ items: myNFT.filter(item => { return item?.number === 4 }) });
+          setState({ items: myNFT.filter(item => { return item?.number === 4 && item?.kg > 0 }) });
           break;
         case 2:
           setState({ items: myNFT.filter(item => { return item?.number === 1 }) });
@@ -74,6 +78,9 @@ const ListBuy: React.FC = () => {
         case 4:
           setState({ items: myNFT.filter(item => { return item?.number === 3 }) });
           break;
+        case 5:
+          setState({ items: myNFT.filter(item => { return item?.number === 0 }) });
+          break;
       }
     };
     getItems();
@@ -82,12 +89,14 @@ const ListBuy: React.FC = () => {
   const setNavigate = () => {
     switch (state.choose) {
       case 1:
-        return '/nft/done'
+        return '/nft/share'
       case 2:
       case 3:
         return '/nft/view'
       case 4:
         return '/nft/accept'
+      case 5:
+        return '/nft/done'
       default:
         return '/'
     }

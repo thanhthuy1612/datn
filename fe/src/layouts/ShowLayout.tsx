@@ -28,7 +28,7 @@ const ShowLayout: React.FC<IShowLayout> = ({ loading, chidren, title }) => {
           {title}
         </p>
       </div>
-      <div className="mt-[30px] border-border border-[1px] shadow-md rounded-[20px]">
+      <div className="w-[100%] flex mt-[30px] border-border border-[1px] shadow-md rounded-[20px]">
         {loading ? renderloading() : chidren}
       </div>
     </div>

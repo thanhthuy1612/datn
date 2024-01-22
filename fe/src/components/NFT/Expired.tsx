@@ -60,7 +60,7 @@ const ExpiredNFT: React.FC = () => {
           DateFormatType.FullDate
         )}</p>
 
-        <More />
+        <More items={item} />
       </div>
       {item.expired > new Date() ?
         <Form

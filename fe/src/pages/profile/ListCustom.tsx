@@ -24,7 +24,7 @@ const ListCustom: React.FC = () => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
   const ref = React.useRef<null | HTMLDivElement>(null);
-  const { myNFT, loading , account} = useSelector(
+  const { myNFT, loading, account } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
 

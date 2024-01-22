@@ -27,6 +27,7 @@ contract NFTMarketplace is ERC721URIStorage {
         string description;
         string from;
         string to;
+        uint256 kg;
     }
     event MarketItemCreated(
         uint256 indexed tokenId,
@@ -42,7 +43,8 @@ contract NFTMarketplace is ERC721URIStorage {
         string name,
         string description,
         string from,
-        string to
+        string to,
+        uint256 kg
     );
 
     constructor() ERC721("ThanhThuy", "TT") {
@@ -77,7 +79,7 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 newTokenId = _tokenIds.current(); //tạo id mới
         _mint(msg.sender, newTokenId); // tạo ra nft
         _setTokenURI(newTokenId, tokenURI);
-        createMarketItem(newTokenId, name, img, description); // tạo item
+        createMarketItem(newTokenId, name, img, description, 0); // tạo item
         return newTokenId;
     }
 
@@ -85,7 +87,8 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 tokenId,
         string memory name,
         string memory img,
-        string memory description
+        string memory description,
+        uint256 kg
     ) private {
         idToMarketItem[tokenId] = MarketItem(
             tokenId,
@@ -101,7 +104,8 @@ contract NFTMarketplace is ERC721URIStorage {
             name,
             description,
             "",
-            ""
+            "",
+            kg
         );
         _itemsSold.increment();
         emit MarketItemCreated(
@@ -118,7 +122,8 @@ contract NFTMarketplace is ERC721URIStorage {
             name,
             description,
             "",
-            ""
+            "",
+            kg
         );
     }
 
@@ -133,6 +138,35 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].description = description;
     }
 
+    function createTokenNew(
+        string memory tokenOldURI,
+        string memory tokenNewURI,
+        string memory name,
+        string memory img,
+        string memory description,
+        uint256 tokenId,
+        uint256 kg
+    ) public payable returns (uint) {
+        require(idToMarketItem[tokenId].kg >= kg, "KG");
+        changeTokenUri(tokenId, tokenOldURI);
+        idToMarketItem[tokenId].kg = idToMarketItem[tokenId].kg - kg;
+        _tokenIds.increment(); //tăng id
+        uint256 newTokenId = _tokenIds.current(); //tạo id mới
+        _mint(msg.sender, newTokenId); // tạo ra nft
+        _setTokenURI(newTokenId, tokenNewURI);
+        createMarketItem(newTokenId, name, img, description, kg); // tạo item
+        return newTokenId;
+    }
+
+    function updateShip(
+        uint256 tokenId,
+        string memory tokenURI,
+        string memory description
+    ) public payable {
+        changeTokenUri(tokenId, tokenURI);
+        idToMarketItem[tokenId].description = description;
+    }
+
     function resellToken(
         uint256 tokenId,
         string memory tokenURI,
@@ -140,7 +174,9 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 price,
         uint256 date,
         string memory description,
-        string memory from
+        string memory from,
+        uint256 kg,
+        uint256 status
     ) public payable {
         require(
             idToMarketItem[tokenId].owner == msg.sender,
@@ -150,7 +186,7 @@ contract NFTMarketplace is ERC721URIStorage {
             date > block.timestamp * 1000,
             "Only item owner can perform this date"
         );
-        if (idToMarketItem[tokenId].status == 0) {
+        if (status == 0) {
             require(
                 msg.value == listingShip,
                 "Price must be equal to listing price"
@@ -173,6 +209,8 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].to = "";
         idToMarketItem[tokenId].shipper = payable(address(0));
         idToMarketItem[tokenId].description = description;
+        idToMarketItem[tokenId].kg = kg;
+        idToMarketItem[tokenId].status = status;
         _itemsSold.decrement();
         _transfer(msg.sender, address(this), tokenId);
     }

@@ -23,16 +23,18 @@ const ButtonItem: React.FC<{
         <p className="text-[15px] pb-[5px] text-textButton">Sản phẩm đã không còn trên sàn.</p>
       </div>
     }
-    if(account?.type === ITypeAccount.Ship){ return <div className="">
-      <div className="flex flex-col items-start">
-        <p className="text-[18px] font-[500]">Địa chỉ lấy hàng</p>
-        <p className="text-[15px] pb-[5px] text-textButton w-[250px] flex justify-start overflow-hidden whitespace-nowrap overflow-ellipsis">{from}</p>
+    if (account?.type === ITypeAccount.Ship) {
+      return <div className="">
+        <div className="flex flex-col items-start">
+          <p className="text-[18px] font-[500]">Địa chỉ lấy hàng</p>
+          <p className="text-[15px] pb-[5px] text-textButton w-[250px] flex justify-start overflow-hidden whitespace-nowrap overflow-ellipsis">{from}</p>
+        </div>
+        <div className="flex flex-col items-start basis-[50%]">
+          <p className="text-[18px] font-[500]">Địa chỉ giao hàng</p>
+          <p className="text-[15px] pb-[5px] text-textButton w-[250px] flex justify-start overflow-hidden whitespace-nowrap overflow-ellipsis">{to}</p>
+        </div>
       </div>
-      <div className="flex flex-col items-start basis-[50%]">
-        <p className="text-[18px] font-[500]">Địa chỉ giao hàng</p>
-        <p className="text-[15px] pb-[5px] text-textButton w-[250px] flex justify-start overflow-hidden whitespace-nowrap overflow-ellipsis">{to}</p>
-      </div>
-    </div> }
+    }
     return <div className="flex justify-between">
       <div className="flex flex-col items-start">
         <p className="text-[15px] pb-[5px] text-textButton">Ngày cập nhật</p>

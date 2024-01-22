@@ -9,7 +9,7 @@ import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import ShowLayout from "../../layouts/ShowLayout";
-import { listDescription } from "../../ultis/description";
+import { IKG, listDescription } from "../../ultis/description";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -86,6 +86,16 @@ const ResellNFT: React.FC = () => {
     }
   };
 
+  const getKg = (value: number, kg: IKG) => {
+    switch (kg) {
+      case IKG.kg:
+        return value * 1000
+      case IKG.gam:
+        return value
+      default:
+        return 0
+    }
+  }
   const onFinish = async (values: any) => {
     await store.dispatch(
       resellToken({
@@ -93,9 +103,11 @@ const ResellNFT: React.FC = () => {
         name: item.title,
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
-        description: `${removeUnnecessaryWhiteSpace(values.description)} - ${values.number} ${removeUnnecessaryWhiteSpace(values.kg)}`,
+        description: removeUnnecessaryWhiteSpace(values.description),
         from: value === 1 ? account?.address : removeUnnecessaryWhiteSpace(input),
-        item: item
+        kg: getKg(values.number, values.kg),
+        item: item,
+        number: 0
       })
     );
     navigate("/");
@@ -249,6 +261,7 @@ const ResellNFT: React.FC = () => {
             rules={[{ required: true, message: "Vui lòng nhập giá bán" }]}>
             <Input placeholder="Nhập giá bán sản phẩm..." />
           </Form.Item>
+          <p>Nông dân phải trả phí giao hàng: 0.01 BNBT</p>
           <Form.Item
             label="Ngày hết hạn bán sản phẩm:"
             name="date"
@@ -289,8 +302,8 @@ const ResellNFT: React.FC = () => {
               rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
             >
               <Select placeholder="Định lượng">
-                <Select.Option value="gam">GAM</Select.Option>
-                <Select.Option value="kg">KG</Select.Option>
+                <Select.Option value={IKG.gam}>GAM</Select.Option>
+                <Select.Option value={IKG.kg}>KG</Select.Option>
               </Select>
             </Form.Item>
           </div>
@@ -316,7 +329,7 @@ const ResellNFT: React.FC = () => {
           Mô tả: {item.description}
         </div>
         {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
-        <More />
+        <More items={item} />
       </div>
       <div className="flex mt-[50px]">
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] mr-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalAdd}>Thêm tình trạng hiện tại</button>

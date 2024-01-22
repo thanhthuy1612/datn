@@ -26,7 +26,7 @@ const MyListNFT: React.FC = () => {
           Mô tả: {item.description}
         </div>
         {item.price > 0 && <div className="py-[5px]">Giá mua: {item.price} BNBT</div>}
-        <More />
+        <More items={item} />
       </div>
     </div>
   );

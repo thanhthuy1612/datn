@@ -160,18 +160,18 @@ const Home: React.FC = () => {
           </div>
           <div ref={refMyNFT}>
             <ListBuy />
-            <ListBuyer/>
+            <ListBuyer />
           </div>
         </>
       case ITypeAccount.Custom:
         return <>
-        <div ref={refOld}>
-          <CustomNFT />
-        </div>
-        <div ref={refMyNFT}>
-          <ListCustom />
-        </div>
-      </>
+          <div ref={refOld}>
+            <CustomNFT />
+          </div>
+          <div ref={refMyNFT}>
+            <ListCustom />
+          </div>
+        </>
       case ITypeAccount.None:
         <></>
     }
@@ -323,8 +323,8 @@ const Home: React.FC = () => {
     </Tippy>
   );
 
-  const renderBodyHome = ()=>{
-    if(account){
+  const renderBodyHome = () => {
+    if (account) {
       return account.type === ITypeAccount.None ? renderChooseType() : renderLogin()
     }
     return renderButtonLogin()

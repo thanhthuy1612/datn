@@ -21,6 +21,8 @@ import DoingShip from "../components/NFT/DoingShip";
 import View from "../components/NFT/View";
 import Accept from "../components/NFT/Accept";
 import DoneSell from "../components/NFT/DoneSell";
+import ShareNFT from "../components/NFT/Share";
+import ViewId from "../components/NFT/ViewId";
 
 const publicRoutes: IRouter[] = [
   { id: 1, path: "/", component: Home },
@@ -49,6 +51,8 @@ const publicRoutes: IRouter[] = [
   { id: 18, path: "/nft/view", component: View },
   { id: 19, path: "/nft/accept", component: Accept },
   { id: 20, path: "/nft/done", component: DoneSell },
+  { id: 21, path: "/nft/share", component: ShareNFT },
+  { id: 22, path: "/nft/view-id", component: ViewId },
 ];
 
 const privateRoutes: IRouter[] = [];

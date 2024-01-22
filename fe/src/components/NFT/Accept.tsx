@@ -129,8 +129,8 @@ const Accept: React.FC = () => {
     </div>
   );
 
-  const checkAccount = (wallet: string)=>{
-    if(wallet === account?.wallet){
+  const checkAccount = (wallet: string) => {
+    if (wallet === account?.wallet) {
       return '(Bạn)'
     }
     return ""
@@ -225,7 +225,7 @@ const Accept: React.FC = () => {
           Mô tả: {item.description}
         </div>
         {item.price > 0 && account?.type !== ITypeAccount.Ship && <div className="py-[5px] text-[20px]">Giá sản phẩm: {item.price} BNBT</div>}
-        <More />
+        <More items={item} />
       </div>
       <div className="flex mt-[15px]">
         <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Xác nhận</button>

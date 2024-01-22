@@ -50,7 +50,7 @@ const BuyNFT: React.FC = () => {
       navigate("/search");
     }
   };
-  const showModalCreate = async() => {
+  const showModalCreate = async () => {
     if (account?.type === ITypeAccount.Custom) {
       await store.dispatch(createMarketSale({
         item: item,
@@ -99,7 +99,7 @@ const BuyNFT: React.FC = () => {
       className="flex flex-col w-[1000px] items-center">
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[300px]">
-        <Form.Item
+          <Form.Item
             label="Địa chỉ sản phẩm:"
             name="address"
             rules={[{ required: true, message: "Vui lòng chọn loại địa chỉ" }]}>
@@ -144,7 +144,10 @@ const BuyNFT: React.FC = () => {
         <div className="flex items-center pt-[5px]">
           Địa chỉ người bán: {item.from}
         </div>
-        <More />
+        <div className="flex items-center pt-[5px]">
+          Cân nặng: {item.kg / 1000} KG
+        </div>
+        <More items={item} />
       </div>
       <div className="border-border border-[1px] py-[20px] rounded-[20px] w-[100%] shadow-md">
         <p className="flex items-center border-border px-[30px] pb-[20px] border-b-[1px] w-[100%]">

@@ -61,11 +61,11 @@ const View: React.FC = () => {
           Mô tả: {item.description}
         </div>
         {item.price > 0 && account?.type !== ITypeAccount.Ship && <div className="py-[5px] text-[20px]">Giá sản phẩm: {item.price} BNBT</div>}
-        <More />
+        <More items={item} />
       </div>
     </div >
   );
-  
+
   const renderBody = () => (
     <div className="py-[40px] flex w-[100%] justify-around">
       <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">

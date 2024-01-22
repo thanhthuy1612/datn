@@ -39,7 +39,7 @@ const ListItem: React.FC<{
   );
   return (
     <div className="border-[1px] border-border bg-white rounded-[15px] w-[600px] py-[15px] flex max-h-[min((100vh - 96px) - 60px, 734px)] flex-col shadow-md z-10">
-      {account ? account.type === ITypeAccount.None ? renderNotType():  renderLogin() : renderNotLogin()}
+      {account ? account.type === ITypeAccount.None ? renderNotType() : renderLogin() : renderNotLogin()}
     </div>
   );
 };

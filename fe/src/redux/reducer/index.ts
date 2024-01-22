@@ -29,6 +29,7 @@ const initialState: IStateRedux = {
   accountSearch: undefined,
   totalCart: null,
   loadingCart: false,
+  itemView: undefined,
 };
 
 export interface IStateRedux {
@@ -50,6 +51,7 @@ export interface IStateRedux {
   loadingHot?: boolean;
   totalCart?: number | null;
   loadingCart?: boolean;
+  itemView?: any;
 }
 
 declare global {
@@ -89,6 +91,32 @@ export const changeTokenUri = createAsyncThunk(
         option.tokenId,
         url as string,
         option.file,
+        option.description
+      );
+      await transaction.wait();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+export const updateShip = createAsyncThunk(
+  "updateShip",
+  async (option: any, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setLoadingCreate(true));
+      const { erc721, address } = await getERC();
+      const url = await uploadToIPFS({
+        img: `${option.file}`,
+        date: Date.now(),
+        create: address.toString(),
+        status: 0,
+        price: 0,
+        description: option.description,
+      });
+      const transaction = await erc721.updateShip(
+        option.tokenId,
+        url as string,
         option.description
       );
       await transaction.wait();
@@ -153,7 +181,7 @@ export const createToken = createAsyncThunk(
   async (option: any, thunkAPI) => {
     try {
       thunkAPI.dispatch(setLoadingCreate(true));
-      const { contract, erc721, address } = await getERC();
+      const { erc721, address } = await getERC();
       const url = await uploadToIPFS({
         img: `${option.file}`,
         date: Date.now(),
@@ -162,16 +190,51 @@ export const createToken = createAsyncThunk(
         price: 0,
         description: option.description,
       });
-      let listingPrice = await contract.getListingPrice();
-      listingPrice = listingPrice.toString();
       const transaction = await erc721.createToken(
         url as string,
         option.name.toString(),
         option.file.toString(),
-        option.description.toString(),
-        {
-          value: listingPrice,
-        }
+        option.description.toString()
+      );
+      await transaction.wait();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+export const createTokenNew = createAsyncThunk(
+  "createTokenNew",
+  async (option: any, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setLoadingCreate(true));
+      const { erc721, address } = await getERC();
+      const url = await uploadToIPFS({
+        img: `${option.file}`,
+        date: Date.now(),
+        create: address.toString(),
+        status: 0,
+        price: 0,
+        description: option.description,
+        kg: option.kg,
+      });
+      const urlNew = await uploadToIPFS({
+        img: `${option.file}`,
+        date: Date.now(),
+        create: address.toString(),
+        status: 0,
+        price: 0,
+        description: "Đóng gói",
+        kg: option.kg,
+        item: option.item.tokenId,
+      });
+      const transaction = await erc721.createTokenNew(
+        url as string,
+        urlNew as string,
+        option.item.title,
+        option.file.toString(),
+        option.description,
+        option.item.tokenId,
+        option.kg
       );
       await transaction.wait();
     } catch (err) {
@@ -191,13 +254,25 @@ export const resellToken = createAsyncThunk(
       status: 0,
       price: item.price,
       description: item.description,
+      kg: item.kg,
     });
     const price = ethers.utils.parseUnits(item.price, "ether");
     let listingPrice =
-      item.item?.number < 2
+      item.number < 2
         ? await contract.getListingShip()
         : await contract.getListingPrice();
     listingPrice = listingPrice.toString();
+    console.log(
+      item.tokenId,
+      url as string,
+      item.name,
+      price,
+      item.date,
+      item.description,
+      item.from,
+      item.kg,
+      item.number,
+    )
     const result = await erc721.resellToken(
       item.tokenId,
       url as string,
@@ -206,6 +281,8 @@ export const resellToken = createAsyncThunk(
       item.date,
       item.description,
       item.from,
+      item.kg,
+      item.number,
       { value: listingPrice }
     );
     await result.wait();
@@ -239,6 +316,7 @@ const getItems = async (data: any, contract: any) => {
         description: i.description,
         from: i.from,
         to: i.to,
+        kg: i.kg.toNumber(),
       };
     })
   );
@@ -456,6 +534,19 @@ export const getCartAccount = createAsyncThunk(
   }
 );
 
+export const fetchId = createAsyncThunk(
+  "fetchId",
+  async (tokenId: number, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true));
+    const { contract, erc721 } = await getERC();
+    const data = await erc721.fetchId(tokenId);
+    console.log(data, "sata")
+    const result = await getItems(data, contract);
+    console.log(result)
+    return result?.length > 0 ? result[0] : [];
+  }
+);
+
 export const fetchConnect = createAsyncThunk(
   "connect",
   async (reload: boolean, thunkAPI) => {
@@ -591,7 +682,13 @@ export const item = createSlice({
     builder.addCase(createToken.fulfilled, (state, _actions) => {
       state.loadingCreate = false;
     });
+    builder.addCase(createTokenNew.fulfilled, (state, _actions) => {
+      state.loadingCreate = false;
+    });
     builder.addCase(changeTokenUri.fulfilled, (state, _actions) => {
+      state.loadingCreate = false;
+    });
+    builder.addCase(updateShip.fulfilled, (state, _actions) => {
       state.loadingCreate = false;
     });
     builder.addCase(shipMarketSale.fulfilled, (state, _actions) => {
@@ -605,6 +702,10 @@ export const item = createSlice({
     });
     builder.addCase(fetchItemsSeller.fulfilled, (state, actions) => {
       state.itemsSeller = actions.payload;
+      state.loading = false;
+    });
+    builder.addCase(fetchId.fulfilled, (state, actions) => {
+      state.itemView = actions.payload;
       state.loading = false;
     });
     builder.addCase(getCartAccount.fulfilled, (state, actions) => {

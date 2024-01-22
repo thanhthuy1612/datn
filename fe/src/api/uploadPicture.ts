@@ -3,7 +3,7 @@ import { create } from "ipfs-http-client";
 
 const client = create({ url: "https://ipfs-ivirse.pokeheo.xyz/api/v0/add" });
 export interface IUploadIPFS {
-  img: string;
+  img?: string;
   date: number;
   create?: string;
   status: number;
@@ -11,6 +11,8 @@ export interface IUploadIPFS {
   description?: string;
   buyer?: string;
   shipper?: string;
+  kg?: number;
+  item?: number;
 }
 
 export const uploadPicture = async (file: FormData) => {

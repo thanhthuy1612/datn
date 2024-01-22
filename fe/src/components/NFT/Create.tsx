@@ -106,7 +106,8 @@ const Create: React.FC = () => {
       createToken({
         name: `${removeUnnecessaryWhiteSpace(values.title)}-${removeUnnecessaryWhiteSpace(values.hash)}`,
         file: state.file,
-        description: removeUnnecessaryWhiteSpace(values.description)
+        description: removeUnnecessaryWhiteSpace(values.description),
+        kg: 0
       })
     );
     navigate("/");

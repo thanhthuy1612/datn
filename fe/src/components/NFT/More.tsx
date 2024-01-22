@@ -2,20 +2,21 @@ import { Drawer, Image, Spin } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { IStateRedux, setAccountSearch, store } from "../../redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getItem, getItemIPFS } from "../../api/uploadPicture";
 import { dateFormat } from "../../ultis";
 import { DateFormatType, ITypeAccount } from "../../interfaces/IRouter";
 import { LoadingOutlined } from "@ant-design/icons";
 
-const More: React.FC = () => {
+export interface IMoreProps {
+  items: any
+}
+const More: React.FC<IMoreProps> = ({ items }) => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [listItems, setListItems] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
 
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
-  const localtion = useLocation();
-  const items = localtion.state;
 
   const navigate = useNavigate();
 
@@ -45,7 +46,7 @@ const More: React.FC = () => {
       setLoading(false);
     };
     open && fetch(items.list);
-  }, [items.list, open])
+  }, [items?.list, open])
 
   const showDrawer = () => {
     setOpen(true);
@@ -95,6 +96,10 @@ const More: React.FC = () => {
     }
   };
 
+  const handleClickShow = async (tokenId: number) => {
+    navigate("/nft/view-id", { state: tokenId })
+  }
+
   const renderBody = (item: any, index: number) => {
     switch (item?.status) {
       case 0:
@@ -110,16 +115,24 @@ const More: React.FC = () => {
               <div className="ml-[20px]">
                 <div className="mb-[10px]">
                   <p className="text-[17px] mb-[3px]">Người tạo:</p>
-                  <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+                  <button className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</button>
                 </div>
-                <div>
-                  <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+                <div className="flex">
+                  <p className="mr-[10px]">Ngày tạo:</p>
                   <p>{item?.date}</p>
                 </div>
-                <div>
-                  <p className="text-[17px] mb-[3px]">Mô tả:</p>
+                <div className="flex">
+                  <p className="mr-[10px]">Mô tả:</p>
                   <p>{item?.description}</p>
                 </div>
+                {item?.kg && <div className="flex">
+                  <p className="mr-[10px]">Trọng lượng:</p>
+                  <p>{item?.kg / 1000} kg</p>
+                </div>}
+                {item?.item && <div className="flex">
+                  <p className="mr-[10px]">Lô sản phẩm:</p>
+                  <button className="text-settingChoose cursor-pointer underline" onClick={() => handleClickShow(item?.item)}>Xem tại đây</button>
+                </div>}
               </div>
             </div>
           </>) :
@@ -127,19 +140,23 @@ const More: React.FC = () => {
             <p className="text-[17px] mb-[5px] font-bold">{getTiTle(item)}</p>
             <div className="mb-[10px]">
               <p className="text-[17px] mb-[3px]">{getTiTleRole(item)}</p>
-              <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+              <button className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</button>
             </div>
-            {(account?.type !== ITypeAccount.Ship) && <div>
-              <p className="text-[17px] mb-[3px]">Giá sản phẩm:</p>
+            {(account?.type !== ITypeAccount.Ship) && <div className="flex">
+              <p className="mr-[10px]">Giá sản phẩm:</p>
               <p>{item?.price} BNBT</p>
             </div>}
-            <div>
-              <p className="text-[17px] mb-[3px]">{getTiTleDate(item)}</p>
+            <div className="flex">
+              <p className="mr-[10px]">{getTiTleDate(item)}</p>
               <p>{item?.date}</p>
             </div>
-            {item?.description && <div>
-              <p className="text-[17px] mb-[3px]">Mô tả:</p>
+            {item?.description && <div className="flex">
+              <p className="mr-[10px]">Mô tả:</p>
               <p>{item?.description}</p>
+            </div>}
+            {item?.kg && <div className="flex">
+              <p className="mr-[10px]">Trọng lượng:</p>
+              <p>{item?.kg / 1000} kg</p>
             </div>}
           </ div>)}
         </>
@@ -149,14 +166,14 @@ const More: React.FC = () => {
           <p className="text-[17px] mb-[5px] font-bold">{getTiTle(item)}</p>
           <div className="mb-[10px]">
             <p className="text-[17px] mb-[3px]">{getTiTleRole(item)}</p>
-            <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+            <button className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</button>
           </div>
-          <div>
-            <p className="text-[17px] mb-[3px]">{getTiTleDate(item)}</p>
+          <div className="flex">
+            <p className="mr-[10px]">{getTiTleDate(item)}</p>
             <p>{item?.date}</p>
           </div>
-          {item?.description && <div>
-            <p className="text-[17px] mb-[3px]">Mô tả:</p>
+          {item?.description && <div className="flex">
+            <p className="mr-[10px]">Mô tả:</p>
             <p>{item?.description}</p>
           </div>}
         </ div>
@@ -172,14 +189,14 @@ const More: React.FC = () => {
             <div className="ml-[20px]">
               <div className="mb-[10px]">
                 <p className="text-[17px] mb-[3px]">Người giao hàng:</p>
-                <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+                <button className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</button>
               </div>
-              <div>
-                <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+              <div className="flex">
+                <p className="mr-[10px]">Ngày tạo:</p>
                 <p>{item?.date}</p>
               </div>
-              <div>
-                <p className="text-[17px] mb-[3px]">Mô tả:</p>
+              <div className="flex">
+                <p className="mr-[10px]">Mô tả:</p>
                 <p>{item?.description}</p>
               </div>
             </div>
@@ -197,14 +214,14 @@ const More: React.FC = () => {
             <div className="ml-[20px]">
               <div className="mb-[10px]">
                 <p className="text-[17px] mb-[3px]">Người nhận:</p>
-                <p className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</p>
+                <button className="text-settingChoose cursor-pointer underline" onClick={handleClick(item?.create)}>{account && account.wallet === item.create ? `${item.create} (Bạn)` : item.create}</button>
               </div>
-              <div>
-                <p className="text-[17px] mb-[3px]">Ngày tạo:</p>
+              <div className="flex">
+                <p className="mb-[10px]">Ngày tạo:</p>
                 <p>{item?.date}</p>
               </div>
-              <div>
-                <p className="text-[17px] mb-[3px]">Mô tả:</p>
+              <div className="flex">
+                <p className="mb-[10px]">Mô tả:</p>
                 <p>{item?.description}</p>
               </div>
             </div>
@@ -229,10 +246,10 @@ const More: React.FC = () => {
   );
 
   return (
-    <>
-      <p className=" text-settingChoose cursor-pointer underline" onClick={showDrawer}>
+    <div className="flex">
+      <button className=" text-settingChoose cursor-pointer underline" onClick={showDrawer}>
         Xem chi tiết
-      </p>
+      </button>
       <Drawer
         title="Truy xuất nguồn gốc"
         placement="right"
@@ -242,7 +259,7 @@ const More: React.FC = () => {
       >
         {loading ? renderloading() : renderPanel()}
       </Drawer>
-    </>
+    </div>
   );
 };
 export default More;

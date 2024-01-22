@@ -63,7 +63,7 @@ const MenuAccount: React.FC = () => {
   const renderBody = (item: IMenu) => {
     if (!item.disable || (item.disable && account?.type === ITypeAccount.Farm)) {
       return <button
-        className="flex items-center hover:bg-hover p-[5px]"
+        className="w-[100%] flex items-center hover:bg-hover p-[5px]"
         key={item.id}
         onClick={handleClick(item.to)}>
         <div className="px-[10px]">{item.icon}</div>
@@ -83,7 +83,7 @@ const MenuAccount: React.FC = () => {
           tabIndex={-1}
           {...attrs}>
           {menu.map((item, index) => (
-            <div key={index}>{renderBody(item)}</div>
+            <div className="w-[100%]" key={index}>{renderBody(item)}</div>
           ))}
         </div>
       )}>

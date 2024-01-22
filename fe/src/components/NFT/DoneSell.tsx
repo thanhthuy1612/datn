@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, DatePicker, Form, Image, Input, InputNumber, Modal, Select, Spin, TimePicker } from "antd";
+import { Button, DatePicker, Form, Image, Input, Modal, Select, Spin, TimePicker } from "antd";
 import { IStateRedux, resellToken, setAccountSearch, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import More from "./More";
@@ -53,9 +53,11 @@ const DoneSell: React.FC = () => {
         name: item.title,
         price: removeUnnecessaryWhiteSpace(values.price),
         date: getDate(new Date(values.date), new Date(values.time)),
-        description: `${removeUnnecessaryWhiteSpace(values.description)} - ${values.number} ${removeUnnecessaryWhiteSpace(values.kg)}`,
+        description: removeUnnecessaryWhiteSpace(values.description),
         from: "",
-        item: item
+        kg: item.kg,
+        item: item,
+        number: 4
       })
     );
     navigate("/");
@@ -85,7 +87,7 @@ const DoneSell: React.FC = () => {
             rules={[
               { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
             ]}>
-            <DatePicker  format={dateFormatForm} placeholder="Chọn ngày" />
+            <DatePicker format={dateFormatForm} placeholder="Chọn ngày" />
           </Form.Item>
           <Form.Item
             label="Giờ hết hạn bán sản phẩm:"
@@ -105,25 +107,6 @@ const DoneSell: React.FC = () => {
               {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
             </Select>
           </Form.Item>
-          <div className="flex w-[800px]">
-            <Form.Item
-              label="Số lượng sản phẩm:"
-              name="number"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
-            >
-              <InputNumber className="w-[300px] mr-[20px]" placeholder="Nhập số lượng sản phẩm" />
-            </Form.Item>
-            <Form.Item
-              label="Định lượng sản phẩm:"
-              name="kg"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
-            >
-              <Select placeholder="Định lượng">
-                <Select.Option value="gam">GAM</Select.Option>
-                <Select.Option value="kg">KG</Select.Option>
-              </Select>
-            </Form.Item>
-          </div>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading}>
               {loading ? renderloading() : "Bán sản phẩm"}
@@ -170,11 +153,12 @@ const DoneSell: React.FC = () => {
             new Date(item.expired),
             DateFormatType.FullDate
           )}</div>
+        {item.kg && <div className="flex items-center pt-[5px]">Còn: {item.kg / 1000} kg</div>}
         <div className="flex items-center pt-[15px] py-[5px] mb-[20px]">
           Mô tả: {item.description}
         </div>
         <div className="py-[5px] text-[20px]">Giá sản phẩm: {item.price} BNBT</div>
-        <More />
+        <More items={item} />
       </div>
       <div className="flex mt-[50px]">
         <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModal}>Bán sản phẩm</button>

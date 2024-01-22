@@ -10,12 +10,6 @@ const TableList: React.FC<{ data: IHistory[]; loading: boolean }> = ({
   loading,
 }) => {
   const [api, contextHolder] = notification.useNotification();
-  // const [widthTable, setWidthTable] = React.useState<number>(
-  //   screen.width * window.devicePixelRatio - 480
-  // );
-  // React.useEffect(() => {
-  //   setWidthTable(screen.width * window.devicePixelRatio - 480);
-  // }, [screen.width]);
 
   const openNotification = async (placement: any, items: any) => {
     await navigator.clipboard.writeText(items);
