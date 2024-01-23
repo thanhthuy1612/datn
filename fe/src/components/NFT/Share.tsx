@@ -35,6 +35,7 @@ const ShareNFT: React.FC = () => {
   const setState = (data = {}) => {
     _setState((prevState) => ({ ...prevState, ...data }));
   };
+  const [value, setValue] = React.useState<IKG>(IKG.none);
   const [form] = Form.useForm();
   const localtion = useLocation();
   const item = localtion.state;
@@ -46,6 +47,7 @@ const ShareNFT: React.FC = () => {
 
   const showModal = () => {
     setState({ isModalOpen: true })
+    setValue(IKG.none)
   };
 
   const handleCancel = () => {
@@ -141,6 +143,20 @@ const ShareNFT: React.FC = () => {
     });
   };
 
+  const onChangeSelect = (value: IKG) => {
+    setValue(value)
+  }
+
+  const getMax = () => {
+    switch (value) {
+      case IKG.kg:
+        return item?.kg / 1000;
+      case IKG.gam:
+        return item?.kg;
+      default:
+        return 0
+    }
+  }
   const renderForm = () => (
     <Form
       name="account"
@@ -179,14 +195,14 @@ const ShareNFT: React.FC = () => {
             name="number"
             rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
           >
-            <InputNumber className="w-[100%]" placeholder="Nhập số lượng sản phẩm" />
+            <InputNumber disabled={!value} min={1} max={getMax()} className="w-[100%]" placeholder="Nhập số lượng sản phẩm" />
           </Form.Item>
           <Form.Item
             label="Định lượng sản phẩm:"
             name="kg"
             rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
           >
-            <Select placeholder="Định lượng">
+            <Select value={value} onChange={onChangeSelect} placeholder="Định lượng">
               <Select.Option value={IKG.gam}>GAM</Select.Option>
               <Select.Option value={IKG.kg}>KG</Select.Option>
             </Select>
@@ -197,7 +213,7 @@ const ShareNFT: React.FC = () => {
             rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
           >
             <Select placeholder="Trạng thái sản phẩm">
-              {listDescriptionAction.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+              {listDescriptionAction.map((item) => (<Select.Option key={item.id} value={item?.name}>{item?.name}</Select.Option>))}
             </Select>
           </Form.Item>
           <Form.Item label=" ">

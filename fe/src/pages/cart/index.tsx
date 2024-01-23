@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteCart } from "../../api/cart";
 import ShowLayout from "../../layouts/ShowLayout";
+import { ITypeAccount } from "../../interfaces/IRouter";
 interface IState {
   page: number;
   pageSize: number;
@@ -47,6 +48,21 @@ const Cart: React.FC = () => {
     await deleteCart(id);
     await fetch();
   }
+  const check = (item: any)=>{
+    if(item.sold){
+      return true;
+    }
+    if(item.expired < new Date()){
+      return true
+    }
+    if(account?.type === ITypeAccount.Buy && item?.number !== 0){
+      return true;
+    }
+    if(account?.type === ITypeAccount.Custom && item?.number !== 4){
+      return true;
+    }
+    return false
+  }
   const renderList = () => (
     <>
       {cart && cart.length > 0 ? (
@@ -54,7 +70,7 @@ const Cart: React.FC = () => {
           .slice((state.page - 1) * state.pageSize, state.page * state.pageSize)
           .map((item: any) => (
             <button
-              onClick={item.sold || item.expired < new Date() ? handleDeleteCart(item._id) : handleClick(item)}
+              onClick={check(item) ? handleDeleteCart(item._id) : handleClick(item)}
               className={"basis-[25%] h-[510px]"}
               key={item.id}>
               <ButtonItem
@@ -62,7 +78,7 @@ const Cart: React.FC = () => {
                 date={item.date}
                 price={item.price}
                 img={item.img}
-                cart={item.sold || item.expired < new Date()}
+                cart={check(item)}
               />
             </button>
           ))

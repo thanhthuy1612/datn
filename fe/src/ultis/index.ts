@@ -14,6 +14,10 @@ export const getDate = (day: Date, time: Date) => {
   return day.getTime();
 };
 
+export const getDateTime = (day: Date) => {
+  return day.getTime();
+};
+
 export const dateFormat = (date: Date, format: DateFormatType) => {
   const time: Date = new Date(date);
   const formattedDate = time.toLocaleString(

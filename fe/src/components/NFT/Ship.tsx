@@ -67,6 +67,7 @@ const Ship: React.FC = () => {
         </div>}
         {item.from && <div className="flex items-center pt-[5px]">Địa chỉ người bán: {item.from}</div>}
         {item.to && <div className="flex items-center pt-[5px]">Địa chỉ mua: {item.to}</div>}
+        {item.kg && <div className="flex items-center pt-[5px]">Cân nặng: {item.kg / 1000} kg</div>}
         <div className="flex items-center pt-[5px]">
           Ngày cập nhật: {item.date}
         </div>

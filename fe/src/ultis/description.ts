@@ -39,6 +39,7 @@ export const listAccept = [
 ];
 
 export enum IKG{
+  'none' = 0,
   'kg' =  1,
   'gam' = 2
 }

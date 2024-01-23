@@ -1,23 +1,21 @@
-import React from "react";
-import { Button, DatePicker, Form, Image, Input, Modal, Select, Spin, TimePicker } from "antd";
-import { IStateRedux, resellToken, setAccountSearch, setLoading, store } from "../../redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import More from "./More";
-import ShowLayout from "../../layouts/ShowLayout";
-import { useSelector } from "react-redux";
-import { dateFormat, defaultAddress, getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
-import { DateFormatType } from "../../interfaces/IRouter";
 import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Form, Image, InputNumber, Modal, Select, Spin } from "antd";
+import moment from "moment";
+import React from "react";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { DateFormatType } from "../../interfaces/IRouter";
+import ShowLayout from "../../layouts/ShowLayout";
+import { IStateRedux, resellToken, setAccountSearch, setLoading, store } from "../../redux";
+import { dateFormat, defaultAddress, getDateTime, removeUnnecessaryWhiteSpace } from "../../ultis";
 import { listDescription } from "../../ultis/description";
+import More from "./More";
 
 const DoneSell: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [form] = Form.useForm();
   const localtion = useLocation();
   const item = localtion.state;
-
-  const dateFormatForm = "YYYY/MM/DD";
-  const timeFormateForm = "hh:mm:ss";
 
   const navigate = useNavigate();
   const { loadingCreate, account, loading } = useSelector(
@@ -51,8 +49,8 @@ const DoneSell: React.FC = () => {
       resellToken({
         tokenId: item.tokenId,
         name: item.title,
-        price: removeUnnecessaryWhiteSpace(values.price),
-        date: getDate(new Date(values.date), new Date(values.time)),
+        price: values.price,
+        date: getDateTime(new Date(values.date)),
         description: removeUnnecessaryWhiteSpace(values.description),
         from: "",
         kg: item.kg,
@@ -71,49 +69,40 @@ const DoneSell: React.FC = () => {
       colon={false}
       onFinish={onFinish}
       form={form}
-      className="flex flex-col w-[300px] items-center">
-      <div className="flex w-[100%] justify-between">
-        <div className="flex flex-col w-[300px]">
-          <Form.Item
-            label="Giá bán sản phẩm:"
-            name="price"
-            tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
-            rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
-            <Input placeholder="Nhập giá bán sản phẩm..." />
-          </Form.Item>
-          <Form.Item
-            label="Ngày hết hạn bán sản phẩm:"
-            name="date"
-            rules={[
-              { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
-            ]}>
-            <DatePicker format={dateFormatForm} placeholder="Chọn ngày" />
-          </Form.Item>
-          <Form.Item
-            label="Giờ hết hạn bán sản phẩm:"
-            name="time"
-            tooltip={{ title: 'Lớn hơn giờ hiện tại ít nhất 2 phút', icon: <InfoCircleOutlined /> }}
-            rules={[
-              { required: true, message: "Vui lòng nhập giờ hết hạn bán mới" },
-            ]}>
-            <TimePicker format={timeFormateForm} placeholder="Chọn giờ" />
-          </Form.Item>
-          <Form.Item
-            label="Trạng thái sản phẩm:"
-            name="description"
-            rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
-          >
-            <Select placeholder="Trạng thái sản phẩm">
-              {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
-            </Select>
-          </Form.Item>
-          <Form.Item label=" ">
-            <Button htmlType="submit" disabled={loading}>
-              {loading ? renderloading() : "Bán sản phẩm"}
-            </Button>
-          </Form.Item>
-        </div>
-      </div>
+      className="flex flex-col w-[800px] items-start">
+      <Form.Item
+        label="Giá bán sản phẩm:"
+        name="price"
+        tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
+        rules={[{ required: true, message: "Vui lòng nhập giá bán mới" }]}>
+        <InputNumber min={0.01} step={0.01} className="w-[500px]" placeholder="Nhập giá bán sản phẩm..." />
+      </Form.Item>
+      <Form.Item
+        label="Thời gian hết hạn bán sản phẩm:"
+        name="date"
+        rules={[
+          { required: true, message: "Vui lòng chọn thời gian hết hạn" },
+        ]}>
+        <DatePicker disabledDate={(current) => {
+          let customDate = moment();
+          return current && current < moment(customDate);
+        }} className="w-[500px]" showTime placeholder="Chọn thời gian" />
+      </Form.Item>
+      <Form.Item
+        label="Trạng thái sản phẩm:"
+        name="description"
+        className="w-[500px]"
+        rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
+      >
+        <Select placeholder="Trạng thái sản phẩm">
+          {listDescription.map((item) => (<Select.Option key={item?.id} value={item?.name}>{item?.name}</Select.Option>))}
+        </Select>
+      </Form.Item>
+      <Form.Item label=" ">
+        <Button htmlType="submit" disabled={loading}>
+          {loading ? renderloading() : "Bán sản phẩm"}
+        </Button>
+      </Form.Item>
     </Form>
   );
 

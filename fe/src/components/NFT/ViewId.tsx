@@ -18,7 +18,6 @@ const ViewId: React.FC = () => {
   const { account, itemView, loading } = useSelector(
     (state: { item: IStateRedux }) => state.item
   );
-  console.log(id, itemView)
   React.useEffect(() => {
     const fetch = async () => {
       await store.dispatch(fetchId(id));

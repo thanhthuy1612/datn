@@ -256,23 +256,12 @@ export const resellToken = createAsyncThunk(
       description: item.description,
       kg: item.kg,
     });
-    const price = ethers.utils.parseUnits(item.price, "ether");
+    const price = ethers.utils.parseUnits(item.price.toString(), "ether");
     let listingPrice =
       item.number < 2
         ? await contract.getListingShip()
         : await contract.getListingPrice();
     listingPrice = listingPrice.toString();
-    console.log(
-      item.tokenId,
-      url as string,
-      item.name,
-      price,
-      item.date,
-      item.description,
-      item.from,
-      item.kg,
-      item.number,
-    )
     const result = await erc721.resellToken(
       item.tokenId,
       url as string,
@@ -540,9 +529,7 @@ export const fetchId = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
     const { contract, erc721 } = await getERC();
     const data = await erc721.fetchId(tokenId);
-    console.log(data, "sata")
     const result = await getItems(data, contract);
-    console.log(result)
     return result?.length > 0 ? result[0] : [];
   }
 );

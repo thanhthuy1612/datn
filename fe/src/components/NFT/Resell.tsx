@@ -1,15 +1,16 @@
 import React from "react";
-import { Button, DatePicker, Form, Image, Input, InputNumber, Modal, Radio, RadioChangeEvent, Select, Space, Spin, TimePicker, Upload, UploadFile } from "antd";
+import { Button, DatePicker, Form, Image, Input, InputNumber, Modal, Radio, RadioChangeEvent, Select, Space, Spin, Upload, UploadFile } from "antd";
 import { useSelector } from "react-redux";
 import { IStateRedux, changeTokenUri, resellToken, setLoading, store } from "../../redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { InfoCircleOutlined, LoadingOutlined } from "@ant-design/icons";
-import { getDate, removeUnnecessaryWhiteSpace } from "../../ultis";
+import { getDateTime, removeUnnecessaryWhiteSpace } from "../../ultis";
 import More from "./More";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import ShowLayout from "../../layouts/ShowLayout";
 import { IKG, listDescription } from "../../ultis/description";
+import moment from "moment";
 
 interface IState {
   previewOpenNFT: boolean;
@@ -42,8 +43,6 @@ const ResellNFT: React.FC = () => {
   const item = localtion.state;
 
   const navigate = useNavigate();
-  const dateFormat = "YYYY/MM/DD";
-  const timeFormate = "hh:mm:ss";
 
   React.useEffect(() => {
     store.dispatch(setLoading(false));
@@ -101,8 +100,8 @@ const ResellNFT: React.FC = () => {
       resellToken({
         tokenId: item.tokenId,
         name: item.title,
-        price: removeUnnecessaryWhiteSpace(values.price),
-        date: getDate(new Date(values.date), new Date(values.time)),
+        price: values.price,
+        date: getDateTime(new Date(values.date)),
         description: removeUnnecessaryWhiteSpace(values.description),
         from: value === 1 ? account?.address : removeUnnecessaryWhiteSpace(input),
         kg: getKg(values.number, values.kg),
@@ -203,7 +202,7 @@ const ResellNFT: React.FC = () => {
           rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
         >
           <Select placeholder="Trạng thái sản phẩm">
-            {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
+            {listDescription.map((item) => (<Select.Option key={item?.id} value={item?.name}>{item?.name}</Select.Option>))}
           </Select>
         </Form.Item>
       </div>
@@ -234,86 +233,78 @@ const ResellNFT: React.FC = () => {
       colon={false}
       onFinish={onFinish}
       form={form}
-      className="flex flex-col w-[300px] items-center">
-      <div className="flex w-[100%] justify-between">
-        <div className="flex flex-col w-[500px]">
-          <Form.Item
-            label="Địa chỉ sản phẩm:"
-            name="address"
-            rules={[{ required: true, message: "Vui lòng chọn loại địa chỉ" }]}>
-            <Radio.Group onChange={onChangeRadio} value={value}>
-              <Space direction="vertical">
-                <Radio className="w-[500px]" value={1} disabled={!account?.address}>
-                  Địa chỉ mặc định: {" "}
-                  {account?.address ?? 'Không có dữ liệu'}
-                </Radio>
-                <Radio value={2}><div className="flex items-center">
-                  <p className="w-[150px]">Địa chỉ khác:</p>
-                  {value === 2 && <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Nhập tên sản phẩm..." />}</div></Radio>
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-          <button onClick={() => { navigate('/setting') }} className="flex underline italic cursor-pointer text-settingChoose">Chỉnh sửa địa chỉ mặc định</button>
-          <Form.Item
-            label="Giá bán sản phẩm:"
-            name="price"
-            tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
-            rules={[{ required: true, message: "Vui lòng nhập giá bán" }]}>
-            <Input placeholder="Nhập giá bán sản phẩm..." />
-          </Form.Item>
-          <p>Nông dân phải trả phí giao hàng: 0.01 BNBT</p>
-          <Form.Item
-            label="Ngày hết hạn bán sản phẩm:"
-            name="date"
-            rules={[
-              { required: true, message: "Vui lòng nhập ngày hết hạn bán mới" },
-            ]}>
-            <DatePicker format={dateFormat} placeholder="Chọn ngày" />
-          </Form.Item>
-          <Form.Item
-            label="Giờ hết hạn bán sản phẩm:"
-            name="time"
-            tooltip={{ title: 'Lớn hơn giờ hiện tại ít nhất 2 phút', icon: <InfoCircleOutlined /> }}
-            rules={[
-              { required: true, message: "Vui lòng nhập giờ hết hạn bán mới" },
-            ]}>
-            <TimePicker format={timeFormate} placeholder="Chọn giờ" />
-          </Form.Item>
-          <Form.Item
-            label="Trạng thái sản phẩm:"
-            name="description"
-            rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
-          >
-            <Select placeholder="Trạng thái sản phẩm">
-              {listDescription.map((item) => (<Select.Option value={item?.name}>{item?.name}</Select.Option>))}
-            </Select>
-          </Form.Item>
-          <div className="flex w-[100%]">
-            <Form.Item
-              label="Số lượng sản phẩm:"
-              name="number"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
-            >
-              <InputNumber className="w-[300px] mr-[20px]" placeholder="Nhập số lượng sản phẩm" />
-            </Form.Item>
-            <Form.Item
-              label="Định lượng sản phẩm:"
-              name="kg"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
-            >
-              <Select placeholder="Định lượng">
-                <Select.Option value={IKG.gam}>GAM</Select.Option>
-                <Select.Option value={IKG.kg}>KG</Select.Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <Form.Item label=" ">
-            <Button htmlType="submit" disabled={loading}>
-              {loading ? renderloading() : "Bán sản phẩm"}
-            </Button>
-          </Form.Item>
-        </div>
+      className="flex flex-col w-[800px] items-start">
+      <Form.Item
+        label="Địa chỉ sản phẩm:"
+        name="address"
+        rules={[{ required: true, message: "Vui lòng chọn loại địa chỉ" }]}>
+        <Radio.Group onChange={onChangeRadio} value={value}>
+          <Space direction="vertical">
+            <Radio className="w-[800px]" value={1} disabled={!account?.address}>
+              Địa chỉ mặc định: {" "}
+              {account?.address ?? 'Không có dữ liệu'}
+            </Radio>
+            <Radio value={2}><div className="flex items-center">
+              <p className="w-[150px]">Địa chỉ khác:</p>
+              {value === 2 && <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Nhập tên sản phẩm..." />}</div></Radio>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
+      <button onClick={() => { navigate('/setting') }} className="flex underline italic cursor-pointer text-settingChoose">Chỉnh sửa địa chỉ mặc định</button>
+      <Form.Item
+        label="Giá bán sản phẩm:"
+        name="price"
+        tooltip={{ title: 'Đơn vị : BNBT', icon: <InfoCircleOutlined /> }}
+        rules={[{ required: true, message: "Vui lòng nhập giá bán" }]}>
+        <InputNumber min={0.02} step={0.01} className="w-[500px]" placeholder="Nhập giá bán sản phẩm..." />
+      </Form.Item>
+      <p>Nông dân phải trả phí giao hàng: 0.01 BNBT</p>
+      <Form.Item
+        label="Thời gian hết hạn bán sản phẩm:"
+        name="date"
+        rules={[
+          { required: true, message: "Vui lòng chọn thời gian hết hạn" },
+        ]}>
+        <DatePicker disabledDate={(current) => {
+          let customDate = moment();
+          return current && current < moment(customDate);
+        }} className="w-[500px]" showTime placeholder="Chọn thời gian" />
+      </Form.Item>
+      <Form.Item
+        label="Trạng thái sản phẩm:"
+        name="description"
+        className="w-[500px]"
+        rules={[{ required: true, message: "Vui lòng chọn trạng thái sản phẩm" }]}
+      >
+        <Select placeholder="Trạng thái sản phẩm">
+          {listDescription.map((item) => (<Select.Option key={item?.id} value={item?.name}>{item?.name}</Select.Option>))}
+        </Select>
+      </Form.Item>
+      <div className="flex w-[500px]">
+        <Form.Item
+          label="Số lượng sản phẩm:"
+          name="number"
+          rules={[{ required: true, message: "Vui lòng nhập số lượng sản phẩm sản phẩm" }]}
+        >
+          <InputNumber min={1} className="w-[300px] mr-[20px]" placeholder="Nhập số lượng sản phẩm" />
+        </Form.Item>
+        <Form.Item
+          label="Định lượng sản phẩm:"
+          name="kg"
+          className="w-[180px]"
+          rules={[{ required: true, message: "Vui lòng chọn định lượng" }]}
+        >
+          <Select placeholder="Định lượng">
+            <Select.Option value={IKG.gam}>GAM</Select.Option>
+            <Select.Option value={IKG.kg}>KG</Select.Option>
+          </Select>
+        </Form.Item>
       </div>
+      <Form.Item label=" ">
+        <Button htmlType="submit" disabled={loading}>
+          {loading ? renderloading() : "Bán sản phẩm"}
+        </Button>
+      </Form.Item>
     </Form>
   );
   const renderProfileNFT = () => (

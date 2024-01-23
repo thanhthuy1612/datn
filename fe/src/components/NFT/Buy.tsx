@@ -116,7 +116,7 @@ const BuyNFT: React.FC = () => {
             </Radio.Group>
           </Form.Item>
           <Form.Item label=" ">
-            <Button htmlType="submit" disabled={loading}>
+            <Button htmlType="submit" disabled={loading || (value === 2 && !input)}>
               {loading ? renderloading('100%') : "Mua sản phẩm"}
             </Button>
           </Form.Item>
@@ -174,7 +174,7 @@ const BuyNFT: React.FC = () => {
               }>
               Mua ngay
             </button>
-            <Modal title="Bán sản phẩm" width={700} open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+            <Modal title="Mua sản phẩm" width={700} open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
               {renderForm()}
             </Modal>
             <button
