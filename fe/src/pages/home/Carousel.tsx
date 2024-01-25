@@ -34,13 +34,15 @@ const CarouselHome: React.FC = () => (
     <Carousel autoplay>
       {carousel.map((item: ICarousel) => (
         <div
-          className="w-[100%] h-[400px] rounded-[20px] shadow-2xl border-border border-[1px]"
+          className="w-[100%] h-[450px] bg-hover rounded-[20px] shadow-2xl border-border border-[1px]"
           key={item.id}>
+          <div className="h-[100%] flex justify-center items-center">
           <img
             src={item.banner}
-            className="w-full h-full rounded-[20px] shadow-2xl"
+            className="w-[100%] h-auto"
             key={item.id}
           />
+          </div>
         </div>
       ))}
     </Carousel>

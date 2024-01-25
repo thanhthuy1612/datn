@@ -1,22 +1,65 @@
-import { LoadingOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Spin } from "antd";
+import { Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
 import React from "react";
 import { IProduct } from "../../interfaces/IRouter";
 import { addListProduct, deleteProduct, getProductsByAccount, updateProduct } from "../../api/product";
 import { IStateRedux } from "../../redux";
 import { useSelector } from "react-redux";
-import { CiPen, CiTrash } from "react-icons/ci";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { removeUnnecessaryWhiteSpace } from "../../ultis";
 
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+  editing: boolean;
+  dataIndex: string;
+  title: any;
+  inputType: 'number' | 'text';
+  record: IProduct;
+  index: number;
+  children: React.ReactNode;
+}
+
+const EditableCell: React.FC<EditableCellProps> = ({
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  children,
+  ...restProps
+}) => {
+  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+
+  return (
+    <td {...restProps}>
+      {editing ? (
+        <Form.Item
+          name={dataIndex}
+          style={{ margin: 0 }}
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) : (
+        children
+      )}
+    </td>
+  );
+};
+
 const SettingCollection: React.FC = () => {
+  const [form] = Form.useForm();
   const [listProduct, setListProduct] = React.useState<IProduct[]>([]);
-  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
-  const [input, setInput] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [itemEdit, setItemEdit] = React.useState<IProduct>();
+  const [editingKey, setEditingKey] = React.useState<string>('');
 
   const { account } = useSelector((state: { item: IStateRedux }) => state.item);
-  const [form] = Form.useForm();
+
+  const isEditing = (record: IProduct) => record._id === editingKey;
 
   const fetch = React.useCallback(async () => {
     setLoading(true)
@@ -29,20 +72,94 @@ const SettingCollection: React.FC = () => {
     fetch()
   }, [fetch])
 
-  const handleEdit = async () => {
-    setLoading(true)
-    await updateProduct(itemEdit?._id ?? "", { name: removeUnnecessaryWhiteSpace(input), account: itemEdit?.account })
-    fetch();
-    setInput('');
-    setIsModalOpen(false);
-    setItemEdit(undefined);
+  const edit = (record: IProduct) => {
+    form.setFieldsValue({ name: '', ...record });
+    setEditingKey(record._id ?? "");
   };
 
-  const handleCancel = () => {
-    setInput('');
-    setIsModalOpen(false);
-    setItemEdit(undefined);
+  const cancel = () => {
+    setEditingKey('');
   };
+
+  const save = async (key: React.Key) => {
+    try {
+      const row = (await form.validateFields()) as IProduct;
+      console.log(editingKey, row)
+      const newData = [...listProduct];
+      const index = newData.findIndex((item) => key === item._id);
+      if (index > -1) {
+        setLoading(true)
+        await updateProduct(editingKey, { name: removeUnnecessaryWhiteSpace(row.name) })
+        fetch();
+        setEditingKey('');
+      }
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
+  const handleDelete = async (id: string) => {
+    setLoading(true)
+    const result = await deleteProduct(id ?? '')
+    if (result.data) {
+      fetch()
+    }
+  }
+
+  const columns = [
+    {
+      title: 'Tên',
+      dataIndex: 'name',
+      width: '50%',
+      editable: true,
+    },
+    {
+      title: 'Sửa',
+      dataIndex: 'edit',
+      width: '25%',
+      render: (_: any, record: IProduct) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Typography.Link onClick={() => save(record._id ?? "")} style={{ marginRight: 8 }}>
+              Lưu
+            </Typography.Link>
+            <Popconfirm title="Hủy thay đổi" cancelText="" onConfirm={cancel}>
+              <a>Hủy</a>
+            </Popconfirm>
+          </span>
+        ) : (
+          <Typography.Link disabled={editingKey !== ''} title={`Xóa sản phẩm ${record.name}`} onClick={() => edit(record)}>
+            Sửa
+          </Typography.Link>
+        );
+      },
+    },
+    {
+      title: 'Xóa',
+      dataIndex: 'delete',
+      width: '25%',
+      render: (_: any, record: IProduct) => {
+        return <Typography.Link disabled={editingKey !== ''} title={`Xóa sản phẩm ${record.name}`} onClick={() => handleDelete(record._id ?? "")}>
+          Xóa
+        </Typography.Link>
+      },
+    },
+  ];
+
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: IProduct) => ({
+        record,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
 
   const onFinish = async (values: any) => {
     if (values.names.length > 0) {
@@ -61,55 +178,30 @@ const SettingCollection: React.FC = () => {
     fetch();
   };
 
-  const handleClickEdit = (item: IProduct) => () => {
-    setItemEdit(item);
-    setInput(item?.name ?? '')
-    setIsModalOpen(true);
-  }
-
-  const handleClickDelete = (item: IProduct) => async () => {
-    setLoading(true)
-    const result = await deleteProduct(item._id ?? '')
-    if (result.data) {
-      fetch()
-    }
-  }
-  const antIcon = <LoadingOutlined style={{ fontSize: 30 }} spin />;
-  const renderloading = () => (
-    <div className="w-[100%] flex justify-center items-center p-[30px]">
-      <Spin indicator={antIcon} />
-    </div>
-  );
-
   const renderListItem = () => (
-    <div className="pb-[20px]">
-      <p className="w-[200px] text-[20px] pb-[10px]">Sản phẩm của bạn</p>
-      {loading ? <div className="w-[360px]">{renderloading()}</div> : <>{
-        listProduct.length === 0 ?
-          <p className="italic">Tài khoản không có sản phẩm</p> : listProduct.map(item => (
-            <div key={item._id} className="flex my-[5px]">
-              <p className="w-[200px]">{item.name}</p>
-              <button onClick={handleClickEdit(item)} className="border-border border-[1px] p-[5px] rounded-[10px] shadow-md mr-[10px] hover:bg-hover"><CiPen /></button>
-              <button onClick={handleClickDelete(item)} className="border-border border-[1px] p-[5px] rounded-[10px] shadow-md hover:bg-hover"><CiTrash /></button>
-            </div>
-          ))
-      }
-        <Modal title="Chỉnh sửa" open={isModalOpen} onOk={handleEdit} onCancel={handleCancel}>
-          <div className="my-[30px]">
-            <p className="mb-[5px]">Nhập tên sản phẩm thay đổi:</p>
-            <Input placeholder={itemEdit?.name ?? ''} defaultValue={itemEdit?.name ?? ''} value={input} onChange={(e) => {
-              setInput(e?.target.value)
-            }} />
-          </div>
-        </Modal></>}
-    </div>
+    <Form form={form} component={false}>
+      <Table
+        components={{
+          body: {
+            cell: EditableCell,
+          },
+        }}
+        bordered
+        loading={loading}
+        dataSource={loading ? [] : listProduct}
+        columns={mergedColumns}
+        rowClassName="editable-row"
+        pagination={{
+          onChange: cancel,
+        }}
+      />
+    </Form>
   )
   const renderForm = () => (
     <Form
       name="dynamic_form_item"
       onFinish={onFinish}
       autoComplete="off"
-      style={{ maxWidth: 600 }}
       form={form}
     >
       <Form.List
@@ -159,7 +251,7 @@ const SettingCollection: React.FC = () => {
       </Form.List>
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Thêm
+          Thêm vào danh sách
         </Button>
       </Form.Item>
     </Form>
