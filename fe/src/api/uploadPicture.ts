@@ -29,8 +29,8 @@ export const uploadToIPFS = async (inputs: IUploadIPFS) => {
   try {
     const added = await client.add(data);
     return added.path;
-  } catch (error) {
-    console.log("Error uploading file: ", error);
+  } catch (err) {
+    console.log(err);
   }
 };
 

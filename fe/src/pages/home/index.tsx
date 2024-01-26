@@ -275,10 +275,10 @@ const Home: React.FC = () => {
             rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
           >
             <Radio.Group>
-              <Radio.Button value={ITypeAccount.Farm}>Nông dân</Radio.Button>
-              <Radio.Button value={ITypeAccount.Ship}>Giao hàng</Radio.Button>
-              <Radio.Button value={ITypeAccount.Buy}>Người thu mua</Radio.Button>
-              <Radio.Button value={ITypeAccount.Custom}>Khách hàng</Radio.Button>
+              <Radio.Button value={ITypeAccount.Farm}>Nhà sản xuất</Radio.Button>
+              <Radio.Button value={ITypeAccount.Ship}>Người vận chuyển</Radio.Button>
+              <Radio.Button value={ITypeAccount.Buy}>Đại lý</Radio.Button>
+              <Radio.Button value={ITypeAccount.Custom}>Người tiêu dùng</Radio.Button>
             </Radio.Group>
           </Form.Item>
           <Form.Item className="flex justify-center w-[100%]">

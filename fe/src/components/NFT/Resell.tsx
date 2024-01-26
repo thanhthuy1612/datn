@@ -79,9 +79,8 @@ const ResellNFT: React.FC = () => {
     try {
       const result = await upload(file);
       onSuccess(result);
-    } catch (error) {
-      onError({ event: error });
-      console.log("Error uploading file: ", error);
+    } catch (err) {
+      onError({ event: err });
     }
   };
 
@@ -266,7 +265,7 @@ const ResellNFT: React.FC = () => {
           { required: true, message: "Vui lòng chọn thời gian hết hạn" },
         ]}>
         <DatePicker disabledDate={(current) => {
-          let customDate = moment();
+          const customDate = moment();
           return current && current < moment(customDate);
         }} className="w-[500px]" showTime placeholder="Chọn thời gian" />
       </Form.Item>
@@ -302,7 +301,7 @@ const ResellNFT: React.FC = () => {
       </div>
       <Form.Item label=" ">
         <Button htmlType="submit" disabled={loading}>
-          {loading ? renderloading() : "Bán sản phẩm"}
+          {loading ? renderloading() : "Tạo yêu cầu xuất sản phẩm"}
         </Button>
       </Form.Item>
     </Form>
@@ -327,8 +326,8 @@ const ResellNFT: React.FC = () => {
         <Modal width={800} title="Cập nhật sản phẩm" open={isModalOpenAdd} onCancel={handleCancelAdd} footer={null}>
           {renderAdd()}
         </Modal>
-        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Bán sản phẩm</button>
-        <Modal width={800} title="Bán sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+        <button className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModalCreate}>Tạo yêu cầu xuất sản phẩm</button>
+        <Modal width={800} title="Tạo yêu cầu xuất sản phẩm" open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
           {renderResell()}
         </Modal>
       </div>
@@ -336,15 +335,15 @@ const ResellNFT: React.FC = () => {
   );
   const renderBody = () => (
     <div className="py-[40px] flex w-[100%] justify-around">
-      <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">
-        <Image width={"100%"} height={500} src={item.img} />
+      <div className="w-[450px] h-[450px] flex bg-hover items-center rounded-[20px] shadow-md overflow-hidden">
+        <Image width={"100%"} height={"auto"} src={item.img} />
       </div>
       <div className="flex w-[700px] justify-between">
         {renderProfileNFT()}
       </div>
     </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Bán sản phẩm" />
+    <ShowLayout chidren={renderBody()} title="Tạo yêu cầu xuất sản phẩm" />
   );
 };
 

@@ -84,7 +84,6 @@ const SettingCollection: React.FC = () => {
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as IProduct;
-      console.log(editingKey, row)
       const newData = [...listProduct];
       const index = newData.findIndex((item) => key === item._id);
       if (index > -1) {
@@ -93,8 +92,8 @@ const SettingCollection: React.FC = () => {
         fetch();
         setEditingKey('');
       }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+    } catch (err) {
+      console.log(err);
     }
   };
   const handleDelete = async (id: string) => {

@@ -89,9 +89,8 @@ const DoingShip: React.FC = () => {
     try {
       const result = await upload(file);
       onSuccess(result);
-    } catch (error) {
-      onError({ event: error });
-      console.log("Error uploading file: ", error);
+    } catch (err) {
+      onError({ event: err});
     }
   };
 
@@ -271,8 +270,8 @@ const DoingShip: React.FC = () => {
   );
   const renderBody = () => (
     <div className="py-[40px] flex w-[100%] justify-around">
-      <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">
-        <Image width={"100%"} height={500} src={item.img} />
+      <div className="w-[450px] h-[450px] flex bg-hover items-center rounded-[20px] shadow-md overflow-hidden">
+        <Image width={"100%"} height={"auto"} src={item.img} />
       </div>
       <div className="flex w-[700px] justify-between">
         {renderProfileNFT()}

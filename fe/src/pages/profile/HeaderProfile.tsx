@@ -85,13 +85,13 @@ const HeaderProfile: React.FC<{
   const getType = (type: ITypeAccount) => {
     switch (type) {
       case ITypeAccount.Farm:
-        return "Nông dân"
+        return "Nhà sản xuất"
       case ITypeAccount.Ship:
-        return "Giao hàng"
+        return "Người vận chuyển"
       case ITypeAccount.Buy:
-        return "Người thu mua"
+        return "Đại lý"
       case ITypeAccount.Custom:
-        return "Khách hàng"
+        return "Người tiêu dùng"
       default: return ""
     }
   }

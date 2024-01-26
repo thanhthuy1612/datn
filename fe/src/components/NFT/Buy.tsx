@@ -117,7 +117,7 @@ const BuyNFT: React.FC = () => {
           </Form.Item>
           <Form.Item label=" ">
             <Button htmlType="submit" disabled={loading || (value === 2 && !input)}>
-              {loading ? renderloading('100%') : "Mua sản phẩm"}
+              {loading ? renderloading('100%') : account?.type === ITypeAccount.Buy ? "Nhập sản phẩm" : "Mua sản phẩm"}
             </Button>
           </Form.Item>
         </div>
@@ -126,8 +126,8 @@ const BuyNFT: React.FC = () => {
   );
 
   const renderBody = () => (<div className="py-[40px] flex w-[100%] justify-around">
-    <div className="w-[450px] h-[450px] rounded-[20px] shadow-md overflow-hidden">
-      <Image width={"100%"} height={500} src={item.img} />
+    <div className="w-[450px] h-[450px] flex bg-hover items-center rounded-[20px] shadow-md overflow-hidden">
+      <Image width={"100%"} height={"auto"} src={item.img} />
     </div>
     <div className="w-[700px] rounded-[20px] flex flex-col justify-between">
       <div>
@@ -172,9 +172,9 @@ const BuyNFT: React.FC = () => {
                   ? "border-border bg-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md cursor-not-allowed"
                   : "border-border border-[1px] py-[20px] w-[300px] flex justify-center items-center rounded-[20px] shadow-md hover:shadow-xl hover:bg-hover"
               }>
-              Mua ngay
+              {account?.type === ITypeAccount.Buy ? "Nhập sản phẩm" : "Mua sản phẩm"}
             </button>
-            <Modal title="Mua sản phẩm" width={700} open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
+            <Modal title={account?.type === ITypeAccount.Buy ? "Nhập sản phẩm" : "Mua sản phẩm"} width={700} open={isModalOpenCreate} onCancel={handleCancelCreate} footer={null}>
               {renderForm()}
             </Modal>
             <button
@@ -193,7 +193,7 @@ const BuyNFT: React.FC = () => {
     </div>
   </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Mua sản phẩm" />
+    <ShowLayout chidren={renderBody()} title={account?.type === ITypeAccount.Buy ? "Nhập sản phẩm" : "Mua sản phẩm"} />
   );
 };
 

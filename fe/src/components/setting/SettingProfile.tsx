@@ -121,9 +121,8 @@ const SettingProfile: React.FC = () => {
     try {
       const result = await upload("ava", file);
       onSuccess(result);
-    } catch (error) {
-      onError({ event: error });
-      console.log("Error uploading file: ", error);
+    } catch (err) {
+      onError({ event: err });
     }
   };
 
@@ -132,9 +131,8 @@ const SettingProfile: React.FC = () => {
     try {
       const result = await upload("banner", file);
       onSuccess(result);
-    } catch (error) {
-      onError({ event: error });
-      console.log("Error uploading file: ", error);
+    } catch (err) {
+      onError({ event: err });
     }
   };
 
@@ -157,11 +155,13 @@ const SettingProfile: React.FC = () => {
   const getType = (type: ITypeAccount) => {
     switch (type) {
       case ITypeAccount.Farm:
-        return "Nông dân"
+        return "Nhà sản xuất"
       case ITypeAccount.Ship:
-        return "Giao hàng"
+        return "Người vận chuyển"
       case ITypeAccount.Buy:
-        return "Người thu mua"
+        return "Đại lý"
+      case ITypeAccount.Custom:
+        return "Người tiêu dùng"
       default: return ""
     }
   }

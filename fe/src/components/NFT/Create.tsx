@@ -95,9 +95,8 @@ const Create: React.FC = () => {
     try {
       const result = await upload(file);
       onSuccess(result);
-    } catch (error) {
-      onError({ event: error });
-      console.log("Error uploading file: ", error);
+    } catch (err) {
+      onError({ event: err });
     }
   };
 

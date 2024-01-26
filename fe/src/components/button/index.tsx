@@ -48,7 +48,9 @@ const ButtonItem: React.FC<{
   }
   return (
     <button className={cart ? "border-border bg-border border-[2px] m-[15px] rounded-[15px] overflow-hidden shadow-xl hover:mt-[-5px] hover:shadow-2xl" : "border-border border-[2px] m-[15px] rounded-[15px] overflow-hidden shadow-xl hover:mt-[-5px] hover:shadow-2xl"}>
-      <img src={img} className="w-[100%] h-[300px]" />
+      <div className="w-[100%] h-[300px] flex items-center bg-hover">
+        <img src={img} className="w-[100%] h-auto" />
+      </div>
       <div className="flex flex-col p-[25px]">
         <p className="mt-[5px] mb-[15px] text-[30px] flex justify-start w-[250px] overflow-hidden whitespace-nowrap overflow-ellipsis">
           {title.toUpperCase()}
