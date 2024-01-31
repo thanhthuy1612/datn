@@ -100,7 +100,7 @@ const DoneSell: React.FC = () => {
       </Form.Item>
       <Form.Item label=" ">
         <Button htmlType="submit" disabled={loading}>
-          {loading ? renderloading() : "Bán sản phẩm"}
+          {loading ? renderloading() : "Đăng bán"}
         </Button>
       </Form.Item>
     </Form>
@@ -150,8 +150,8 @@ const DoneSell: React.FC = () => {
         <More items={item} />
       </div>
       <div className="flex mt-[50px]">
-        <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModal}>Bán sản phẩm</button>
-        <Modal width={800} title="Bán sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
+        <button disabled={loadingCreate} className="border-boder border-[1px] rounded-[10px] py-[15px] px-[30px] hover:bg-hover shadow-md hover:shadow-xl" onClick={showModal}>Đăng bán</button>
+        <Modal width={800} title="Đăng bán" open={isModalOpen} onCancel={handleCancel} footer={null}>
           {renderResell()}
         </Modal>
       </div>
@@ -167,7 +167,7 @@ const DoneSell: React.FC = () => {
       </div>
     </div>)
   return (
-    <ShowLayout chidren={renderBody()} title="Bán sản phẩm" />
+    <ShowLayout chidren={renderBody()} title="Đăng bán" />
   );
 };
 

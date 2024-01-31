@@ -29,11 +29,11 @@ const OldNFT: React.FC = () => {
   const menu: IMenu[] = [
     {
       id: 1,
-      title: "Sản phẩm của nông dân"
+      title: "Nông sản của nhà sản xuất"
     },
     {
       id: 2,
-      title: "Sản phẩm đang bán",
+      title: "Sản phẩm đại lý đăng bán",
     },
   ];
 
@@ -152,13 +152,13 @@ const OldNFT: React.FC = () => {
             key={item.id}
             className={
               state.choose === item.id
-                ? "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
-                : "p-[20px] text-[20px] flex items-center justify-center w-[300px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
+                ? "p-[20px] text-[20px] flex items-center justify-center w-[350px] h-[100%] border-[1px] border-b-[0px] border-border rounded-t-[15px]"
+                : "p-[20px] text-[20px] flex items-center justify-center w-[350px] h-[calc(100%-20px)] border-[1px] border-border rounded-t-[15px] bg-hover hover:shadow-xl"
             }>
             {item.title}
           </button>
         ))}
-        <div className="border-b-[1px] border-border w-[calc(100%-918px)]"></div>
+        <div className="border-b-[1px] border-border w-[calc(100%-718px)]"></div>
       </div>
       <div className="py-[50px] flex flex-wrap w-[100%] border-[1px] min-h-[680px] border-t-0 rounded-r-[20px] rounded-b-[20px] shadow-xl">
         {!loadingPast ? renderList() : renderloading()}

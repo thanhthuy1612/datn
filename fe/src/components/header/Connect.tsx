@@ -57,7 +57,7 @@ const Connect: React.FC = () => {
         </button>
         <MenuAccount />
       </div>
-      {account?.type === ITypeAccount.Buy && <Badge count={!loadingCart && account ? totalCart : null} dot={loadingCart} status={loadingCart ? 'processing' : undefined} overflowCount={99} className="flex h-[100%] items-center justify-center">
+      {(account?.type === ITypeAccount.Buy || account?.type === ITypeAccount.Custom) && <Badge count={!loadingCart && account ? totalCart : null} dot={loadingCart} status={loadingCart ? 'processing' : undefined} overflowCount={99} className="flex h-[100%] items-center justify-center">
         <button
           onClick={handleClickCart}
           disabled={!account}
@@ -65,7 +65,7 @@ const Connect: React.FC = () => {
           <div className="px-[5px]">
             <CiShoppingCart />
           </div>
-          <p className="px-[5px]">Giỏ hàng</p>
+          <p className="px-[5px]">{account?.type === ITypeAccount.Buy ? "Kho đại lý" : "Giỏ hàng"}</p>
         </button>
       </Badge>}
     </div >

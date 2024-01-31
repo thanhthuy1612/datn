@@ -185,19 +185,19 @@ const SettingProfile: React.FC = () => {
       <div className="flex w-[100%] justify-between">
         <div className="flex flex-col w-[550px]">
           <Form.Item label="Tên người dùng:" name="username">
-            <Input placeholder="Nhập tên người dùng.." />
+            <Input defaultValue={account?.username} placeholder="Nhập tên người dùng.." />
           </Form.Item>
 
           <Form.Item label="Email:" name="email">
-            <Input placeholder="Nhập email..." />
+            <Input defaultValue={account?.email} placeholder="Nhập email..." />
           </Form.Item>
 
           <Form.Item label="Địa chỉ:" name="address">
-            <Input placeholder="Nhập địa chỉ..." />
+            <Input defaultValue={account?.address} placeholder="Nhập địa chỉ..." />
           </Form.Item>
 
           <Form.Item label="Mô tả bản thân:" name="bio">
-            <Input.TextArea placeholder="Nhập mô tả bản thân..." />
+            <Input.TextArea defaultValue={account?.bio} placeholder="Nhập mô tả bản thân..." />
           </Form.Item>
 
           <Form.Item label="Ngày gia nhập:">
