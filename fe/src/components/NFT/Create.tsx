@@ -3,7 +3,6 @@ import React from "react";
 import { postPicture } from "../../api";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { removeUnnecessaryWhiteSpace } from "../../ultis";
-import "./create.css";
 import { IStateRedux, createToken, setLoading, store } from "../../redux";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -139,7 +138,7 @@ const Create: React.FC = () => {
             name="img"
             valuePropName="fileList"
             getValueFromEvent={normFile}
-            rules={[{ required: true, message: "Vui lòng thêm NFT" }]}
+            rules={[{ required: true, message: "Vui lòng chọn hình ảnh sản phẩm" }]}
           >
             <Upload
               accept="image/*"

@@ -246,7 +246,7 @@ const SettingProfile: React.FC = () => {
               onChange={onChangeAva}
               onPreview={onPreview}
             >
-              {state.ava.length === 0 && "+ Thêm ảnh"}
+              {state.ava.length === 0 && "+ Ảnh đại diện mới"}
             </Upload>
           </Form.Item>
           <Form.Item label="Ảnh bìa:">
@@ -258,7 +258,7 @@ const SettingProfile: React.FC = () => {
               onChange={onChangeBanner}
               onPreview={onPreview}
             >
-              {state.banner.length === 0 && "+ Thêm ảnh"}
+              {state.banner.length === 0 && "+ Ảnh bìa mới"}
             </Upload>
           </Form.Item>
         </div>

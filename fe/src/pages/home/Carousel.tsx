@@ -3,6 +3,7 @@ import { Carousel } from "antd";
 import { CiDeliveryTruck, CiShop, CiShoppingBasket, CiShuffle, CiWheat } from "react-icons/ci";
 import carousel1 from "../../assets/carousel1.jpg"
 import carousel2 from "../../assets/carousel2.png"
+import carousel3 from "../../assets/carousel3.jpg"
 
 interface ICarousel {
   id: number;
@@ -45,6 +46,12 @@ const renderCarosel2 = () => (
   </div>
 )
 
+const renderCarosel3 = () => (
+  <div className="h-[100%] flex justify-center items-center relative">
+    <img alt="1" src={carousel3} className="w-[100%] h-auto" />
+  </div>
+)
+
 const carousel: ICarousel[] = [
   {
     id: 1,
@@ -53,6 +60,10 @@ const carousel: ICarousel[] = [
   {
     id: 2,
     banner: renderCarosel2(),
+  },
+  {
+    id: 3,
+    banner: renderCarosel3(),
   },
 ];
 

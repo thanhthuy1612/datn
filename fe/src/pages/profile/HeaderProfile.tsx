@@ -99,10 +99,10 @@ const HeaderProfile: React.FC<{
     <div className="w-[100%] pt-[20px]">
       <div className="relative w-[100%]">
         <div className="w-[100%] h-[380px] rounded-[20px] shadow-md overflow-hidden">
-          {!state.loadingBanner ? <Image width={"100%"} height={400} src={account?.banner ? state.banner : banner} /> : <div className="w-[100%] h-[100%] flex justify-center items-center bg-hover">{renderloading()}</div>}
+          {!state.loadingBanner ? <Image width={"100%"} height={400} style={{ objectFit: "cover" }} src={account?.banner ? state.banner : banner} /> : <div className="w-[100%] h-[100%] flex justify-center items-center bg-hover">{renderloading()}</div>}
         </div>
         <div className="border-white border-[5px] shadow-2xl rounded-[50%] w-[290px] h-[290px] absolute top-[185px] left-[50px] overflow-hidden">
-          {!state.loadingAva ? <Image width={280} height={280} src={account?.ava ? state.ava : ava} /> : <div className="w-[100%] h-[100%] flex justify-center items-center bg-hover">{renderloading()}</div>}
+          {!state.loadingAva ? <Image width={280} height={280} style={{ objectFit: "cover" }} src={account?.ava ? state.ava : ava} /> : <div className="w-[100%] h-[100%] flex justify-center items-center bg-hover">{renderloading()}</div>}
         </div>
       </div>
       <div className="mt-[120px] ml-[55px] mr-[20px] py-[5px] flex justify-between">

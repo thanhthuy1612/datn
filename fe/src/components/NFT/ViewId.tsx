@@ -93,7 +93,7 @@ const ViewId: React.FC = () => {
         renderloading() :
         (<>
           <div className="w-[450px] h-[450px] flex bg-hover items-center rounded-[20px] shadow-md overflow-hidden">
-            {item?.img && <Image width={"100%"} height={"auto"} src={item?.img} />}
+            {item?.img && <Image width={"100%"} height={"100%"} style={{ objectFit: "cover" }} src={item?.img} />}
           </div>
           <div className="flex w-[700px] justify-between">
             {renderProfileNFT()}

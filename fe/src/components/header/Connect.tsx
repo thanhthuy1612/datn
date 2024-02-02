@@ -65,7 +65,7 @@ const Connect: React.FC = () => {
           <div className="px-[5px]">
             <CiShoppingCart />
           </div>
-          <p className="px-[5px]">{account?.type === ITypeAccount.Buy ? "Kho đại lý" : "Giỏ hàng"}</p>
+          <p className="px-[5px] text-[#121212] text-[16px]">{account?.type === ITypeAccount.Buy ? "Kho đại lý" : "Giỏ hàng"}</p>
         </button>
       </Badge>}
     </div >
